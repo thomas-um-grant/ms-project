@@ -1,0 +1,43 @@
+{
+  "settings": {
+    "migrated": 6,
+    "iconPacksPath": ".obsidian/icons",
+    "fontSize": 16,
+    "emojiStyle": "native",
+    "iconColor": null,
+    "recentlyUsedIcons": [
+      "LiNewspaper",
+      "SiExcalidraw",
+      "LiHome"
+    ],
+    "recentlyUsedIconsSize": 5,
+    "rules": [],
+    "extraMargin": {
+      "top": 0,
+      "right": 4,
+      "bottom": 0,
+      "left": 0
+    },
+    "iconInTabsEnabled": false,
+    "iconInTitleEnabled": false,
+    "iconInTitlePosition": "above",
+    "iconInFrontmatterEnabled": false,
+    "iconInFrontmatterFieldName": "icon",
+    "iconColorInFrontmatterFieldName": "iconColor",
+    "iconsBackgroundCheckEnabled": false,
+    "iconsInNotesEnabled": true,
+    "iconsInLinksEnabled": true,
+    "iconIdentifier": ":",
+    "lucideIconPackType": "native",
+    "debugMode": false,
+    "useInternalPlugins": false
+  },
+  "Background Research/Papers/Graph RAG.md": "LiNewspaper",
+  "Background Research/Papers/ColPali.md": "LiNewspaper",
+  "Background Research/Papers/Late Chunking.md": "LiNewspaper",
+  "Background Research/Papers/LuminiRAG.md": "LiNewspaper",
+  "Background Research/Papers/VisDoM.md": "LiNewspaper",
+  "Background Research/Papers/VisRAG.md": "LiNewspaper",
+  "Background Research/Papers/G-Retriever.md": "LiNewspaper",
+  "Background Research/Papers/LightRAG.md": "LiNewspaper"
+}

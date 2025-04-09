@@ -1,0 +1,45 @@
+Custom Non-Commercial Apache License
+
+Copyright [2025] Thomas Grant
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License **and** the following additional terms:
+
+---
+
+## Additional Terms (Non-Commercial Clause)
+
+1. **Non-Commercial Use Only**  
+   This software and associated files are licensed for **non-commercial use only**.  
+   Commercial use, including but not limited to:
+   - selling, sublicensing, or monetizing this work or derivatives,
+   - integrating this software into a commercial product or service,
+   - using this software in support of commercial activities,
+
+   is **prohibited without prior written permission** from the author(s).
+
+2. **Academic and Research Use**  
+   You are permitted to use, modify, and share this work for:
+   - academic research,
+   - non-profit work,
+   - internal evaluation and experimentation.
+
+3. **Commercial Licensing**  
+   To obtain a commercial license, please contact:  
+   📧 thomas.grant24@imperial.ac.uk
+
+4. **Attribution**  
+   Any public use must include proper citation or credit to the original authors.
+
+---
+
+## Apache License 2.0 (Base Terms)
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.

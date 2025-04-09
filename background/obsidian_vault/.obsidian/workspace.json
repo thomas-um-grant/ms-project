@@ -1,0 +1,211 @@
+{
+  "main": {
+    "id": "f88a16a23f0d6727",
+    "type": "split",
+    "children": [
+      {
+        "id": "610fc0dd5b4fb58b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "79712f2e13149b88",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Background Research/Papers/ColPali.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "ColPali"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "239bb409ba31c9df",
+    "type": "split",
+    "children": [
+      {
+        "id": "6ad6c97e697ac379",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "b331b9ded097ca9c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1c345276dc7bcb4e",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          },
+          {
+            "id": "21285bf0d9da47a7",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "b4793366fbe28109",
+    "type": "split",
+    "children": [
+      {
+        "id": "01f8eff49457a647",
+        "type": "tabs",
+        "dimension": 66.38888888888889,
+        "children": [
+          {
+            "id": "afce292392f00a20",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "20804fe379ce837f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Welcome.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Welcome"
+            }
+          },
+          {
+            "id": "eee6351370221572",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "611895b93eb26b10",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ],
+        "currentTab": 2
+      },
+      {
+        "id": "cc98694126777fb1",
+        "type": "tabs",
+        "dimension": 33.611111111111114,
+        "children": [
+          {
+            "id": "4deab1f0f592b93c",
+            "type": "leaf",
+            "state": {
+              "type": "calendar",
+              "state": {},
+              "icon": "calendar-with-checkmark",
+              "title": "Calendar"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "command-palette:Open command palette": false,
+      "graph:Open graph view": false,
+      "templates:Insert template": false,
+      "switcher:Open quick switcher": false,
+      "obsidian-excalidraw-plugin:New drawing": false,
+      "omnisearch:Omnisearch": false
+    }
+  },
+  "active": "79712f2e13149b88",
+  "lastOpenFiles": [
+    "Background Research/Papers/1_Template.md",
+    "Background Research/Papers/ColPali.md",
+    "Background Research/Papers/Graph RAG.md",
+    "Background Research/Papers/G-Retriever.md",
+    "Background Research/Papers/LightRAG.md",
+    "Background Research/Papers/LuminiRAG.md",
+    "Background Research/Papers/VisRAG.md",
+    "Background Research/Papers/VisDoM.md",
+    "Background Research/Papers/Late Chunking.md",
+    "Untitled.md",
+    "From Local to Global - A Graph RAG Approach to Query-Focused Summarization.md",
+    "[[From.md",
+    "Welcome.md",
+    "Background Research/Papers",
+    "Background Research",
+    "Excalidraw/Drawing 2025-02-23 02.57.21.excalidraw.md",
+    "2025-02-23.md",
+    "Excalidraw",
+    "Untitled.canvas"
+  ]
+}
