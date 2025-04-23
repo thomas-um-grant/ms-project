@@ -34,13 +34,11 @@ Visualization:
 * TensorBoard or Weights & Biases – log embeddings or loss curves.
 
 ## 🛎️ Task & Time Management
-* Use Obsidian Kanban to track milestones & subtasks.
+* Use Obsidian Kanban to track milestones & subtasks?
 * Break down the work weekly into:
     * Literature Review
     * Graph Construction Prototype
     * Baseline Retrieval Eval
-💡 Tip: Set one “high impact” goal per week. Avoid multitasking during deep work blocks.
-
 
 ## 🧠 Habits to Stay Effective
 ✅ Weekly Routine
@@ -49,16 +47,17 @@ Mon–Tue	Build / experiment
 Wed	Log insights, fix bugs
 Thu	Compare results, tweak design
 Fri	Summarize learnings & journal
-Weekend	Read 1–2 papers or prototype
+Weekend	Read 2-4 papers or prototype
 📌 Weekly Review Template
 * What did I accomplish?
 * What problems did I face?
 * What’s working well?
 * What should I change next week?
 
-## 🧾 Final Advice
+## 🧾 What I should do
 * Treat the repo and notes as if someone else will read and continue the work.
 * Every experiment should answer a specific hypothesis.
 * Start building the final report early — don’t wait till the end.
+* Set one “high impact” goal per week. Avoid multitasking during deep work blocks.
 
 
