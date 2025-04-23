@@ -39,5 +39,10 @@
   "Background Research/Papers/VisDoM.md": "LiNewspaper",
   "Background Research/Papers/VisRAG.md": "LiNewspaper",
   "Background Research/Papers/G-Retriever.md": "LiNewspaper",
-  "Background Research/Papers/LightRAG.md": "LiNewspaper"
+  "Background Research/Papers/LightRAG.md": "LiNewspaper",
+  "Background Research/Papers/Improved with Multi-Agent RL.md": "LiNewspaper",
+  "Background Research/Papers/Improved with Self-Reasoning.md": "LiNewspaper",
+  "Background Research/Papers/VideoRAG.md": "LiNewspaper",
+  "Background Research/Papers/Best practices to improve RAG.md": "LiNewspaper",
+  "Background Research/Papers/Agentic RAG.md": "LiNewspaper"
 }
