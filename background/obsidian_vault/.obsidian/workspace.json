@@ -11,10 +11,14 @@
             "id": "be16a33809694641",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "Background Research/Papers/Multimodal Needle in a Haystack.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "New tab"
+              "title": "Multimodal Needle in a Haystack"
             }
           }
         ]
@@ -185,21 +189,24 @@
   "active": "be16a33809694641",
   "lastOpenFiles": [
     "Background Research/Papers/Agentic RAG.md",
-    "Background Research/Papers/Best practices to improve RAG.md",
-    "Background Research/Papers/ColPali.md",
-    "Background Research/Papers/Graph RAG.md",
-    "Background Research/Papers/Improved with Multi-Agent RL.md",
     "Background Research/Papers/Improved with Self-Reasoning.md",
-    "Background Research/Papers/Late Chunking.md",
-    "Background Research/Papers/LightRAG.md",
-    "Background Research/Papers/LuminiRAG.md",
     "Background Research/Papers/VideoRAG.md",
-    "Background Research/Papers/VisDoM.md",
+    "Background Research/Papers/Best practices to improve RAG.md",
+    "Background Research/Papers/Improved with Multi-Agent RL.md",
+    "Background Research/Papers/Graph RAG.md",
+    "Background Research/Papers/G-Retriever.md",
+    "Background Research/Papers/Evaluation of chatbot with RAG.md",
+    "Background Research/Papers/ColPali.md",
+    "Background Research/Papers/Multimodal Needle in a Haystack.md",
     "Background Research/Papers/VisRAG.md",
+    "Background Research/Papers/VisDoM.md",
+    "Background Research/Papers/NoLiMa.md",
+    "Background Research/Papers/LuminiRAG.md",
+    "Background Research/Papers/LightRAG.md",
+    "Background Research/Papers/Late Chunking.md",
     "Background Research/Papers/1_Template.md",
     "Untitled.md",
     "Background Research/Papers/VisRAG 1.md",
-    "Background Research/Papers/G-Retriever.md",
     "From Local to Global - A Graph RAG Approach to Query-Focused Summarization.md",
     "[[From.md",
     "Welcome.md",
