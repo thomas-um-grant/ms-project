@@ -11,7 +11,3 @@ This survey explores Agentic Retrieval-Augmented Generation (Agentic RAG), which
 ## Disadvantages
 
 ## Questions
-
-
-Vespa db with ColPali
-Thinkcell plugin
