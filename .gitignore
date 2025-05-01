@@ -1,1 +1,8 @@
 .DS_Store
+
+# Ignore all vscode generated files for latex
+reports/background-report/latex/*
+!reports/background-report/latex/main.tex
+!reports/background-report/latex/includes.tex
+!reports/background-report/latex/notation.tex
+!reports/background-report/latex/titlepage.tex

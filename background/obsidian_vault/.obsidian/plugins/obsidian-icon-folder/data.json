@@ -32,23 +32,149 @@
     "debugMode": false,
     "useInternalPlugins": false
   },
-  "Background Research/Papers/Graph RAG.md": "LiNewspaper",
-  "Background Research/Papers/ColPali.md": "LiNewspaper",
-  "Background Research/Papers/Late Chunking.md": "LiNewspaper",
-  "Background Research/Papers/LuminiRAG.md": "LiNewspaper",
+  "Background Research/Papers/Graph RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "Background Research/Papers/ColPali.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "Background Research/Papers/Late Chunking.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "Background Research/Papers/LuminiRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "Background Research/Papers/VisDoM.md": "LiNewspaper",
   "Background Research/Papers/VisRAG.md": "LiNewspaper",
   "Background Research/Papers/G-Retriever.md": "LiNewspaper",
-  "Background Research/Papers/LightRAG.md": "LiNewspaper",
-  "Background Research/Papers/Improved with Multi-Agent RL.md": "LiNewspaper",
-  "Background Research/Papers/Improved with Self-Reasoning.md": "LiNewspaper",
-  "Background Research/Papers/VideoRAG.md": "LiNewspaper",
-  "Background Research/Papers/Best practices to improve RAG.md": "LiNewspaper",
-  "Background Research/Papers/Agentic RAG.md": "LiNewspaper",
-  "Background Research/Papers/NoLiMa.md": "LiNewspaper",
+  "Background Research/Papers/LightRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "Background Research/Papers/Improved with Multi-Agent RL.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "Background Research/Papers/Improved with Self-Reasoning.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "Background Research/Papers/VideoRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "Background Research/Papers/Best practices to improve RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#0064ff"
+  },
+  "Background Research/Papers/Agentic RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "Background Research/Papers/NoLiMa.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "Background Research/Papers/Evaluation of chatbot with RAG.md": "LiNewspaper",
-  "Background Research/Papers/Multimodal Needle in a Haystack.md": "LiNewspaper",
+  "Background Research/Papers/Multimodal Needle in a Haystack.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "Background Research/Papers/PathRAG.md": "LiNewspaper",
   "Background Research/Papers/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper",
-  "Background Research/Papers/Agent-G.md": "LiNewspaper"
+  "Background Research/Papers/Agent-G.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/Agent-G.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/Agentic RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/Improved with Multi-Agent RL.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/Improved with Self-Reasoning.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/VideoRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/to-keep-in-mind/Best practices to improve RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#0064ff"
+  },
+  "background-research/papers/more-relevant/ColPali.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Graph RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Late Chunking.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/LightRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/LuminiRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Multimodal Needle in a Haystack.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/NoLiMa.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/to-review/VisRAG.md": "LiNewspaper",
+  "background-research/papers/to-review/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper",
+  "background-research/papers/to-review/BLIP.md": "LiNewspaper",
+  "background-research/papers/to-review/CLIP.md": "LiNewspaper",
+  "background-research/papers/to-review/Contriever.md": "LiNewspaper",
+  "background-research/papers/to-review/Evaluation of chatbot with RAG.md": "LiNewspaper",
+  "background-research/papers/to-review/Flamingo.md": "LiNewspaper",
+  "background-research/papers/to-review/G-Retriever.md": "LiNewspaper",
+  "background-research/papers/to-review/LLaVA.md": "LiNewspaper",
+  "background-research/papers/to-review/LLaVA Improved.md": "LiNewspaper",
+  "background-research/papers/to-review/LLaVA-UHD.md": "LiNewspaper",
+  "background-research/papers/to-review/OCR-free DUT.md": "LiNewspaper",
+  "background-research/papers/to-review/PathRAG.md": "LiNewspaper",
+  "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
+  "background-research/papers/to-review/Qwen-VL.md": "LiNewspaper",
+  "background-research/papers/to-review/InstructBLIP.md": "LiNewspaper",
+  "background-research/papers/to-review/CogVLM.md": "LiNewspaper",
+  "background-research/papers/to-review/SPHINX.md": "LiNewspaper",
+  "background-research/papers/to-review/Pix2Struct.md": "LiNewspaper",
+  "background-research/papers/to-review/CogAgent.md": "LiNewspaper",
+  "background-research/papers/to-review/GUICourse.md": "LiNewspaper",
+  "background-research/papers/to-review/mPLUG-DocOwl.md": "LiNewspaper",
+  "background-research/papers/to-review/mPLUG-DocOwl2.md": "LiNewspaper",
+  "background-research/papers/to-review/UReader.md": "LiNewspaper",
+  "background-research/papers/to-review/TextMonkey.md": "LiNewspaper",
+  "background-research/papers/to-review/LLaVA-OneVision.md": "LiNewspaper",
+  "background-research/papers/to-review/Qwen2-VL.md": "LiNewspaper",
+  "background-research/papers/to-review/MiniCPM-V.md": "LiNewspaper",
+  "background-research/papers/to-review/Active RAG.md": "LiNewspaper",
+  "background-research/papers/to-review/In-context Pretraining.md": "LiNewspaper",
+  "background-research/papers/to-review/ActiveRAG - Autonomously Knowledge Assimilation.md": "LiNewspaper",
+  "background-research/papers/to-review/WebQA.md": "LiNewspaper",
+  "background-research/papers/to-review/Open-domain Visual Entity Recognition.md": "LiNewspaper",
+  "background-research/papers/to-review/E2E Knowledge Retrieval with Multi-Modal Queries.md": "LiNewspaper",
+  "background-research/papers/to-review/UniIR.md": "LiNewspaper"
 }
