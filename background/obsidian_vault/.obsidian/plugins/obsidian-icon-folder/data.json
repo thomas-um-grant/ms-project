@@ -6,6 +6,7 @@
     "emojiStyle": "native",
     "iconColor": null,
     "recentlyUsedIcons": [
+      "LiGlobe",
       "LiNewspaper",
       "SiExcalidraw",
       "LiHome"
@@ -142,7 +143,6 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/to-review/VisRAG.md": "LiNewspaper",
   "background-research/papers/to-review/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper",
   "background-research/papers/to-review/BLIP.md": "LiNewspaper",
   "background-research/papers/to-review/CLIP.md": "LiNewspaper",
@@ -176,5 +176,21 @@
   "background-research/papers/to-review/WebQA.md": "LiNewspaper",
   "background-research/papers/to-review/Open-domain Visual Entity Recognition.md": "LiNewspaper",
   "background-research/papers/to-review/E2E Knowledge Retrieval with Multi-Modal Queries.md": "LiNewspaper",
-  "background-research/papers/to-review/UniIR.md": "LiNewspaper"
+  "background-research/papers/to-review/UniIR.md": "LiNewspaper",
+  "background-research/other contents/Enterprise Knowledge mmGraphRAG.md": "LiGlobe",
+  "background-research/papers/to-review/Hyperdimensional Computing Part I.md": "LiNewspaper",
+  "background-research/papers/to-review/Hyperdimensional Computing Part II.md": "LiNewspaper",
+  "background-research/papers/to-review/HyperDimensional Computing Classifier Training.md": "LiNewspaper",
+  "background-research/other contents/Nvidia intro to MultiModal RAG.md": "LiGlobe",
+  "background-research/papers/to-review/DePlot.md": "LiNewspaper",
+  "background-research/papers/to-review/Kosmos-2.md": "LiNewspaper",
+  "background-research/papers/to-review/Tsetlin Machine.md": "LiNewspaper",
+  "background-research/papers/to-review/Tsetlin Machine Embedding.md": "LiNewspaper",
+  "background-research/papers/to-review/PP-OCR.md": "LiNewspaper",
+  "background-research/papers/more-relevant/VisRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/to-review/SigLIP.md": "LiNewspaper",
+  "background-research/papers/to-review/MiniCPM.md": "LiNewspaper"
 }
