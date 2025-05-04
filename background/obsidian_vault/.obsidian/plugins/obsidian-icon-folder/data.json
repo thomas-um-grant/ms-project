@@ -154,7 +154,6 @@
   "background-research/papers/to-review/LLaVA Improved.md": "LiNewspaper",
   "background-research/papers/to-review/LLaVA-UHD.md": "LiNewspaper",
   "background-research/papers/to-review/OCR-free DUT.md": "LiNewspaper",
-  "background-research/papers/to-review/PathRAG.md": "LiNewspaper",
   "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
   "background-research/papers/to-review/Qwen-VL.md": "LiNewspaper",
   "background-research/papers/to-review/InstructBLIP.md": "LiNewspaper",
@@ -192,5 +191,9 @@
     "iconColor": "#00ff00"
   },
   "background-research/papers/to-review/SigLIP.md": "LiNewspaper",
-  "background-research/papers/to-review/MiniCPM.md": "LiNewspaper"
+  "background-research/papers/to-review/MiniCPM.md": "LiNewspaper",
+  "background-research/papers/more-relevant/PathRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  }
 }

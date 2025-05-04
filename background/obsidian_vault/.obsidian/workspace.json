@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/VisRAG.md",
+                "file": "background-research/papers/more-relevant/PathRAG.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "VisRAG"
+              "title": "PathRAG"
             }
           }
         ]
@@ -188,8 +188,17 @@
   },
   "active": "01cb528ffa0e6573",
   "lastOpenFiles": [
-    "background-research/papers/more-relevant/ColPali.md",
     "background-research/papers/more-relevant/VisRAG.md",
+    "background-research/papers/more-relevant/PathRAG.md",
+    "background-research/papers/more-relevant/LuminiRAG.md",
+    "daily-journal/2025-05-01.md",
+    "daily-journal/2025-04-30.md",
+    "daily-journal/2025-04-28.md",
+    "daily-journal/2025-04-29.md",
+    "background-research/papers/less-relevant/Agent-G.md",
+    "background-research/papers/less-relevant/Agentic RAG.md",
+    "background-research/papers/more-relevant/Graph RAG.md",
+    "background-research/papers/more-relevant/ColPali.md",
     "background-research/papers/more-relevant/NoLiMa.md",
     "background-research/papers/to-review/VisDoM.md",
     "background-research/papers/to-review/WebQA.md",
@@ -205,16 +214,7 @@
     "background-research/papers/to-review/Kosmos-2.md",
     "background-research/papers/to-review/DePlot.md",
     "background-research/papers/more-relevant/LightRAG.md",
-    "background-research/papers/more-relevant/Graph RAG.md",
-    "background-research/papers/to-review/HyperDimensional Computing Classifier Training.md",
-    "background-research/papers/to-review/Hyperdimensional Computing Part II.md",
-    "background-research/papers/to-review/Hyperdimensional Computing Part I.md",
-    "background-research/papers/less-relevant/Agent-G.md",
-    "daily-journal/2025-05-01.md",
     "background-research/other contents",
-    "daily-journal/2025-04-30.md",
-    "background-research/papers/to-review/UniIR.md",
-    "background-research/papers/to-review/E2E Knowledge Retrieval with Multi-Modal Queries.md",
     "background-research/papers/to-review",
     "background-research/papers/more-relevant",
     "background-research/papers/to-keep-in-mind",

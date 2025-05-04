@@ -28,7 +28,7 @@ Interesting notes:
 ## Disadvantages
 
 - Might not generalize well with more text based documents ?
-- More complex framework
+- More complex framework to implement
 
 ## Questions
 
