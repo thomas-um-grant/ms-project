@@ -14,9 +14,10 @@
 # wheel
 
 ## modular-pipeline
+torch==2.7.0
 PyMuPDF==1.23.26
-python-docx==1.1.2
-doc2docx==0.2.4
+# python-docx==1.1.2
+# doc2docx==0.2.4
 # matplotlib==3.8.3
 # numpy==1.26.4
 pandas==2.2.1
