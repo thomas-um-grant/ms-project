@@ -16,4 +16,6 @@ It still relies on vector database to retrieve indexed nodes.
 
 ## Disadvantages
 
+
+
 ## Questions

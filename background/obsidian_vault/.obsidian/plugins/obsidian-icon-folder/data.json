@@ -115,34 +115,6 @@
     "iconName": "LiNewspaper",
     "iconColor": "#0064ff"
   },
-  "background-research/papers/more-relevant/ColPali.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/Graph RAG.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/Late Chunking.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/LightRAG.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/LuminiRAG.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/Multimodal Needle in a Haystack.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
-  "background-research/papers/more-relevant/NoLiMa.md": {
-    "iconName": "LiNewspaper",
-    "iconColor": "#00ff00"
-  },
   "background-research/papers/to-review/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper",
   "background-research/papers/to-review/BLIP.md": "LiNewspaper",
   "background-research/papers/to-review/CLIP.md": "LiNewspaper",
@@ -154,7 +126,6 @@
   "background-research/papers/to-review/LLaVA Improved.md": "LiNewspaper",
   "background-research/papers/to-review/LLaVA-UHD.md": "LiNewspaper",
   "background-research/papers/to-review/OCR-free DUT.md": "LiNewspaper",
-  "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
   "background-research/papers/to-review/Qwen-VL.md": "LiNewspaper",
   "background-research/papers/to-review/InstructBLIP.md": "LiNewspaper",
   "background-research/papers/to-review/CogVLM.md": "LiNewspaper",
@@ -186,14 +157,53 @@
   "background-research/papers/to-review/Tsetlin Machine.md": "LiNewspaper",
   "background-research/papers/to-review/Tsetlin Machine Embedding.md": "LiNewspaper",
   "background-research/papers/to-review/PP-OCR.md": "LiNewspaper",
-  "background-research/papers/more-relevant/VisRAG.md": {
+  "background-research/papers/to-review/SigLIP.md": "LiNewspaper",
+  "background-research/papers/to-review/MiniCPM.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Techniques/Late Chunking.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/to-review/SigLIP.md": "LiNewspaper",
-  "background-research/papers/to-review/MiniCPM.md": "LiNewspaper",
-  "background-research/papers/more-relevant/PathRAG.md": {
+  "background-research/papers/more-relevant/RAGs/ColPali.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
-  }
+  },
+  "background-research/papers/more-relevant/RAGs/Graph RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/LightRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/LuminiRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/PathRAG.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/VisRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Evals/Multimodal Needle in a Haystack.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Evals/NoLiMa.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Evals/ArXivQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/ChartQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/DocVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/InfoVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/PlotQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/SlideVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/TAT-DQA.md": "LiNewspaper",
+  "background-research/papers/to-review/Contrastive Predictive Coding.md": "LiNewspaper",
+  "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Models/ColBERT.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Techniques/HyDE.md": "LiNewspaper",
+  "background-research/papers/to-review/InfoNCE.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Techniques/YaRN.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Techniques/LoRA.md": "LiNewspaper"
 }
