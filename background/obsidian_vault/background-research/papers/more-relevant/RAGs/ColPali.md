@@ -19,7 +19,7 @@ Keypoints:
 	Uses multi-vector embeddings per document page instead of a single dense vector, capturing fine-grained visual and textual details.
 
 - Late interaction retrieval:
-	Inspired by ColBERT, it enables precise matching between query vectors and document embeddings, improving retrieval accuracy.
+	Inspired by [[ColBERT]], it enables precise matching between query vectors and document embeddings, improving retrieval accuracy.
 
 ## Advantages
 

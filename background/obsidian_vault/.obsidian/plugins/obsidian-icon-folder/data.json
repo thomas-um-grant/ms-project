@@ -179,7 +179,10 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/more-relevant/RAGs/PathRAG.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/PathRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/RAGs/VisRAG.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
@@ -194,7 +197,6 @@
   },
   "background-research/papers/more-relevant/Evals/ArXivQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/ChartQA.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/DocVQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/InfoVQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/PlotQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/SlideVQA.md": "LiNewspaper",
@@ -205,5 +207,10 @@
   "background-research/papers/more-relevant/Techniques/HyDE.md": "LiNewspaper",
   "background-research/papers/to-review/InfoNCE.md": "LiNewspaper",
   "background-research/papers/more-relevant/Techniques/YaRN.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Techniques/LoRA.md": "LiNewspaper"
+  "background-research/papers/more-relevant/Techniques/LoRA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/DocVQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  }
 }
