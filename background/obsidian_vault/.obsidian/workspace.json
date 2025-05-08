@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/RAGs/PathRAG.md",
+                "file": "daily-journal/2025-05-08.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "PathRAG"
+              "title": "2025-05-08"
             }
           }
         ]
@@ -188,10 +188,13 @@
   },
   "active": "939b37ee473bf92b",
   "lastOpenFiles": [
+    "daily-journal/2025-05-07.md",
+    "daily-journal/2025-05-08.md",
+    "daily-journal/2025-05-06.md",
+    "background-research/papers/more-relevant/RAGs/PathRAG.md",
     "background-research/other contents/Nvidia intro to MultiModal RAG.md",
     "background-research/other contents/Enterprise Knowledge mmGraphRAG.md",
     "background-research/papers/more-relevant/Evals/DocVQA.md",
-    "background-research/papers/more-relevant/RAGs/PathRAG.md",
     "background-research/papers/more-relevant/RAGs/VisRAG.md",
     "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
     "background-research/papers/more-relevant/RAGs/LightRAG.md",
@@ -203,7 +206,6 @@
     "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md",
     "background-research/papers/more-relevant/Evals/NoLiMa.md",
     "background-research/papers/to-review/1_Template.md",
-    "daily-journal/2025-05-06.md",
     "daily-journal/2025-05-05.md",
     "daily-journal/2025-05-04.md",
     "daily-journal/2025-05-03.md",
@@ -212,9 +214,7 @@
     "background-research/papers/more-relevant/Techniques/LoRA.md",
     "background-research/papers/more-relevant/Techniques/YaRN.md",
     "background-research/papers/to-review/InfoNCE.md",
-    "background-research/papers/more-relevant/Techniques/HyDE.md",
     "background-research/papers/more-relevant/Models",
-    "background-research/papers/more-relevant/Evals/TAT-DQA.md",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",
     "background-research/papers/more-relevant/RAGs",
