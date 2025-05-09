@@ -208,9 +208,13 @@
   "background-research/papers/to-review/InfoNCE.md": "LiNewspaper",
   "background-research/papers/more-relevant/Techniques/YaRN.md": "LiNewspaper",
   "background-research/papers/more-relevant/Techniques/LoRA.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/DocVQA.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
-  }
+  },
+  "background-research/papers/to-review/BERT.md": "LiNewspaper"
 }
