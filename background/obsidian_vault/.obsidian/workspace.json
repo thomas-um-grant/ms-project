@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/Evals/ArXivQA.md",
+                "file": "2025-05-10.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ArXivQA"
+              "title": "2025-05-10"
             }
           }
         ]
@@ -188,6 +188,10 @@
   },
   "active": "7ab9f9909a8e0b01",
   "lastOpenFiles": [
+    "daily-journal/2025-05-09.md",
+    "2025-05-10.md",
+    "daily-journal/2025-05-08.md",
+    "background-research/papers/more-relevant/Evals/ArXivQA.md",
     "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md",
     "background-research/papers/to-review/BERT.md",
     "background-research/papers/to-review/1_Template.md",
@@ -195,7 +199,6 @@
     "background-research/papers/more-relevant/RAGs/ColPali.md",
     "background-research/papers/more-relevant/Evals/TAT-DQA.md",
     "background-research/papers/more-relevant/Evals/DocVQA.md",
-    "daily-journal/2025-05-08.md",
     "daily-journal/2025-05-07.md",
     "daily-journal/2025-05-06.md",
     "background-research/papers/more-relevant/RAGs/PathRAG.md",
@@ -211,9 +214,6 @@
     "daily-journal/2025-05-05.md",
     "daily-journal/2025-05-04.md",
     "daily-journal/2025-05-03.md",
-    "daily-journal/2025-05-02.md",
-    "daily-journal/2025-05-01.md",
-    "background-research/papers/more-relevant/Techniques/LoRA.md",
     "background-research/papers/more-relevant/Models",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",
