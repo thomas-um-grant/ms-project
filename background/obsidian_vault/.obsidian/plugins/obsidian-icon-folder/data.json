@@ -115,7 +115,6 @@
     "iconName": "LiNewspaper",
     "iconColor": "#0064ff"
   },
-  "background-research/papers/to-review/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper",
   "background-research/papers/to-review/BLIP.md": "LiNewspaper",
   "background-research/papers/to-review/CLIP.md": "LiNewspaper",
   "background-research/papers/to-review/Contriever.md": "LiNewspaper",
@@ -195,9 +194,15 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/more-relevant/Evals/ArXivQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/ArXivQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/ChartQA.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/InfoVQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/InfoVQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/PlotQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/SlideVQA.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/TAT-DQA.md": "LiNewspaper",
@@ -216,5 +221,6 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/to-review/BERT.md": "LiNewspaper"
+  "background-research/papers/to-review/BERT.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper"
 }
