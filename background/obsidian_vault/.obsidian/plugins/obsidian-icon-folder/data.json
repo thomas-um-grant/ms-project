@@ -115,8 +115,6 @@
     "iconName": "LiNewspaper",
     "iconColor": "#0064ff"
   },
-  "background-research/papers/to-review/BLIP.md": "LiNewspaper",
-  "background-research/papers/to-review/CLIP.md": "LiNewspaper",
   "background-research/papers/to-review/Contriever.md": "LiNewspaper",
   "background-research/papers/to-review/Evaluation of chatbot with RAG.md": "LiNewspaper",
   "background-research/papers/to-review/Flamingo.md": "LiNewspaper",
@@ -130,7 +128,6 @@
   "background-research/papers/to-review/CogVLM.md": "LiNewspaper",
   "background-research/papers/to-review/SPHINX.md": "LiNewspaper",
   "background-research/papers/to-review/Pix2Struct.md": "LiNewspaper",
-  "background-research/papers/to-review/CogAgent.md": "LiNewspaper",
   "background-research/papers/to-review/GUICourse.md": "LiNewspaper",
   "background-research/papers/to-review/mPLUG-DocOwl.md": "LiNewspaper",
   "background-research/papers/to-review/mPLUG-DocOwl2.md": "LiNewspaper",
@@ -139,9 +136,7 @@
   "background-research/papers/to-review/LLaVA-OneVision.md": "LiNewspaper",
   "background-research/papers/to-review/Qwen2-VL.md": "LiNewspaper",
   "background-research/papers/to-review/MiniCPM-V.md": "LiNewspaper",
-  "background-research/papers/to-review/Active RAG.md": "LiNewspaper",
   "background-research/papers/to-review/In-context Pretraining.md": "LiNewspaper",
-  "background-research/papers/to-review/ActiveRAG - Autonomously Knowledge Assimilation.md": "LiNewspaper",
   "background-research/papers/to-review/WebQA.md": "LiNewspaper",
   "background-research/papers/to-review/Open-domain Visual Entity Recognition.md": "LiNewspaper",
   "background-research/papers/to-review/E2E Knowledge Retrieval with Multi-Modal Queries.md": "LiNewspaper",
@@ -198,14 +193,26 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/more-relevant/Evals/ChartQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/ChartQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/InfoVQA.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/more-relevant/Evals/PlotQA.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/SlideVQA.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/TAT-DQA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/PlotQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Evals/SlideVQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Evals/TAT-DQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/to-review/Contrastive Predictive Coding.md": "LiNewspaper",
   "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
   "background-research/papers/more-relevant/Models/ColBERT.md": "LiNewspaper",
@@ -221,6 +228,25 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/to-review/BERT.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/Benchmarking Multimodal RAG with Chart-based Doc.md": "LiNewspaper"
+  "background-research/other contents/DRIFT Search.md": "LiGlobe",
+  "background-research/papers/more-relevant/Evals/TAT-QA.md": "LiNewspaper",
+  "background-research/papers/to-review/DRIFT.md": "LiNewspaper",
+  "background-research/papers/less-relevant/Active RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/less-relevant/ActiveRAG - Autonomously Knowledge Assimilation.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/more-relevant/Models/BERT.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Models/BLIP.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Models/CLIP.md": "LiNewspaper",
+  "background-research/papers/less-relevant/CogAgent.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#ff7b00"
+  },
+  "background-research/papers/more-relevant/Evals/Chart-MRAG Bench.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/MRAG-Bench.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/Dyn-VQA.md": "LiNewspaper"
 }

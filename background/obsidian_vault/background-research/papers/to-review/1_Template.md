@@ -3,8 +3,4 @@
 
 ## Summary
 
-## Advantages
-
-## Disadvantages
-
-## Questions
+## Notes

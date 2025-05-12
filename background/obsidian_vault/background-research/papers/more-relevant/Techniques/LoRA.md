@@ -5,8 +5,6 @@ https://arxiv.org/abs/2106.09685
 
 ## Summary
 
-## Advantages
+## Notes
 
-## Disadvantages
 
-## Questions

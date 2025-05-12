@@ -47,4 +47,3 @@ Metrics used in Experiments:
 	- Measures soft similarity, useful when minor OCR/formatting issues exist.
 - Accuracy:
 	- Measures exact match; more strict.
-

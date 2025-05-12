@@ -95,3 +95,71 @@ Can ColPali support retrieval in long-context generative models?
 Could it feed structured image-based context into long-context LLMs for better document question answering?
 How would ColPali perform in an interactive, conversational RAG system?
 Could users ask follow-up questions to refine retrieval, leveraging ColPali’s multi-vector outputs?
+
+## Notes
+
+ViDoRe benchmark - Practical tasks:
+Topic-specific retrieval benchmarks spanning multiple domains (Energy, Government, Healthcare, AI, Shift project) beyond repurposed QA datasets.
+They collect publicly accessible PDF documents and generate queries pertaining to document pages using Claude-3 Sonnet. 1,000 document pages per topic, which are associated with 100 queries extensively filtered for quality and relevance by human annotators.
+
+Methodology:
+1) Use a web crawler to collect publicly available documents on various themes and sources
+	- GPT-3.5 Turbo to brainstorm related topics and subtopics.
+	- GPT-3.5 Turbo to generate diverse search queries from each subtopic.
+	- Query set consumed by parallel workers to fetch the most relevant documents, using SerpAPI17 along with a filetype filter (PDF documents only) to programmatically scrape Google Search rankings.
+	- Each file is hashed and stored in a Bloom filter shared among workers to avoid duplicate documents in the final corpus.
+	- Unique scraped files are downloaded, and inserted into a SQLite db with metadata.
+	- Collected approximately 100 documents per topic ("energy", "government reports", "healthcare industry", "artificial intelligence")
+2) Convert these PDFs into a series of images, one per page
+	- Removed all documents containing any private information.
+3) Generate queries related to each image using a VLM.
+	- Generate at most 3 questions per image. From all the documents, randomly sample 10,000 images per theme and call Claude-3 Sonnet with the following prompt:
+
+```
+You are an assistant specialized in Multimodal RAG tasks.
+
+The task is the following: given an image from a pdf page, you will have to
+generate questions that can be asked by a user to retrieve information from
+a large documentary corpus.
+The question should be relevant to the page, and should not be too specific
+or too general. The question should be about the subject of the page, and
+the answer needs to be found in the page.
+
+Remember that the question is asked by a user to get some information from a
+large documentary corpus that contains multimodal data. Generate a question
+that could be asked by a user without knowing the existence and the content
+of the corpus.
+Generate as well the answer to the question, which should be found in the
+page. And the format of the answer should be a list of words answering the
+question.
+Generate at most THREE pairs of questions and answers per page in a dictionary
+with the following format, answer ONLY this dictionary NOTHING ELSE:
+
+{
+	"questions": [
+		{
+			"question": "XXXXXX",
+			"answer": ["YYYYYY"]
+		},
+		{
+			"question": "XXXXXX",
+			"answer": ["YYYYYY"]
+		},
+		{
+			"question": "XXXXXX",
+			"answer": ["YYYYYY"]
+		},
+	]
+}
+where XXXXXX is the question and ['YYYYYY'] is the corresponding list of answers
+that could be as long as needed.
+
+Note: If there are no questions to ask about the page, return an empty list.
+Focus on making relevant questions concerning the page.
+Here is the page:
+```
+
+- Human validation, manually validate every single one synthetically:
+	- Randomly assign document-pair queries to 4 volunteer annotators and instruct them to filter out queries that do not fit the prompt criteria.
+	- Instruct annotators to flag docs containing PII information or not suited for an academic benchmark. (No flag raised during the entirety of the process, validating the prior PDF collection strategy.)
+	- 100 queries per topic collected in this manner. Each annotator spent approximately 3 hours filtering the larger query set down to 100 high-quality queries per topic.
