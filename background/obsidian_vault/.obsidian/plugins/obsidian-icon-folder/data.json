@@ -246,7 +246,10 @@
     "iconName": "LiNewspaper",
     "iconColor": "#ff7b00"
   },
-  "background-research/papers/more-relevant/Evals/Chart-MRAG Bench.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/Chart-MRAG Bench.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/MRAG-Bench.md": "LiNewspaper",
   "background-research/papers/more-relevant/Evals/Dyn-VQA.md": "LiNewspaper"
 }

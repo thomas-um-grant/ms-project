@@ -14,3 +14,4 @@ CHARGE operates in three stages:
 2) verifying the modality authenticity of extracted keypoints through crossmodal verification.
 3) generating diverse QA pairs by combining related keypoints across documents and modalities.
 
+They end up having 12 workers annotate the QAs after the generation to review it.
