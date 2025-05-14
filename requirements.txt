@@ -30,3 +30,6 @@ tqdm==4.66.2
 # bitsandbytes
 # jupyter
 # wheel
+
+## evaluation
+byaldi==0.0.7

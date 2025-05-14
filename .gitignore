@@ -1,6 +1,8 @@
 .DS_Store
 projectenv
 __pycache__
+.vscode
+.byaldi
 
 # Practice data
 human-nutrition-text.pdf
@@ -8,6 +10,8 @@ text_chunks_and_embeddings_df.csv
 data/coffee_txt
 data/drones_information_word
 data/math_for_ml_pdf
+data/random_image
+outputs/
 
 # Ignore all vscode generated files for latex
 reports/background-report/latex/*
