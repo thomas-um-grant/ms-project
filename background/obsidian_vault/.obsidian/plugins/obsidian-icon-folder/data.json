@@ -230,7 +230,6 @@
   },
   "background-research/other contents/DRIFT Search.md": "LiGlobe",
   "background-research/papers/more-relevant/Evals/TAT-QA.md": "LiNewspaper",
-  "background-research/papers/to-review/DRIFT.md": "LiNewspaper",
   "background-research/papers/less-relevant/Active RAG.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#ff7b00"
@@ -251,5 +250,14 @@
     "iconColor": "#00ff00"
   },
   "background-research/papers/more-relevant/Evals/MRAG-Bench.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Evals/Dyn-VQA.md": "LiNewspaper"
+  "background-research/papers/more-relevant/Evals/Dyn-VQA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/to-review/DRIFT for Learning Evolving Data.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/GRAG.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/Local to Global GraphRAG summarization.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/ViDoRAG.md": "LiNewspaper",
+  "background-research/papers/more-relevant/RAGs/VDocRAG.md": "LiNewspaper"
 }

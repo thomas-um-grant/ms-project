@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/Techniques/HyDE.md",
+                "file": "background-research/papers/more-relevant/Evals/MRAG-Bench.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HyDE"
+              "title": "MRAG-Bench"
             }
           }
         ]
@@ -172,7 +172,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -188,32 +189,32 @@
   },
   "active": "7ab9f9909a8e0b01",
   "lastOpenFiles": [
-    "background-research/papers/more-relevant/RAGs/VisRAG.md",
-    "background-research/papers/more-relevant/Models/BERT.md",
-    "background-research/papers/more-relevant/Evals/Chart-MRAG Bench.md",
-    "background-research/papers/more-relevant/Evals/MRAG-Bench.md",
     "background-research/papers/more-relevant/Evals/Dyn-VQA.md",
+    "background-research/papers/more-relevant/RAGs/PathRAG.md",
+    "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
+    "background-research/papers/more-relevant/RAGs/ViDoRAG.md",
+    "background-research/papers/to-review/1_Template.md",
+    "background-research/papers/more-relevant/RAGs/VDocRAG.md",
+    "background-research/papers/more-relevant/RAGs/Local to Global GraphRAG summarization.md",
+    "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md",
+    "background-research/papers/more-relevant/RAGs/GRAG.md",
+    "background-research/papers/more-relevant/Evals/MRAG-Bench.md",
+    "background-research/papers/more-relevant/Evals/MRAG-Bench 1.md",
     "background-research/papers/more-relevant/Evals/InfoVQA.md",
-    "background-research/papers/more-relevant/Evals/SlideVQA.md",
-    "background-research/papers/more-relevant/Evals/TAT-QA.md",
-    "background-research/papers/more-relevant/Evals/PlotQA.md",
-    "background-research/papers/more-relevant/Evals/ChartQA.md",
-    "background-research/papers/less-relevant/CogAgent.md",
+    "background-research/papers/to-review/DRIFT for Learning Evolving Data.md",
+    "background-research/papers/to-review/Contriever.md",
+    "background-research/papers/to-review/Contrastive Predictive Coding.md",
     "background-research/papers/to-review/CogVLM.md",
     "background-research/papers/more-relevant/Techniques/YaRN.md",
     "background-research/papers/more-relevant/Techniques/LoRA.md",
     "background-research/papers/more-relevant/Techniques/HyDE.md",
-    "background-research/papers/less-relevant/Active RAG.md",
-    "background-research/papers/less-relevant/ActiveRAG - Autonomously Knowledge Assimilation.md",
-    "background-research/papers/less-relevant/Agent-G.md",
-    "background-research/papers/more-relevant/Models/CLIP.md",
+    "background-research/papers/more-relevant/Techniques/Late Chunking.md",
+    "background-research/papers/more-relevant/RAGs/VisRAG.md",
+    "background-research/papers/more-relevant/RAGs/LightRAG.md",
+    "background-research/papers/more-relevant/RAGs/Graph RAG.md",
+    "background-research/papers/more-relevant/RAGs/ColPali.md",
     "background-research/papers/more-relevant/Models/ColBERT.md",
-    "background-research/papers/more-relevant/Models/BLIP.md",
-    "daily-journal/2025-05-12.md",
-    "daily-journal/2025-05-11.md",
-    "background-research/papers/to-keep-in-mind/Best practices to improve RAG.md",
-    "background-research/papers/more-relevant/RAGs/PathRAG.md",
-    "background-research/papers/more-relevant/Evals/DocVQA.md",
+    "background-research/papers/more-relevant/Models/CLIP.md",
     "background-research/papers/more-relevant/Models",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",
