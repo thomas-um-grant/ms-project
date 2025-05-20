@@ -31,3 +31,9 @@ Transformative understanding aspect:
 - INCOMPLETE evaluates the ability of models to compare and contrast the complete layout and structure of image knowledge to identify and reason about missing parts and the correct layout of visual entities.
 
 - BIOLOGICAL evaluates the ability of models to utilize image knowledge after biological transformations of the visual entities.
+
+All the data was manually scraped, with multiple quality control stages.
+
+There is a deep comparison of proprietary models vs open source ones. It seems proprietary models can better utilize retrieved images and are generally better at disregarding noisy images that might degrade the response.
+
+

@@ -215,11 +215,23 @@
   },
   "background-research/papers/to-review/Contrastive Predictive Coding.md": "LiNewspaper",
   "background-research/papers/to-review/VisDoM.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Models/ColBERT.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Techniques/HyDE.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Models/ColBERT.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Techniques/HyDE.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/to-review/InfoNCE.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Techniques/YaRN.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Techniques/LoRA.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Techniques/YaRN.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/Techniques/LoRA.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/Mulit-Page DocVQA.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
@@ -240,7 +252,10 @@
   },
   "background-research/papers/more-relevant/Models/BERT.md": "LiNewspaper",
   "background-research/papers/more-relevant/Models/BLIP.md": "LiNewspaper",
-  "background-research/papers/more-relevant/Models/CLIP.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Models/CLIP.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/less-relevant/CogAgent.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#ff7b00"
@@ -249,15 +264,33 @@
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
-  "background-research/papers/more-relevant/Evals/MRAG-Bench.md": "LiNewspaper",
+  "background-research/papers/more-relevant/Evals/MRAG-Bench.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
   "background-research/papers/more-relevant/Evals/Dyn-VQA.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
   },
   "background-research/papers/to-review/DRIFT for Learning Evolving Data.md": "LiNewspaper",
-  "background-research/papers/more-relevant/RAGs/GRAG.md": "LiNewspaper",
-  "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md": "LiNewspaper",
-  "background-research/papers/more-relevant/RAGs/Local to Global GraphRAG summarization.md": "LiNewspaper",
-  "background-research/papers/more-relevant/RAGs/ViDoRAG.md": "LiNewspaper",
-  "background-research/papers/more-relevant/RAGs/VDocRAG.md": "LiNewspaper"
+  "background-research/papers/more-relevant/RAGs/GRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/Local to Global GraphRAG summarization.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/ViDoRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  },
+  "background-research/papers/more-relevant/RAGs/VDocRAG.md": {
+    "iconName": "LiNewspaper",
+    "iconColor": "#00ff00"
+  }
 }
