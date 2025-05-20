@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "7aec2c9d9d87aef5",
+        "id": "a4069c1ae34cf7dc",
         "type": "tabs",
         "children": [
           {
-            "id": "9b377c5b5775d52d",
+            "id": "dbcf9d5c708644a9",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "background-research/papers/more-relevant/Models/CLIP.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "CLIP"
+              "title": "New tab"
             }
           }
         ]
@@ -172,8 +168,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -187,8 +182,23 @@
       "omnisearch:Omnisearch": false
     }
   },
-  "active": "9b377c5b5775d52d",
+  "active": "dbcf9d5c708644a9",
   "lastOpenFiles": [
+    "daily-journal/2025-05-13.md",
+    "daily-journal/2025-05-14.md",
+    "daily-journal/2025-05-15.md",
+    "daily-journal/2025-05-16.md",
+    "daily-journal/2025-05-19.md",
+    "Untitled 1.canvas",
+    "Untitled.canvas",
+    "daily-journal/2025-05-20.md",
+    "daily-journal/2025-05-12.md",
+    "daily-journal/2025-05-05.md",
+    "background-research/papers/to-review/SigLIP.md",
+    "background-research/papers/to-review/Qwen2-VL.md",
+    "background-research/papers/to-review/Qwen-VL.md",
+    "background-research/papers/to-review/G-Retriever.md",
+    "background-research/papers/more-relevant/Models/CLIP.md",
     "background-research/papers/more-relevant/Models/ColBERT.md",
     "background-research/papers/more-relevant/Techniques/YaRN.md",
     "background-research/papers/more-relevant/Techniques/LoRA.md",
@@ -202,19 +212,6 @@
     "background-research/papers/more-relevant/RAGs/GRAG.md",
     "background-research/other contents/DRIFT Search.md",
     "background-research/other contents/Enterprise Knowledge mmGraphRAG.md",
-    "background-research/other contents/Nvidia intro to MultiModal RAG.md",
-    "background-research/papers/more-relevant/Evals/MRAG-Bench.md",
-    "background-research/papers/more-relevant/Evals/Dyn-VQA.md",
-    "background-research/papers/more-relevant/RAGs/PathRAG.md",
-    "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
-    "background-research/papers/to-review/1_Template.md",
-    "background-research/papers/more-relevant/Evals/MRAG-Bench 1.md",
-    "background-research/papers/more-relevant/Evals/InfoVQA.md",
-    "background-research/papers/to-review/DRIFT for Learning Evolving Data.md",
-    "background-research/papers/to-review/Contriever.md",
-    "background-research/papers/to-review/Contrastive Predictive Coding.md",
-    "background-research/papers/to-review/CogVLM.md",
-    "background-research/papers/more-relevant/RAGs/VisRAG.md",
     "background-research/papers/more-relevant/Models",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",
@@ -224,7 +221,6 @@
     "background-research/papers/more-relevant",
     "background-research/papers/to-keep-in-mind",
     "background-research/papers/less-relevant",
-    "Excalidraw",
-    "Untitled.canvas"
+    "Excalidraw"
   ]
 }
