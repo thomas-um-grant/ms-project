@@ -6,7 +6,7 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{Improving the "Retrieval" in RAG (Large Document Processing)}
+\newcommand{\reporttitle}{MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
 \newcommand{\degreetype}{Computing}
@@ -60,30 +60,103 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
 
-% \begin{figure}[tb]
-% \centering
-% \includegraphics[width = 0.4\hsize]{./figures/imperial}
-% \caption{Imperial College Logo. It's nice blue, and the font is quite stylish. But you can choose a different one if you don't like it.}
-% \label{fig:logo}
-% \end{figure}
+\section{LLMs and VLMs revolution}
 
-% Figure~\ref{fig:logo} is an example of a figure. 
+\section{Limitations reached}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Background}
+\section{Rise of RAG and its potential}
 
+\section{The novelty brought using latest building blocks}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature Review}
+
+\section{History of VLMs}
+
+\subsection{OCR Approach}
+\begin{itemize}
+\item Intro
+\item Set the scene
+\item Dive into to technique
+\item Further information
+\item Limitations
+\end{itemize}
+
+\subsection{PaliGemma}
+https://huggingface.co/google/paligemma2-10b-mix-448 \\
+SIGLip with Pali3
+
+\subsection{ColPali}
+Late interaction from ColBERT with PaliGemma
+
+\subsection{Different approaches like VDocRAG and ViDoRAG}
+
+\subsection{Evaluation}
+Dataset creation (DocVQA, …) \\
+Condense all information retrieved from different benchmarks and dataset construction. \\
+ViDoRe \\
+OpenDocVQA / ViDoSeek
+
+\section{RAG to Graph RAG}
+
+\subsection{GraphRAG}
+Microsoft approach, DRIFT method
+
+\subsection{LightRAG}
+Enhancement with Late Chunking
+
+\subsection{LuminiRAG}
+MultiModal
+
+\subsection{PathRAG}
+Relational path
+
+\subsection{KG2RAG}
+KG to expand context and organize in 2 steps
+
+\section{Groundbreaking techniques}
+
+Definitely need to dig into this much more...
+
+\subsection{Late Chunking}
+
+\subsection{HyDE}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Technical Achievements/Experimentation}
 
+\section{Modular RAG pipeline}
+
+\subsection{Embedding with different models and strategies}
+
+\subsection{Storing with vectors, or in graph, or both}
+
+\subsection{Retrieval setup}
+
+\section{Evaluation}
+
+\subsection{Benchmarks}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Project Plan}
 
+Try merging ColPali with PathRAG? \\
+Use mixture of techniques with DRIFT, HyDE, Late chunking, Late interaction. \\
+Still need to find where there is a gap to bring novelty. \\
+Add a GANTT chart.
+
+\section{Further literature review}
+
+\section{Existing work reproduction for benchmarking}
+
+\section{Modularized setup for experimentation}
+
+\section{Novelty implementation}
+
+\section{Dataset creation and benchmarking}
+
+\section{GANTT Chart}
 
 %% bibliography
 \bibliographystyle{apa}
