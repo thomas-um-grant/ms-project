@@ -26,6 +26,7 @@
 
 ## Research project purpose
 #### Introducing a new RAG framework from combined best practices
+- Introduce latest RAG approaches (Multimodal and Graph)
 - Combine best practices from traditional, graph-based, and multimodal RAG
 - Modular pipeline for easy experimentation and benchmarking
 
@@ -34,6 +35,10 @@
 - Propose new methods for dataset creation and benchmarking on specific domain
 
 # Literature Review
+## Attention with Transformers
+- What are transformers and how they are used for query answering.
+- The limitations of LLMS to answer queries on domain specific and contextual data.
+
 ## Traditional RAG
 #### The building blocks
 - Document chunking and preprocessing (text splitters, cleaning, metadata extraction)
@@ -43,7 +48,7 @@
 - Generator module (LLM, e.g., GPT-4, Llama)
 - Reranker module to improve retrieval quality
 
-### In-Depth techniques
+#### In-Depth techniques
 - Extraction: OCR for scanned docs, entity extraction, metadata parsing
 - Transformation: Text splitting (by sentence, paragraph, semantic units), context windowing
 - Embedding: Dense (transformers), sparse (BM25), hybrid
@@ -51,7 +56,7 @@
 - Retrieving: kNN search, hybrid retrieval, query expansion, dual encoders
 - Reranking: Cross-encoder rerankers, contrastive reranking, in-context reranking
 
-### Challenges
+#### Challenges
 - Hallucination and factuality: LLMs may ignore retrieved context or hallucinate
 - Retrieval quality: Embedding drift, poor chunking, context window limits
 - Scalability: Indexing and updating large corpora, latency
@@ -84,7 +89,7 @@ Notable techniques:
 - Multi-modal graph construction (images, tables, code)
 - Evaluation metrics for cross-modal and multi-hop reasoning
 
-Other paths **`(Maybe no need to mention since I won't go down that route??)`**
+Other paths
 - Explainability and trust in graph-based reasoning
 - Agentic workflows (planner/critic agents) for graph RAG
 - Real-time or streaming updates to graphs
@@ -96,15 +101,13 @@ Other paths **`(Maybe no need to mention since I won't go down that route??)`**
 
 #### PaliGemma
 - Vision-language model for image and text embedding
-- Uses SIGLIP with Pali3 for improved multi-modal retrieval **`(Explain SIGLIP??)`**
+- Uses SIGLIP with Pali3 for improved multi-modal retrieval
 
 #### ColPali
 - Bypasses OCR, directly encodes document pages as images
 - Late interaction retrieval: Multi-vector image embeddings, fine-grained matching
 
 #### Other apporaches
-**`Which ones below is worth mentioning, if any?`**
-
 VDocRAG:
 - Dual-encoder for queries and document images, dynamic high-res image encoding, multi-hop reasoning, context-independent questions, OpenDocVQA dataset
 
@@ -117,20 +120,26 @@ VisRAG:
 mmGraphRAG:
 - Dual DB (graph + vector), incorporates object detection, spatial relationships, and image features
 
-## Evaluation
-#### General introduciton
+# Methodology
+## Combining an enhanced RAG framework
+- Integrate best practices from literature
+- Experiment with hybrid approaches
+- Explain how to assess whether combining different approaches is relevant
+- Explain why it is rational to assemble such methods and why it should work
+
+## Generating an evaluation dataset
+- Propose new dataset creation methods
+- Benchmark on existing and new datasets
+
+# Evaluation
+## Purpose
+- What / why is evaluation important
 - Need for robust, real-world, and multimodal evaluation
 - Assess retrieval, generation, and reasoning quality
 
-#### Approach to dataset generation
+## Dataset generation
 - Synthetic and real-world datasets (DocVQA, OpenDocVQA, ViDoRe, ViDoSeek)
 - Multi-hop, context-independent, and visually-rich question generation
-
-**`Should I introduce different techniques from different papers like for instance negative candidate mining for robust retrieval evaluation?`**
-
-#### Metrics
-- Factuality, relevance, comprehensiveness, diversity, logicality, coherence
-- Retrieval accuracy, answer correctness, multi-hop reasoning
 
 #### Challenges
 - Lack of standardized, multimodal, and challenging benchmarks
@@ -139,25 +148,20 @@ mmGraphRAG:
 
 #### Future works
 - New benchmarks for multimodal and graph-based RAG
-- Better metrics for cross-modal and multi-hop evaluation **`(How to measure cross-modal retrieval for instance -> What we discussed)`**
+- Better metrics for cross-modal and multi-hop evaluation
 - Further automation for dataset generation and annotation
 
-# Methodology
-## Modular RAG pipeline to validate existing approach
-- Build baseline pipelines (vanilla RAG, graph RAG, multimodal RAG)
-- Modular design for easy swapping of components
+## Our approach
+- What is lacking in the current dataset generation approaches
+- How we will address the challenges in our new approach
 
-## Combining an enhanced RAG framework
-- Integrate best practices from literature
-- Experiment with hybrid approaches
-
-## Generating and Evaluation dataset
-- Propose new dataset creation methods
-- Benchmark on existing and new datasets
+## Metrics
+- Factuality, relevance, comprehensiveness, diversity, logicality, coherence
+- Retrieval accuracy, answer correctness, multi-hop reasoning
 
 # Project Plan
 - 1 - Evaluation dataset generation framework
 - 2 - Implementation of RAG pipeline to assess benchmark
 - 3 - Experimentation of Novel multimodal graph RAG framework
 
-**`I'll present this as a GANTT Chart, should there also be text to support the chart?`**
+- GANTT chart

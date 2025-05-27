@@ -6,7 +6,7 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{MultiGrAg: A Multi-Modal Graph RAG Framework}
+\newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
 \newcommand{\degreetype}{Computing}
@@ -59,107 +59,186 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
-
 \section{LLMs and VLMs revolution}
+%\textit{Rapid progress in LLMs (GPT, Llama, Mistral, etc.) and VLMs (CLIP, BLIP2, PaliGemma)} \\
+In 2017, the introduction of the transformer architecture\cite{Transformer} at the NeurIPS conference sparked widespread academic and industry interest in large language models (LLMs). The transformer mechanism fundamentally reshaped sequence modeling. This breakthrough drove a series of state-of-the-art models the following year. Among them were BERT\cite{BERT} presented by Google, which excelled at language understanding for classification tasks, and GPT\cite{GPT} proposed by OpenAI which showcased fluent language generation.
 
-\section{Limitations reached}
+Intensified research effort lead to a computer vision breakthrough as well a couple years later. OpenAI introduced a novel approach to learning visual representation that scaled effectively accross tasks named CLIP\cite{CLIP}, which popularized vision language models (VLMs). Unlike earlier pioneer research DeViSE\cite{DeViSE} which lacked contextual language modeling, or VilBERT\cite{ViLBERT} which required task-specific fine-tuning preventing it to generalize well, training on large-scale image-text pairs using a contrastive objective enabled CLIP to remain robust and performant across a wide range of visual tasks.
 
-\section{Rise of RAG and its potential}
+%\textit{Empowerment: LLMs excel at text generation, reasoning, and knowledge tasks} \\
+%\textit{VLMs enable understanding and generation across text and images} \\
+The surge of fondational models\cite{FoundationModels} gained further public attention in 2022 with the release of ChatGPT\cite{IntroducingChatGPT}, Stable Diffusion\cite{StableDiffusion} and DALL-E\cite{DALL.E-2}. These generative models and their optimized variants are now widely deployed across industry. Their remarkable capacity to generate coherent text and high-fidelity images, as well as perform reasoning and handle knowledge-intensive tasks transformed professional workflows\cite{FoundationModelsInBigBusiness}.
 
-\section{The novelty brought using latest building blocks}
+%\textit{Challenges:} \\
+%\textit{Limited context window and memory} \\
+%\textit{Hallucination and lack of grounding in external facts} \\
+%\textit{Inability to access up-to-date or external knowledge} \\
+%\textit{Poor performance on domain-specific or multimodal tasks} \\
+%\textit{Difficulty with reasoning over complex, structured, or multi-hop information} \\
+Despite their impressive performances, foundational models face critical limitations in domains where factually grounded, up-to-date information generation is essential. A phenomenon known as "hallucination" in which models generate plausible but incorrect or fabricated outputs raises concerns about their reliability. These models are trained on static datasets bounded in time, and infer results with a limited context window. As a result, they often underperform on domain-specific tasks, especially when reasoning over complex, structured, or multi-hop information. These limitations have motivated research into methods which integrate retrieval mechanisms to augment factuality and reasoning capabalities with external knowledge sources, commonly referred to as Retrieval-Augmented Generation (RAG) frameworks.
+
+\section{Rise of RAG}
+\textit{General introduction:} \\
+\textit{Retrieval-Augmented Generation (RAG): combines LLMs with external retrieval to ground responses in relevant documents} \\
+\textit{Pipeline: retrieve relevant chunks, then feed to LLM for answer generation} \\
+
+\textit{Overview of its potential:} \\
+\textit{Improves factuality, reduces hallucination} \\
+\textit{Enables up-to-date and domain-specific knowledge access} \\
+\textit{Supports multi-hop, complex, and multimodal queries} \\
+\textit{Can use text, images, graphs, or hybrid retrieval} \\
+
+\section{Research project purpose}
+\textit{Introducing a new RAG framework from combined best practices:} \\
+\textit{Introduce latest RAG approaches (Multimodal and Graph)} \\
+\textit{Combine best practices from traditional, graph-based, and multimodal RAG} \\
+\textit{Modular pipeline for easy experimentation and benchmarking} \\
+
+\textit{Introducing a new benchmark generation framework for domain specific knowledge (Consulting):} \\
+\textit{Address lack of robust, real-world, and multimodal evaluation datasets} \\
+\textit{Propose new methods for dataset creation and benchmarking on specific domain} \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature Review}
 
-\section{History of VLMs}
+\section{Attention with Transformers}
+\textit{What are transformers and how they are used for query answering.} \\
+\textit{The limitations of LLMS to answer queries on domain specific and contextual data.} \\
 
-\subsection{OCR Approach}
-\begin{itemize}
-\item Intro
-\item Set the scene
-\item Dive into to technique
-\item Further information
-\item Limitations
-\end{itemize}
+\section{Traditional RAG}
 
-\subsection{PaliGemma}
-https://huggingface.co/google/paligemma2-10b-mix-448 \\
-SIGLip with Pali3
+\textit{The building blocks:} \\
+\textit{Document chunking and preprocessing (text splitters, cleaning, metadata extraction)} \\
+\textit{Embedding generation (models like Sentence Transformers, OpenAI, etc.)} \\
+\textit{Vector store/database (FAISS, Weaviate, Milvus) for fast similarity search} \\
+\textit{Retriever module (dense, sparse, hybrid)} \\
+\textit{Generator module (LLM, e.g., GPT-4, Llama)} \\
+\textit{Reranker module to improve retrieval quality} \\
 
-\subsection{ColPali}
-Late interaction from ColBERT with PaliGemma
+\textit{In-Depth techniques:} \\
+\textit{Extraction: OCR for scanned docs, entity extraction, metadata parsing} \\
+\textit{Transformation: Text splitting (by sentence, paragraph, semantic units), context windowing} \\
+\textit{Embedding: Dense (transformers), sparse (BM25), hybrid} \\
+\textit{Storing: Vector DBs, hybrid stores (text + graph)} \\
+\textit{Retrieving: kNN search, hybrid retrieval, query expansion, dual encoders} \\
+\textit{Reranking: Cross-encoder rerankers, contrastive reranking, in-context reranking} \\
 
-\subsection{Different approaches like VDocRAG and ViDoRAG}
+\textit{Challenges:} \\
+\textit{Hallucination and factuality: LLMs may ignore retrieved context or hallucinate} \\
+\textit{Retrieval quality: Embedding drift, poor chunking, context window limits} \\
+\textit{Scalability: Indexing and updating large corpora, latency} \\
+\textit{Multilingual and domain adaptation challenges} \\
 
-\subsection{Evaluation}
-Dataset creation (DocVQA, …) \\
-Condense all information retrieved from different benchmarks and dataset construction. \\
-ViDoRe \\
-OpenDocVQA / ViDoSeek
 
-\section{RAG to Graph RAG}
+\section{Graph RAG}
+\textit{Purpose and potential:} \\
+\textit{Addresses limitations of vanilla RAG for multi-hop, global, or broad queries} \\
+\textit{Enables structured reasoning over entities and relationships} \\
+\textit{Supports modular, hierarchical, and community-based summarization} \\
 
-\subsection{GraphRAG}
-Microsoft approach, DRIFT method
+\textit{Notable existing frameworks / research:} \\
+\textit{GraphRAG: Converts corpus into a knowledge graph, uses community detection for hierarchical summaries, excels at global queries} \\
+\textit{LightRAG: Lightweight, dual-level retrieval (local/global), incremental updates, efficient for evolving datasets} \\
+\textit{PathRAG: Uses relational paths for multi-hop reasoning, decay pruning for concise path selection, interpretable rationale} \\
+\textit{KG2RAG: Uses knowledge graphs to expand and organize context, focuses on preprocessing and chunk expansion} \\
 
-\subsection{LightRAG}
-Enhancement with Late Chunking
+\textit{Notable techniques:} \\
+\textit{DRIFT method: Pruning based on path length and semantic decay} \\
+\textit{Late chunking: Efficiently incorporates new data without full reindexing} \\
 
-\subsection{LuminiRAG}
-MultiModal
+\textit{Challenges:} \\
+\textit{High upfront cost for graph construction (entity/relation extraction, LLM calls)} \\
+\textit{Sensitivity to prompt engineering and extraction quality (hallucinated or missing entities/edges)} \\
+\textit{Scalability: Graph size, path explosion, memory/computation for large corpora} \\
+\textit{Maintenance: Updating graphs as data changes} \\
 
-\subsection{PathRAG}
-Relational path
+\textit{Future works:} \\
+\textit{Hybrid retrieval: Combining graph and vector-based methods} \\
+\textit{Multi-modal graph construction (images, tables, code)} \\
+\textit{Evaluation metrics for cross-modal and multi-hop reasoning} \\
 
-\subsection{KG2RAG}
-KG to expand context and organize in 2 steps
+\textit{Other paths:} \\
+\textit{Explainability and trust in graph-based reasoning} \\
+\textit{Agentic workflows (planner/critic agents) for graph RAG} \\
+\textit{Real-time or streaming updates to graphs} \\
 
-\section{Groundbreaking techniques}
+\section{Multimodal RAG}
+\textit{OCR Approach:} \\
+\textit{Traditional: OCR + text chunking, layout detection, captioning} \\
+\textit{Limitations: Slow, error-prone for complex layouts, fails on handwriting or poor scans} \\
 
-Definitely need to dig into this much more...
+\textit{PaliGemma:} \\
+\textit{Vision-language model for image and text embedding} \\
+\textit{Uses SIGLIP with Pali3 for improved multi-modal retrieval} \\
 
-\subsection{Late Chunking}
+\textit{ColPali:} \\
+\textit{Bypasses OCR, directly encodes document pages as images} \\
+\textit{Late interaction retrieval: Multi-vector image embeddings, fine-grained matching} \\
 
-\subsection{HyDE}
+\textit{Other approaches:} \\
+\textit{VDocRAG:} \\
+\textit{Dual-encoder for queries and document images, dynamic high-res image encoding, multi-hop reasoning, context-independent questions, OpenDocVQA dataset} \\
 
+\textit{ViDoRAG:} \\
+\textit{Multi-modal hybrid retrieval (visual + textual), dynamic result adjustment (GMM prior), agent-based generation (seeker, inspector, answer agent), ViDoSeek dataset} \\
+
+\textit{VisRAG:} \\
+\textit{Query-centric multi-modal retrieval, retrieval-augmented generation, modular and memory-efficient, strong on VQA benchmarks} \\
+
+\textit{mmGraphRAG:} \\
+\textit{Dual DB (graph + vector), incorporates object detection, spatial relationships, and image features} \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{Technical Achievements/Experimentation}
+\chapter{Methodology}
+\section{Combining an enhanced RAG framework}
+\textit{Integrate best practices from literature} \\
+\textit{Experiment with hybrid approaches} \\
+\textit{Explain how to assess whether combining different approaches is relevant} \\
+\textit{Explain why it is rational to assemble such methods and why it should work} \\
 
-\section{Modular RAG pipeline}
+\section{Generating an evaluation dataset}
+\textit{Propose new dataset creation methods} \\
+\textit{Benchmark on existing and new datasets} \\
 
-\subsection{Embedding with different models and strategies}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{Evaluation}
+\section{Purpose}
+\textit{What / why is evaluation important} \\
+\textit{Need for robust, real-world, and multimodal evaluation} \\
+\textit{Assess retrieval, generation, and reasoning quality} \\
 
-\subsection{Storing with vectors, or in graph, or both}
+\section{Dataset generation}
+\textit{Synthetic and real-world datasets (DocVQA, OpenDocVQA, ViDoRe, ViDoSeek)} \\
+\textit{Multi-hop, context-independent, and visually-rich question generation} \\
 
-\subsection{Retrieval setup}
+\textit{Challenges:} \\
+\textit{Lack of standardized, multimodal, and challenging benchmarks} \\
+\textit{Difficulty in evaluating multi-hop and cross-modal reasoning} \\
+\textit{Dataset bias, annotation quality, and coverage} \\
 
-\section{Evaluation}
+\textit{Future works:} \\
+\textit{New benchmarks for multimodal and graph-based RAG} \\
+\textit{Better metrics for cross-modal and multi-hop evaluation} \\
+\textit{Further automation for dataset generation and annotation} \\
 
-\subsection{Benchmarks}
+\section{Our approach}
+\textit{What is lacking in the current dataset generation approaches} \\
+\textit{How we will address the challenges in our new approach} \\
+
+\section{Metrics}
+\textit{Factuality, relevance, comprehensiveness, diversity, logicality, coherence} \\
+\textit{Retrieval accuracy, answer correctness, multi-hop reasoning} \\
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Project Plan}
-
-Try merging ColPali with PathRAG? \\
-Use mixture of techniques with DRIFT, HyDE, Late chunking, Late interaction. \\
-Still need to find where there is a gap to bring novelty. \\
-Add a GANTT chart.
-
-\section{Further literature review}
-
-\section{Existing work reproduction for benchmarking}
-
-\section{Modularized setup for experimentation}
-
-\section{Novelty implementation}
-
-\section{Dataset creation and benchmarking}
-
+\section{Evaluation dataset generation framework}
+\section{Implementation of RAG pipeline to assess benchmark}
+\section{Experimentation of novel multimodal graph RAG framework}
 \section{GANTT Chart}
 
 %% bibliography
-\bibliographystyle{apa}
+\bibliographystyle{unsrtnat}
+\bibliography{References}
 
 
 \end{document}

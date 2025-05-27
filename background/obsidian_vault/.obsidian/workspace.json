@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/RAGs/VDocRAG.md",
+                "file": "background-research/papers/more-relevant/Models/BERT.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "VDocRAG"
+              "title": "BERT"
             }
           }
         ]
@@ -188,9 +188,13 @@
   },
   "active": "dbcf9d5c708644a9",
   "lastOpenFiles": [
+    "background-research/papers/more-relevant/Models/CLIP.md",
+    "background-research/papers/more-relevant/RAGs/Graph RAG.md",
+    "background-research/papers/more-relevant/RAGs/ColPali.md",
+    "background-research/papers/more-relevant/Evals/DocVQA.md",
+    "background-research/papers/more-relevant/RAGs/VDocRAG.md",
     "background-research/papers/more-relevant/RAGs/ViDoRAG.md",
     "background-research/papers/more-relevant/RAGs/VisRAG.md",
-    "background-research/papers/more-relevant/RAGs/VDocRAG.md",
     "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
     "background-research/papers/more-relevant/RAGs/LightRAG.md",
     "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md",
@@ -212,10 +216,6 @@
     "background-research/papers/to-review/Qwen2-VL.md",
     "background-research/papers/to-review/Qwen-VL.md",
     "background-research/papers/to-review/G-Retriever.md",
-    "background-research/papers/more-relevant/Models/CLIP.md",
-    "background-research/papers/more-relevant/Models/ColBERT.md",
-    "background-research/papers/more-relevant/Techniques/Late Chunking.md",
-    "background-research/papers/more-relevant/Techniques/HyDE.md",
     "background-research/papers/more-relevant/Models",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",
