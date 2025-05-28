@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/papers/more-relevant/Models/BERT.md",
+                "file": "background-research/papers/more-relevant/RAGs/HM-RAG.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "BERT"
+              "title": "HM-RAG"
             }
           }
         ]
@@ -188,6 +188,12 @@
   },
   "active": "dbcf9d5c708644a9",
   "lastOpenFiles": [
+    "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
+    "background-research/papers/more-relevant/RAGs/HM-RAG.md",
+    "background-research/papers/more-relevant/RAGs/Untitled.md",
+    "background-research/papers/more-relevant/RAGs/LightRAG.md",
+    "background-research/papers/more-relevant/Evals/Chart-MRAG Bench.md",
+    "background-research/papers/more-relevant/Models/BERT.md",
     "background-research/papers/more-relevant/Models/CLIP.md",
     "background-research/papers/more-relevant/RAGs/Graph RAG.md",
     "background-research/papers/more-relevant/RAGs/ColPali.md",
@@ -195,8 +201,6 @@
     "background-research/papers/more-relevant/RAGs/VDocRAG.md",
     "background-research/papers/more-relevant/RAGs/ViDoRAG.md",
     "background-research/papers/more-relevant/RAGs/VisRAG.md",
-    "background-research/papers/more-relevant/RAGs/LuminiRAG.md",
-    "background-research/papers/more-relevant/RAGs/LightRAG.md",
     "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md",
     "background-research/papers/more-relevant/RAGs/Local to Global GraphRAG summarization.md",
     "background-research/papers/more-relevant/Techniques/YaRN.md",
@@ -212,10 +216,6 @@
     "daily-journal/2025-05-20.md",
     "daily-journal/2025-05-12.md",
     "daily-journal/2025-05-05.md",
-    "background-research/papers/to-review/SigLIP.md",
-    "background-research/papers/to-review/Qwen2-VL.md",
-    "background-research/papers/to-review/Qwen-VL.md",
-    "background-research/papers/to-review/G-Retriever.md",
     "background-research/papers/more-relevant/Models",
     "background-research/papers/more-relevant/Techniques",
     "background-research/papers/more-relevant/Evals",

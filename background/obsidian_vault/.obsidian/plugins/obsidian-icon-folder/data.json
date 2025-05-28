@@ -292,5 +292,6 @@
   "background-research/papers/more-relevant/RAGs/VDocRAG.md": {
     "iconName": "LiNewspaper",
     "iconColor": "#00ff00"
-  }
+  },
+  "background-research/papers/more-relevant/RAGs/HM-RAG.md": "LiNewspaper"
 }
