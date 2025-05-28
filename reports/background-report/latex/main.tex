@@ -6,7 +6,8 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
+\newcommand{\reporttitle}{Background Report on Optimizing Retrieval-Augmented Generation}
+% \newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
 \newcommand{\degreetype}{Computing}
@@ -28,10 +29,11 @@
 
 
 % page numbering etc.
-\pagenumbering{roman}
-\clearpage{\pagestyle{empty}\cleardoublepage}
-\setcounter{page}{1}
+% Front matter (Roman page numbers)
 \pagestyle{fancy}
+\pagenumbering{roman}
+\setcounter{page}{1}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \begin{abstract}
@@ -47,15 +49,13 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %--- table of contents
-\fancyhead[RE,LO]{\sffamily {Table of Contents}}
-\tableofcontents 
+% \fancyhead[RE,LO]{\sffamily {Table of Contents}}
+% \tableofcontents 
 
 
-\clearpage{\pagestyle{empty}\cleardoublepage}
+\cleardoublepage
 \pagenumbering{arabic}
 \setcounter{page}{1}
-\fancyhead[LE,RO]{\slshape \rightmark}
-\fancyhead[LO,RE]{\slshape \leftmark}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Introduction}
@@ -67,7 +67,7 @@ Intensified research effort lead to a computer vision breakthrough as well a cou
 
 %\textit{Empowerment: LLMs excel at text generation, reasoning, and knowledge tasks} \\
 %\textit{VLMs enable understanding and generation across text and images} \\
-The surge of fondational models\cite{FoundationModels} gained further public attention in 2022 with the release of ChatGPT\cite{IntroducingChatGPT}, Stable Diffusion\cite{StableDiffusion} and DALL-E\cite{DALL.E-2}. These generative models and their optimized variants are now widely deployed across industry. Their remarkable capacity to generate coherent text and high-fidelity images, as well as perform reasoning and handle knowledge-intensive tasks transformed professional workflows\cite{FoundationModelsInBigBusiness}.
+The surge of foundational models\cite{FoundationModels} gained further public attention in 2022 with the release of ChatGPT\cite{IntroducingChatGPT}, Stable Diffusion\cite{StableDiffusion} and DALL-E\cite{DALL.E-2}. These generative models and their optimized variants are now widely deployed across industry. Their remarkable capacity to generate coherent text and high-fidelity images, as well as perform reasoning and handle knowledge-intensive tasks transformed professional workflows\cite{FoundationModelsInBigBusiness}.
 
 %\textit{Challenges:} \\
 %\textit{Limited context window and memory} \\
@@ -75,34 +75,44 @@ The surge of fondational models\cite{FoundationModels} gained further public att
 %\textit{Inability to access up-to-date or external knowledge} \\
 %\textit{Poor performance on domain-specific or multimodal tasks} \\
 %\textit{Difficulty with reasoning over complex, structured, or multi-hop information} \\
-Despite their impressive performances, foundational models face critical limitations in domains where factually grounded, up-to-date information generation is essential. A phenomenon known as "hallucination" in which models generate plausible but incorrect or fabricated outputs raises concerns about their reliability. These models are trained on static datasets bounded in time, and infer results with a limited context window. As a result, they often underperform on domain-specific tasks, especially when reasoning over complex, structured, or multi-hop information. These limitations have motivated research into methods which integrate retrieval mechanisms to augment factuality and reasoning capabalities with external knowledge sources, commonly referred to as Retrieval-Augmented Generation (RAG) frameworks.
+Despite their impressive performances, foundational models face critical limitations in domains where factually grounded, up-to-date information generation is essential. A phenomenon known as "hallucination"\cite{Hallucinations} in which models generate plausible but incorrect or fabricated outputs raises concerns about their reliability. These models are trained on static datasets bounded in time, and infer results with a limited context window. As a result, they often underperform on domain-specific tasks, especially when reasoning over complex, structured, or multi-hop information\cite{ReasoningOrReciting}. These limitations have motivated research into methods which integrate retrieval mechanisms to augment factuality and reasoning capabalities with external knowledge sources, commonly referred to as Retrieval-Augmented Generation (RAG) frameworks.
 
 \section{Rise of RAG}
-\textit{General introduction:} \\
-\textit{Retrieval-Augmented Generation (RAG): combines LLMs with external retrieval to ground responses in relevant documents} \\
-\textit{Pipeline: retrieve relevant chunks, then feed to LLM for answer generation} \\
+%\textit{General introduction:} \\
+%\textit{Retrieval-Augmented Generation (RAG): combines LLMs with external retrieval to ground responses in relevant documents} \\
+The original Retrieval-Augmented Generation (RAG) system was introduced by the Facebook AI Research (FAIR) team in 2020\cite{FAIRRAG}. They proposed a framework which integrates external knowledge to enhance the output quality. Additionally, it enables traceability, identifying the provenance of the knowledge behind generated content. The RAG framework demonstrated this approach produces more factual and specific responses compared to standalone LLMs. Since then, a growing ecosystem of RAGs has emerged\cite{RAGSurvey}, exploring trade-offs tailored for specific use cases.
 
-\textit{Overview of its potential:} \\
-\textit{Improves factuality, reduces hallucination} \\
-\textit{Enables up-to-date and domain-specific knowledge access} \\
-\textit{Supports multi-hop, complex, and multimodal queries} \\
-\textit{Can use text, images, graphs, or hybrid retrieval} \\
+%\textit{Pipeline: retrieve relevant chunks, then feed to LLM for answer generation} \\
+Despite the variability accross RAG implementations, the core methodology remains consistent. A standard pipeline consists of three sequential stages: retrieve, augment, and generate. First, the retrieval process involves fetching pertinent information from an external knowledge base named "corpus". To do so, it encodes the user query to obtain its vector representation, which is then used to search for similar vectors among pre-indexed corpora. The top-N most similar matches are then retrieved from the corpus. The retrieved information is then provided alongside the original query to the foundational model. In this pioneering research, the FAIR team demonstrate that augmenting the original query with retrieved relevant context improves the answer quality in terms of factuality and specificity. In the final step, the foundational model generates a response conditioned on the augmented query provided.
+
+%\textit{Overview of its potential:} \\
+%\textit{Improves factuality, reduces hallucination} \\
+%\textit{Enables up-to-date and domain-specific knowledge access} \\
+%\textit{Supports multi-hop, complex, and multimodal queries} \\
+%\textit{Can use text, images, graphs, or hybrid retrieval} \\
+The utility of RAG frameworks extends beyond reducing hallucinations and addressing limitations in generalization. It also enables a foundational model to stay relevant over-time without additional costly training\cite{TrainingFrontierAICost}, as up-to-date or new domain-specific information can be continuously integrated into the knowledge base. Recent developments in domain-specific RAG pipelines have sparked interests in the health care industry to assist medical professionals, although serious limitations are highlighted\cite{RAGinHealthCare}. SentimentCareBot\cite{SentimentCareBot}, a RAG Chatbot for mental health support may help address the growing demand for accessible specialist support, such as psychologists and counselors.
+RAG systems are also recognized for their ability to perform retrieval across mutliple modalities\cite{AskInAnyModality} such as texts and images, leveraging various data structures including vectors and graphs databases to organize the corpus. These techniques create new opportunities for practical applications, decoupling the utility of foundational models from their training data.
 
 \section{Research project purpose}
-\textit{Introducing a new RAG framework from combined best practices:} \\
-\textit{Introduce latest RAG approaches (Multimodal and Graph)} \\
-\textit{Combine best practices from traditional, graph-based, and multimodal RAG} \\
-\textit{Modular pipeline for easy experimentation and benchmarking} \\
+%\textit{Introducing a new RAG framework from combined best practices:} \\
+%\textit{Introduce latest RAG approaches (Multimodal and Graph)} \\
+%\textit{Combine best practices from traditional, graph-based, and multimodal RAG} \\
+%\textit{Modular pipeline for easy experimentation and benchmarking} \\
+The purpose of this research project is twofold. First, we investigate best practices of Retrieval-Augmented Generation (RAG) systems that operate across mutliple modalities, commonly referred as "Multimodal RAG", as well as those that utilize knowledge graph structures, often called "Graph RAG". By combining these two promising approaches, we aim to construct a high performing framework leveraging their complementary strengths, as demonstrated in prior work\cite{HMRAG}. We will design a modular pipeline to integrate and test various enhancement techniques. This will constitute a reproducible ablation study to evaluate the impact of each component.
 
-\textit{Introducing a new benchmark generation framework for domain specific knowledge (Consulting):} \\
-\textit{Address lack of robust, real-world, and multimodal evaluation datasets} \\
-\textit{Propose new methods for dataset creation and benchmarking on specific domain} \\
+% \textit{Introducing a new benchmark generation framework for domain specific knowledge (Consulting):} \\
+% \textit{Address lack of robust, real-world, and multimodal evaluation datasets} \\
+% \textit{Propose new methods for dataset creation and benchmarking on specific domain} \\
+Second, we propose a novel process for generating evaluation datasets. This aims at promoting the creation of more domain-specific benchmarks, as evaluation datasets are essential for comprehensively assessing framework performances. We aim to address the lack of robust, real-world, and multimodal evaluation datasets.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Literature Review}
 
 \section{Attention with Transformers}
 \textit{What are transformers and how they are used for query answering.} \\
+
+
 \textit{The limitations of LLMS to answer queries on domain specific and contextual data.} \\
 
 \section{Traditional RAG}
@@ -161,6 +171,7 @@ Despite their impressive performances, foundational models face critical limitat
 \textit{Explainability and trust in graph-based reasoning} \\
 \textit{Agentic workflows (planner/critic agents) for graph RAG} \\
 \textit{Real-time or streaming updates to graphs} \\
+
 
 \section{Multimodal RAG}
 \textit{OCR Approach:} \\

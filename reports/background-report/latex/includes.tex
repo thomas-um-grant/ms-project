@@ -76,31 +76,45 @@
 \pagestyle{fancy}
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter.\ #1}{}} 
 
-\fancyfoot[ER,OL]{\sffamily\textbf{\thepage}}%Page no. in the left on odd pages and on right on even pages
-\fancyfoot[OC,EC]{\sffamily }
-\renewcommand{\headrulewidth}{0.1pt}
-\renewcommand{\footrulewidth}{0.1pt}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot[C]{\sffamily{\thepage}} % page number centered
+\fancyhead[LE,RO]{\slshape \rightmark} % section name on even (left) and odd (right) pages
+\fancyhead[LO,RE]{\slshape \leftmark} % chapter name on odd (left) and even (right) pages
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0pt}
 \captionsetup{margin=10pt,font=small,labelfont=bf}
 
 
 %--- chapter heading
 
+% \makeatletter
+% \def\@makechapterhead#1{%
+%   \vspace*{10\p@}%
+%   {\parindent \z@ \raggedright \sffamily
+%     \interlinepenalty\@M
+%     \Huge\bfseries \chaptername\ \thechapter\space #1\par\nobreak
+%     \vskip 10\p@ % Reduced spacing to save space
+%   }}
+
+%---chapter heading for \chapter*  
+% \def\@makeschapterhead#1{%
+%   \vspace*{10\p@}%
+%   {\parindent \z@ \raggedright
+%     \sffamily
+%     \interlinepenalty\@M
+%     \Huge \bfseries  #1\par\nobreak
+%     \vskip 10\p@ % Also reduced here for consistency
+%   }}
+% \makeatother
+
+\makeatletter
 \def\@makechapterhead#1{%
   \vspace*{10\p@}%
   {\parindent \z@ \raggedright \sffamily
     \interlinepenalty\@M
-    \Huge\bfseries \thechapter \space\space #1\par\nobreak
-    \vskip 30\p@
+    \Huge\bfseries \chaptername\ \thechapter\ --\ #1\par\nobreak
+    \vskip 10\p@
   }}
-
-%---chapter heading for \chapter*  
-\def\@makeschapterhead#1{%
-  \vspace*{10\p@}%
-  {\parindent \z@ \raggedright
-    \sffamily
-    \interlinepenalty\@M
-    \Huge \bfseries  #1\par\nobreak
-    \vskip 30\p@
-  }}
+\makeatother
 
 \allowdisplaybreaks
