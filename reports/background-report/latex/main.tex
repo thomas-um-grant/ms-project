@@ -110,146 +110,381 @@ Second, we propose a novel process for generating evaluation datasets. This aims
 \chapter{Literature Review}
 
 \section{Attention with Transformers}
-\textit{What are transformers and how they are used for query answering.} \\
+%\textit{What are transformers and how they are used for query answering.} \\
 
+% The transformer architecture, introduced in 2017\cite{AttentionIsAllYouNeed}, revolutionized sequence modeling by replacing recurrence with a self-attention mechanism that enables each input token to attend to all others in the sequence. It means the transformer encoder learns contextual representations through a multi-head attention layer, where queries (Q), keys (K), and values (V) are projected from the same input embedding. The scaled dot-product attention function $Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_k}})V$ allows each token to weigh information from every other token, which effectively models long-range dependencies without the sequential bottleneck of Recurrent Neural Networks (RNNs), its predecessor.
+% Transformer variants are specialized for different tasks: encoder-only models (e.g., BERT \cite{BERT}) excel at classification and masked language modeling; encoder-decoder models (e.g., T5 \cite{T5}) handle sequence-to-sequence tasks like translation and summarization; decoder-only models (e.g., GPT \cite{GPT}) focus on causal language modeling and open-ended generation. Vision transformers (e.g., ViT \cite{ViT}) apply self-attention to image patches for tasks like classification and detection. Multimodal models (e.g., ViLBERT \cite{ViLBERT}, CLIP \cite{CLIP}, DALL·E \cite{DALLE}) extend attention across text and images for captioning, retrieval, and generation.
+% In query-answering systems, especially in modern RAG pipeline, the transformer's ability to capture complex token interactions underpins both retrieval and generation stages. Dense retrievers often use transformer encoders to map queries and documents into a shared embedding space, where nearest-neighbor search retrieves the most relevant passages. These passages, concatenated with the original query, are then passed to a decoder (or encoder-decoder) to generate grounded answers, benefiting from the transformer's parallel attention over both query and retrieved context.
 
-\textit{The limitations of LLMS to answer queries on domain specific and contextual data.} \\
+%\textit{The limitations of LLMS to answer queries on domain specific and contextual data.} \\
+
+% Despite their versatility, foundational models (e.g. LLMs) face several limitations when used for domain-specific or context-dependent query answering:
+% Static knowledge: Trained on fixed data snapshots, LLMs lack awareness of events post-training, making them unable to deliver up-to-date information.
+% Shallow domain expertise: While they capture broad factual patterns, LLMs often struggle with deep understanding in technical or niche domains, leading to incomplete or generalized answers.
+% Limited context window and memory: Fixed token limits restrict how much information can be processed at once, impairing performance on long conversations or multi-document tasks.
+% Ambiguity and hallucinations: Vague prompts or gaps in input can lead LLMs to generate plausible but incorrect or fabricated responses, reducing reliability.
+% No access to private/internal data: Out of the box, LLMs cannot retrieve information from proprietary databases or internal systems, limiting enterprise use without customization.
+% Multi-step reasoning challenges: Tasks requiring sequential logic or multi-hop reasoning often exceed LLMs' capabilities, resulting in errors or inconsistencies.
+% Compliance and accuracy risks: In regulated domains like healthcare or finance, uncontrolled outputs can pose legal or safety risks, necessitating external controls and validation.
+% These limitations have driven the adoption of explicit retrieval techniques, such as RAG to ground LLM outputs in external, current, and domain-specific sources, improving factual accuracy and reducing hallucinations.
+
+The transformer architecture\ref{appendix:transformer}, introduced in 2017 \cite{AttentionIsAllYouNeed}, revolutionized sequence modeling by replacing recurrence with self-attention, allowing each token to contextualize itself with respect to all others in the sequence. This is achieved via multi-head attention using queries, keys, and values derived from the same input, enabling efficient modeling of long-range dependencies. Transformer variants serve distinct roles: encoder-only models (e.g., BERT \cite{BERT}) support classification and masked prediction; encoder-decoder models (e.g., T5 \cite{T5}) handle translation and summarization; and decoder-only models (e.g., GPT \cite{GPT}) are optimized for generative tasks. Extensions include vision transformers (e.g., ViT \cite{ViT}) and multimodal architectures (e.g., CLIP \cite{CLIP}, DALL·E \cite{DALL.E-2}).
+
+Despite their versatility, foundational models still face challenges in domain-specific and context-dependent applications. These include static knowledge, limited depth in specialized domains, fixed context windows, susceptibility to hallucinations, inability to access private/internal data, difficulty with multi-step reasoning, and compliance risks in regulated environments. Such limitations have driven the adoption of RAG methods to ground outputs in external, up-to-date, and domain-relevant sources, enhancing accuracy and reducing hallucinations.
+
+In RAG pipelines, transformers underpin both retrieval and generation: encoders map queries and documents into a shared space for nearest-neighbor search, while generators integrate retrieved passages with the query for context-aware responses.
 
 \section{Traditional RAG}
 
-\textit{The building blocks:} \\
-\textit{Document chunking and preprocessing (text splitters, cleaning, metadata extraction)} \\
-\textit{Embedding generation (models like Sentence Transformers, OpenAI, etc.)} \\
-\textit{Vector store/database (FAISS, Weaviate, Milvus) for fast similarity search} \\
-\textit{Retriever module (dense, sparse, hybrid)} \\
-\textit{Generator module (LLM, e.g., GPT-4, Llama)} \\
-\textit{Reranker module to improve retrieval quality} \\
+% \textit{The building blocks:} \\
+% \textit{Document chunking and preprocessing (text splitters, cleaning, metadata extraction)} \\
+% \textit{Embedding generation (models like Sentence Transformers, OpenAI, etc.)} \\
+% \textit{Vector store/database (FAISS, Weaviate, Milvus) for fast similarity search} \\
+% \textit{Retriever module (dense, sparse, hybrid)} \\
+% \textit{Generator module (LLM, e.g., GPT-4, Llama)} \\
+% \textit{Reranker module to improve retrieval quality} \\
+At the core of any RAG system lies a modular pipeline that orchestrates document preparation, retrieval, and generation. The process begins with \textbf{document chunking and preprocessing}, where raw texts (e.g. PDFs, HTML pages) are cleaned, normalized, and split into manageable passages. Early approaches employed fixed-length character or token windows; however, modern implementations increasingly leverage \textbf{recursive splitting heuristics}\cite{RecurrentChunking}\cite{SplittingHeuristics} to avoid excessively small or large segments and \textbf{semantic chunking} via clustering embeddings to respect topical boundaries. During this stage, metadata such as section headings and publication dates are also extracted to enhance downstream retrieval.
 
-\textit{In-Depth techniques:} \\
-\textit{Extraction: OCR for scanned docs, entity extraction, metadata parsing} \\
-\textit{Transformation: Text splitting (by sentence, paragraph, semantic units), context windowing} \\
-\textit{Embedding: Dense (transformers), sparse (BM25), hybrid} \\
-\textit{Storing: Vector DBs, hybrid stores (text + graph)} \\
-\textit{Retrieving: kNN search, hybrid retrieval, query expansion, dual encoders} \\
-\textit{Reranking: Cross-encoder rerankers, contrastive reranking, in-context reranking} \\
+Next, each chunk is transformed into a vector representation in the \textbf{embedding generation} phase. Models such as Sentence-BERT \cite{SentenceBERT}, OpenAI's text-embedding-ada \cite{OpenAITextEmbedding}, or domain-specific encoders encode semantic content into high-dimensional dense vectors. In parallel, \textbf{sparse representations} (e.g., BM25\cite{BM25} term vectors) may be computed, and \textbf{hybrid embeddings} formed by concatenating dense and sparse signals, striking a balance between semantic understanding and keyword recall.
 
-\textit{Challenges:} \\
-\textit{Hallucination and factuality: LLMs may ignore retrieved context or hallucinate} \\
-\textit{Retrieval quality: Embedding drift, poor chunking, context window limits} \\
-\textit{Scalability: Indexing and updating large corpora, latency} \\
-\textit{Multilingual and domain adaptation challenges} \\
+These embeddings are then indexed in a \textbf{vector store}, for example, FAISS \cite{FAISS}, Weaviate \cite{Weaviate}, or Milvus \cite{Milvus}, which exploits advanced data structures like inverted file systems (IVF)\ref{appendix:invertedFileSystem}, product quantization (PQ)\ref{appendix:quantizationTechniques}, and Hierarchical Navigable Small World graphs (HNSW)\ref{appendix:HNSW} to support sub-linear nearest-neighbor search over millions of vectors.
 
+During inference, the \textbf{retriever module} maps an input query into the same embedding space, retrieves the top-$k$ nearest chunks, and, when using hybrid methods, combines dense similarity scores with sparse term matches. Finally, the \textbf{generator module}, typically a decoder-only model like GPT-4 or an encoder-decoder such as T5, conditions on the concatenation of the original query and retrieved passages to produce a fact-grounded response. Optionally, a \textbf{reranker} refines the retrieval results: cross-encoder rerankers rescore chunks by jointly processing query and passage, contrastive rerankers optimize embedding spaces for relevance discrimination, and in-context reranking leverages the LLM itself via few-shot prompts to prioritize the most pertinent evidence \cite{Reranking}.
+
+\begin{figure}[h]
+	\includegraphics[width = 15cm]{./figures/TraditionalRAG.png}
+	\caption{The conceptual architecture of a RAG solution showing the major components and the flow of interactions between them to respond to a user query. Source: https://www.ibm.com/architectures/patterns/genai-rag}
+\end{figure}
+(\textcolor{red}{TODO - Replace this with my own diagram to have consitency with all diagrams})
+
+% \textit{In-Depth techniques:} \\
+% \textit{Extraction: OCR for scanned docs, entity extraction, metadata parsing} \\
+% \textit{Transformation: Text splitting (by sentence, paragraph, semantic units), context windowing} \\
+% \textit{Embedding: Dense (transformers), sparse (BM25), hybrid} \\
+% \textit{Storing: Vector DBs, hybrid stores (text + graph)} \\
+% \textit{Retrieving: kNN search, hybrid retrieval, query expansion, dual encoders} \\
+% \textit{Reranking: Cross-encoder rerankers, contrastive reranking, in-context reranking} \\
+Beyond the basic pipeline, advanced RAG systems incorporate specialized \textbf{extraction} and\textbf{transformation} methods to handle diverse corpora. For scanned or image-based documents, OCR engines paired with layout parsers reconstruct both textual content and its structural context (tables, figures, headings). Entity recognition and metadata parsing further annotate chunks with semantic labels, such as named entities or technical concepts, enriching retrieval signals.
+
+In the transformation phase, \textbf{text splitting} strategies have evolved from naive fixed-size windows to sophisticated techniques. Recursive splitters adjust boundaries based on punctuation or section markers, whereas \textbf{cluster-based semantic chunking} groups contiguous sentences by embedding similarity, yielding more coherent passages at the cost of increased computational overhead. Some systems even employ \textbf{LLM-guided chunking}, using a small language model to identify topic shifts, which maximizes recall for downstream retrieval despite higher latency.
+
+Embedding strategies have also diversified. \textbf{Dense encoders} capture semantic nuance but may suffer from “drift” as corpora evolve; \textbf{sparse methods} like BM25 remain robust to unseen terms; \textbf{hybrid models} integrate both to achieve superior precision-recall trade-offs.Correspondingly, vector stores have been extended into \textbf{hybrid stores} that layer graph or metadata indices atop dense embeddings, enabling rich faceted queries and semantic filtering.
+
+Retrieval optimizations include \textbf{query expansion}, automatically adding synonyms or contextually related terms via thesauri or small LLMs, and \textbf{dual-encoder architectures} that separately train query and document encoders to maximize retrieval fidelity. More recently, \textbf{contextual retrieval} techniques prefix or interleave document titles and pseudo-questions (generated by models such as HyDE) to surface more relevant passages.
+
+% \textit{Challenges:} \\
+% \textit{Hallucination and factuality: LLMs may ignore retrieved context or hallucinate} \\
+% \textit{Retrieval quality: Embedding drift, poor chunking, context window limits} \\
+% \textit{Scalability: Indexing and updating large corpora, latency} \\
+% \textit{Multilingual and domain adaptation challenges} \\
+Despite these advances, traditional RAG frameworks contend with several persistent challenges. Even when relevant passages are retrieved, LLMs may under-utilize them, reverting to memorized knowledge or hallucinating unsupported details, a phenomenon that undermines factuality. The quality of retrieval itself depends heavily on chunking strategy and embedding freshness; as corpora grow or drift over time, embeddings may become stale, necessitating frequent re-indexing. Scalability concerns loom large when indexing billions of tokens, as vector stores incur storage, latency, and cost overheads. Finally, most embedding models are pretrained on general-purpose English text, resulting in suboptimal performance on specialized domains or non-English languages without additional fine-tuning or multilingual adaptation.
+
+These limitations motivate exploration of complementary approaches, most notably graph-based and multimodal RAG, which aim to bolster multi-hop reasoning, cross-modal grounding, and dynamic knowledge integration.
 
 \section{Graph RAG}
-\textit{Purpose and potential:} \\
-\textit{Addresses limitations of vanilla RAG for multi-hop, global, or broad queries} \\
-\textit{Enables structured reasoning over entities and relationships} \\
-\textit{Supports modular, hierarchical, and community-based summarization} \\
+% \textit{Purpose and potential:} \\
+% \textit{Addresses limitations of vanilla RAG for multi-hop, global, or broad queries} \\
+% \textit{Enables structured reasoning over entities and relationships} \\
+% \textit{Supports modular, hierarchical, and community-based summarization} \\
+While traditional RAG systems excel at single-hop factual retrieval, they often struggle with multi-hop reasoning, global summarization, and broad or compositional queries that require understanding across dispersed contexts. Graph RAG frameworks aim to address these limitations by introducing explicit structure into the retrieval pipeline, namely, via knowledge graphs that model entities, relationships, and their contextual interdependencies. By augmenting text with structured representations, these systems enable more interpretable, traceable, and compositional reasoning pathways. Moreover, the graph abstraction naturally supports modular, hierarchical, and community-based summarization, allowing information to be surfaced not just by semantic proximity but by its position within a larger conceptual topology.
 
-\textit{Notable existing frameworks / research:} \\
-\textit{GraphRAG: Converts corpus into a knowledge graph, uses community detection for hierarchical summaries, excels at global queries} \\
-\textit{LightRAG: Lightweight, dual-level retrieval (local/global), incremental updates, efficient for evolving datasets} \\
-\textit{PathRAG: Uses relational paths for multi-hop reasoning, decay pruning for concise path selection, interpretable rationale} \\
-\textit{KG2RAG: Uses knowledge graphs to expand and organize context, focuses on preprocessing and chunk expansion} \\
+(\textcolor{red}{TODO - Put a diagram of a basic Graph RAG framework here})
 
-\textit{Notable techniques:} \\
-\textit{DRIFT method: Pruning based on path length and semantic decay} \\
-\textit{Late chunking: Efficiently incorporates new data without full reindexing} \\
+% \textit{Notable existing frameworks / research:} \\
+% \textit{GraphRAG: Converts corpus into a knowledge graph, uses community detection for hierarchical summaries, excels at global queries} \\
+% \textit{LightRAG: Lightweight, dual-level retrieval (local/global), incremental updates, efficient for evolving datasets} \\
+% \textit{PathRAG: Uses relational paths for multi-hop reasoning, decay pruning for concise path selection, interpretable rationale} \\
+% \textit{KG2RAG: Uses knowledge graphs to expand and organize context, focuses on preprocessing and chunk expansion} \\
+A growing body of research has explored how to integrate graph-based representations into the RAG paradigm. GraphRAG \cite{GraphRAG} transforms unstructured corpora into knowledge graphs through entity and relation extraction, followed by community detection to identify densely connected subgraphs for hierarchical abstraction. This structure proves especially effective for global or overview-style queries, where conventional vector retrieval may underperform due to semantic dispersion.
 
-\textit{Challenges:} \\
-\textit{High upfront cost for graph construction (entity/relation extraction, LLM calls)} \\
-\textit{Sensitivity to prompt engineering and extraction quality (hallucinated or missing entities/edges)} \\
-\textit{Scalability: Graph size, path explosion, memory/computation for large corpora} \\
-\textit{Maintenance: Updating graphs as data changes} \\
+In contrast, LightRAG \cite{LightRAG} adopts a lightweight dual-level retrieval architecture, combining local vector retrieval with global graph-based recall. Its incremental update mechanism allows it to incorporate new data without full reindexing, making it particularly well-suited for dynamic or continuously evolving knowledge bases.
 
-\textit{Future works:} \\
-\textit{Hybrid retrieval: Combining graph and vector-based methods} \\
-\textit{Multi-modal graph construction (images, tables, code)} \\
-\textit{Evaluation metrics for cross-modal and multi-hop reasoning} \\
+PathRAG \cite{PathRAG} focuses on multi-hop relational reasoning by identifying traversable paths between entities across documents. To mitigate path explosion and redundancy, it introduces decay pruning, which filters paths based on both length and semantic coherence. The resulting paths not only yield more concise retrieval targets but also provide interpretable rationales, surfacing chains of evidence that mirror human reasoning.
 
-\textit{Other paths:} \\
-\textit{Explainability and trust in graph-based reasoning} \\
-\textit{Agentic workflows (planner/critic agents) for graph RAG} \\
-\textit{Real-time or streaming updates to graphs} \\
+Meanwhile, KG2RAG \cite{KG2RAG} emphasizes preprocessing and chunk expansion by leveraging existing or extracted knowledge graphs to organize and semantically expand retrieval contexts. This framework enriches retrieved chunks with related facts or entities, improving recall and facilitating implicit multi-hop grounding without requiring explicit reasoning in generation time.
+
+% \textit{Notable techniques:} \\
+% \textit{DRIFT method: Pruning based on path length and semantic decay} \\
+% \textit{Late chunking: Efficiently incorporates new data without full reindexing} \\
+Several technical innovations underpin the effectiveness of Graph RAG systems. The DRIFT search\cite{DRIFTSearch}, which is derived with a pruning process introduced in the context of PathRAG\cite{PathRAG}, attenuates the influence of long or semantically diffuse paths using a decay function, prioritizing concise, high-relevance traversal routes. Late chunking strategies, which defer text segmentation until after graph construction, enable systems to adaptively shape chunk boundaries around graph topologies or relation clusters, thereby preserving entity coherence and improving retrievability.
+
+These methods collectively support dynamic and efficient reasoning, but they come at a computational cost. Graph construction typically requires intensive entity and relation extraction, often mediated by large LLMs, which makes the process both resource-heavy and error-prone. The quality of extracted graphs remains sensitive to prompt engineering and upstream NLP accuracy, with hallucinated or missing entities potentially corrupting the graph topology and impairing reasoning reliability.
+
+% \textit{Challenges:} \\
+% \textit{High upfront cost for graph construction (entity/relation extraction, LLM calls)} \\
+% \textit{Sensitivity to prompt engineering and extraction quality (hallucinated or missing entities/edges)} \\
+% \textit{Scalability: Graph size, path explosion, memory/computation for large corpora} \\
+% \textit{Maintenance: Updating graphs as data changes} \\
+From a systems perspective, Graph RAG raises significant scalability concerns. As the corpus grows, graph size and path complexity increase non-linearly, leading to memory and runtime bottlenecks. Path explosion, in particular, becomes a limiting factor in dense or ambiguous knowledge spaces. In parallel, graph maintenance, especially in environments with streaming or frequently updated data, remains an open challenge. Unlike vector indices, which can be incrementally updated, knowledge graphs may require re-normalization or even reconstruction to ensure consistency and integrity.
+
+% \textit{Future works:} \\
+% \textit{Hybrid retrieval: Combining graph and vector-based methods} \\
+% \textit{Multi-modal graph construction (images, tables, code)} \\
+% \textit{Evaluation metrics for cross-modal and multi-hop reasoning} \\
+% \textit{Other paths:} \\
+% \textit{Explainability and trust in graph-based reasoning} \\
+% \textit{Agentic workflows (planner/critic agents) for graph RAG} \\
+% \textit{Real-time or streaming updates to graphs} \\
+Research is actively exploring how to hybridize graph-based and vector-based retrieval, allowing systems to balance semantic fuzziness with structural exactness. Another promising frontier is multi-modal graph construction, where nodes and edges represent not only textual entities but also visual elements (e.g., diagrams), tabular data, or even code fragments. Such multimodal graphs could facilitate cross-domain reasoning and more faithful grounding in complex documents.
+
+As these systems evolve, new evaluation metrics will be needed to assess performance in multi-hop, cross-modal, and graph-augmented settings, where traditional retrieval and generation scores may fall short. Interpretability remains a core concern as well: graph paths offer a natural substrate for explainability, enabling models to articulate the basis of their outputs.
+
+Finally, Graph RAG is well-positioned to support agentic workflows, in which LLMs act not only as generators but as planners or critics, navigating the graph to construct or validate reasoning chains. Supporting such agents will require efficient APIs for real-time or streaming graph updates, enabling knowledge flows that are both reactive and grounded.
 
 
 \section{Multimodal RAG}
-\textit{OCR Approach:} \\
-\textit{Traditional: OCR + text chunking, layout detection, captioning} \\
-\textit{Limitations: Slow, error-prone for complex layouts, fails on handwriting or poor scans} \\
 
-\textit{PaliGemma:} \\
-\textit{Vision-language model for image and text embedding} \\
-\textit{Uses SIGLIP with Pali3 for improved multi-modal retrieval} \\
+Traditional RAG architectures are predominantly unimodal, assuming that the input corpus is composed solely of text. However, many real-world documents, such as scanned PDFs, scientific papers, forms, and diagrams, contain complex visual layouts, embedded figures, or non-textual cues that textual embeddings alone cannot adequately capture. Multimodal RAG aims to extend the retrieval-augmented generation paradigm to such heterogeneous data, integrating visual and textual modalities to support retrieval, reasoning, and generation over richly formatted or image-based content.
 
-\textit{ColPali:} \\
-\textit{Bypasses OCR, directly encodes document pages as images} \\
-\textit{Late interaction retrieval: Multi-vector image embeddings, fine-grained matching} \\
+(\textcolor{red}{TODO - Put a diagram of a MultiModal RAG framework here})
 
-\textit{Other approaches:} \\
-\textit{VDocRAG:} \\
-\textit{Dual-encoder for queries and document images, dynamic high-res image encoding, multi-hop reasoning, context-independent questions, OpenDocVQA dataset} \\
+% \textit{OCR Approach:} \\
+% \textit{Traditional: OCR + text chunking, layout detection, captioning} \\
+% \textit{Limitations: Slow, error-prone for complex layouts, fails on handwriting or poor scans} \\
+The earliest multimodal RAG systems rely on a pipeline that first applies optical character recognition (OCR) to extract text from images or scanned documents. This is typically followed by text chunking, layout parsing, and occasionally caption generation to describe figures or tables. While effective in some settings, this pipeline is slow, error-prone, and fragile when confronted with noisy inputs, such as poor-quality scans, handwritten text, or documents with intricate multi-column or nested layouts. Furthermore, semantic coherence can be lost during OCR, especially when visual cues like font size, spatial alignment, or figure boundaries are discarded.
 
-\textit{ViDoRAG:} \\
-\textit{Multi-modal hybrid retrieval (visual + textual), dynamic result adjustment (GMM prior), agent-based generation (seeker, inspector, answer agent), ViDoSeek dataset} \\
+% \textit{PaliGemma:} \\
+% \textit{Vision-language model for image and text embedding} \\
+% \textit{Uses SIGLIP with Pali3 for improved multi-modal retrieval} \\
+To address these limitations, newer systems incorporate vision-language models capable of learning joint representations over both images and text. PaliGemma \cite{PaliGemma}, for instance, combines SIGLIP\cite{SIGLIP} (a vision transformer) with Pali-3\cite{Pali3} (a multilingual language model) to produce dense, cross-modal embeddings. This enables improved retrieval across image-text boundaries, allowing for more contextually aware and semantically grounded retrievals.
 
-\textit{VisRAG:} \\
-\textit{Query-centric multi-modal retrieval, retrieval-augmented generation, modular and memory-efficient, strong on VQA benchmarks} \\
+% \textit{ColPali:} \\
+% \textit{Bypasses OCR, directly encodes document pages as images} \\
+% \textit{Late interaction retrieval: Multi-vector image embeddings, fine-grained matching} \\
+A more radical shift is embodied in ColPali\cite{ColPali}, which bypasses OCR entirely. Instead of converting documents into text, ColPali treats each page as a raw image and encodes it directly using a multi-vector image embedding scheme. These embeddings support late interaction retrieval, meaning that fine-grained relevance can be determined during inference rather than at index time. This strategy enhances alignment between query semantics and document visuals, particularly for complex documents that defy easy text extraction.
 
-\textit{mmGraphRAG:} \\
-\textit{Dual DB (graph + vector), incorporates object detection, spatial relationships, and image features} \\
+% \textit{Other approaches:} \\
+% \textit{VDocRAG:} \\
+% \textit{Dual-encoder for queries and document images, dynamic high-res image encoding, multi-hop reasoning, context-independent questions, OpenDocVQA dataset} \\
+Several emerging frameworks push the boundaries of multimodal retrieval-augmented generation. VDocRAG\cite{VDocRAG} uses a dual-encoder architecture to jointly embed queries and document images, dynamically adjusting image resolution based on task complexity. It supports multi-hop reasoning across visual content and has been evaluated on OpenDocVQA, a benchmark for open-domain document visual question answering.
+
+% \textit{ViDoRAG:} \\
+% \textit{Multi-modal hybrid retrieval (visual + textual), dynamic result adjustment (GMM prior), agent-based generation (seeker, inspector, answer agent), ViDoSeek dataset} \\
+ViDoRAG\cite{ViDoRAG} takes a hybrid approach, combining textual and visual retrieval with a dynamic adjustment mechanism based on Gaussian Mixture Models (GMM). It further introduces an agent-based generation framework, where specialized agents (e.g., seeker, inspector, answer agent) collaborate to process and synthesize multimodal evidence. This architecture, tested on the ViDoSeek dataset, demonstrates strong performance in scenarios requiring cross-modal coordination and reasoning from disparate sources.
+
+% \textit{VisRAG:} \\
+% \textit{Query-centric multi-modal retrieval, retrieval-augmented generation, modular and memory-efficient, strong on VQA benchmarks} \\
+Similarly, VisRAG\cite{VisRAG} adopts a query-centric retrieval strategy, retrieving multimodal evidence based on relevance to the query rather than document-centric similarity. Its modular design emphasizes memory efficiency and component interchangeability, and it has shown competitive results on multiple visual question answering (VQA) tasks.
+
+% \textit{mmGraphRAG:} \\
+% \textit{Dual DB (graph + vector), incorporates object detection, spatial relationships, and image features} \\
+Finally, mmGraphRAG introduces a dual-database architecture, combining a knowledge graph with a vector store, similarly to what has been done in HybridRAG\cite{HybridRAG}. It integrates object detection, spatial layout modeling, and image feature embeddings, creating a structured yet flexible framework for reasoning over visual documents. This design enables entity-centric, relational queries that span both textual and visual domains, unlocking richer and more compositional reasoning capabilities.
+
+% Challenges and future directions
+Despite recent advances, Multimodal RAG systems face persistent challenges. OCR pipelines remain brittle and domain-specific, while vision-language models require extensive pretraining and careful calibration to ensure cross-modal alignment. The computational overhead associated with high-resolution image encoding, multi-vector matching, and agent-based generation can be substantial, limiting real-time applicability. Furthermore, the lack of standardized benchmarks and metrics for evaluating multimodal RAG performance across tasks, such as layout understanding, table reasoning, or figure caption grounding, complicates model development and comparison.
+
+Promising directions for future research include the development of cross-modal knowledge graphs, where visual objects, textual elements, and their relationships are explicitly represented and queried. Hybrid retrieval mechanisms that blend textual, visual, and structured representations may provide the flexibility needed for open-domain multimodal tasks. Another area of interest lies in streaming multimodal retrieval, where models adapt in real time to evolving visual content (e.g., dynamic dashboards, live documents).
+
+More broadly, multimodal RAG systems offer a path toward explainable AI\cite{ExplainAI}, where retrieved evidence, whether textual, visual, or relational, can be explicitly surfaced and interpreted. This opens the door to interactive, agent-driven reasoning systems, capable not only of answering questions, but of demonstrating how and why a given response was generated.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Methodology}
 \section{Combining an enhanced RAG framework}
-\textit{Integrate best practices from literature} \\
-\textit{Experiment with hybrid approaches} \\
-\textit{Explain how to assess whether combining different approaches is relevant} \\
-\textit{Explain why it is rational to assemble such methods and why it should work} \\
+% \textit{Integrate best practices from literature} \\
+% \textit{Experiment with hybrid approaches} \\
+% \textit{Explain how to assess whether combining different approaches is relevant} \\
+% \textit{Explain why it is rational to assemble such methods and why it should work} \\
+To identify optimal strategies for enhancing Retrieval-Augmented Generation (RAG) systems, this work proposes a modular framework in which a variety of techniques and components can be selectively enabled or disabled. Drawing from best practices in the literature, including recent advances in multimodal retrieval, graph-based reasoning, and reranking strategies, we design a flexible architecture capable of isolating the contributions of individual modules.
+
+(\textcolor{red}{TODO: Draw a RAG pipeline with each steps modularized so we can swap in place / combine methods at wish})
+
+To evaluate the effectiveness of combining different approaches, we adopt a systematic benchmarking strategy. Each module or enhancement is first tested in isolation, with performance assessed on the ViDoRe\cite{ColPali} v1s and v2s datasets. Subsequently, we evaluate composite configurations, enabling combinations of techniques to determine whether their joint application yields synergistic performance gains. The results are analyzed comparatively to establish whether integration leads to improvements beyond the sum of individual parts. This analysis also enables us to articulate why and how specific combinations contribute to superior outcomes, guiding both architectural design and component selection.
 
 \section{Generating an evaluation dataset}
-\textit{Propose new dataset creation methods} \\
-\textit{Benchmark on existing and new datasets} \\
+% \textit{Propose new dataset creation methods} \\
+% \textit{Benchmark on existing and new datasets} \\
+Given the current lack of publicly available, high-quality datasets capable of robustly evaluating complex multimodal RAG systems, we propose a new dataset generation framework tailored to the needs of retrieval-augmented multimodal reasoning. This framework emphasizes semantic complexity, visual-textual interplay, and multi-hop retrieval tasks, aiming to capture the challenges that arise in realistic, heterogeneous document corpora.
+
+(\textcolor{red}{TODO: Redraw what Nihir drew on the board to show the overview of the process})
+
+We define a set of evaluation metrics aligned with both retrieval effectiveness (e.g., recall@k, MRR) and generation quality (e.g., factual consistency, completeness, multimodal grounding). These metrics are designed to offer fine-grained insight into system performance and support consistent comparisons across model variants. We demonstrate the robustness and relevance of the proposed dataset by benchmarking it against existing datasets in the ViDoRe benchmark suite, highlighting its capacity to surface failure modes and differentiate between advanced retrieval strategies. The proposed dataset thus serves both as a diagnostic tool and a development driver for future multimodal RAG research.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Evaluation}
 \section{Purpose}
-\textit{What / why is evaluation important} \\
-\textit{Need for robust, real-world, and multimodal evaluation} \\
-\textit{Assess retrieval, generation, and reasoning quality} \\
+% \textit{What / why is evaluation important} \\
+% \textit{Need for robust, real-world, and multimodal evaluation} \\
+% \textit{Assess retrieval, generation, and reasoning quality} \\
+Robust evaluation is central to the development and advancement of RAG systems. As RAG moves beyond text-based question answering into multimodal, multi-hop, and real-world applications, traditional evaluation paradigms fall short. Accurate assessment of a system's ability to retrieve, reason, and generate coherent responses across modalities requires holistic and fine-grained evaluation frameworks.
+
+It is not sufficient to only assess generation quality in isolation; the retrieval pipeline, the reasoning mechanisms, and the interaction across data modalities must be simultaneously evaluated. Without comprehensive evaluation, the efficacy of complex enhancements, such as graph-based retrieval or visual-textual embeddings cannot be properly understood, compared, or trusted.
 
 \section{Dataset generation}
-\textit{Synthetic and real-world datasets (DocVQA, OpenDocVQA, ViDoRe, ViDoSeek)} \\
-\textit{Multi-hop, context-independent, and visually-rich question generation} \\
+% \textit{Synthetic and real-world datasets (DocVQA, OpenDocVQA, ViDoRe, ViDoSeek)} \\
+% \textit{Multi-hop, context-independent, and visually-rich question generation} \\
+Current benchmarks for multimodal RAG, such as ViDoRe\cite{ColPali}, and ViDoSeek\cite{ViDoRAG}, provide valuable foundations but exhibit limitations in scale, complexity, and modality alignment. These benchmarks are composed of a variety of datasets that are often skewed toward single-hop or context-specific queries, and lack the semantic depth necessary for evaluating multi-step, visually-grounded reasoning.
 
-\textit{Challenges:} \\
-\textit{Lack of standardized, multimodal, and challenging benchmarks} \\
-\textit{Difficulty in evaluating multi-hop and cross-modal reasoning} \\
-\textit{Dataset bias, annotation quality, and coverage} \\
+To address this, we focus on generating a dataset that capture multi-hop dependencies, require context-independent reasoning, and incorporate visually-rich document structures. This includes crafting synthetic questions that simulate real-world tasks, such as extracting legal inferences from scanned contracts or tracing decision flows across tabular and textual components in financial documents.
 
-\textit{Future works:} \\
-\textit{New benchmarks for multimodal and graph-based RAG} \\
-\textit{Better metrics for cross-modal and multi-hop evaluation} \\
-\textit{Further automation for dataset generation and annotation} \\
+% \textit{Challenges:} \\
+% \textit{Lack of standardized, multimodal, and challenging benchmarks} \\
+% \textit{Difficulty in evaluating multi-hop and cross-modal reasoning} \\
+% \textit{Dataset bias, annotation quality, and coverage} \\
+However, this task is fraught with challenges:
+Absence of standardized and rigorous multimodal benchmarks hinders consistent comparisons across models and research groups.
+Evaluating multi-hop and cross-modal reasoning is non-trivial, particularly when model predictions span different modalities or semantic layers.
+Dataset bias, annotation inconsistency, and limited coverage reduce the reliability of evaluations and may overstate model generalization.
+
+% \textit{Future works:} \\
+% \textit{New benchmarks for multimodal and graph-based RAG} \\
+% \textit{Better metrics for cross-modal and multi-hop evaluation} \\
+% \textit{Further automation for dataset generation and annotation} \\
+Looking forward, there is a clear need for:
+Novel benchmarks explicitly designed for graph-based and multimodal RAG workflows.
+Metrics tailored to cross-modal reasoning and question-answer alignment over long contexts. Increased automation and quality control for dataset generation, ensuring diversity, precision, and annotation integrity at scale.
 
 \section{Our approach}
-\textit{What is lacking in the current dataset generation approaches} \\
-\textit{How we will address the challenges in our new approach} \\
+% \textit{What is lacking in the current dataset generation approaches} \\
+% \textit{How we will address the challenges in our new approach} \\
+To bridge the gaps identified above, we propose a new dataset generation methodology tailored for evaluating advanced RAG systems. Existing approaches often conflate modality alignment with semantic depth, or fail to capture the challenges of dynamic and evolving corpora. Our method incorporates the following key enhancements:
+\textbf{Multi-hop and cross-modal query generation}: Questions are designed to require reasoning over both text and visual components (e.g., charts, tables, handwriting).
+\textbf{Context-independent task formulation}: Each query is structured to demand understanding beyond local surface-level patterns, simulating real-world use cases like legal analysis or academic document synthesis.
+\textbf{Modular annotation pipeline}: We combine automated annotation with manual curation and adversarial example generation to ensure coverage, logical consistency, and robustness, while keeping costs relatively low.
+\textbf{Support for agent-based and graph-augmented pipelines}: Our dataset includes metadata and annotations compatible with reasoning agents and knowledge graph structures, enabling future benchmarking of Graph RAG and multimodal agentic workflows.
+By directly addressing the limitations of existing benchmarks, our approach offers a more discriminative and reliable framework for evaluating cutting-edge RAG models in realistic, complex settings.
 
 \section{Metrics}
-\textit{Factuality, relevance, comprehensiveness, diversity, logicality, coherence} \\
-\textit{Retrieval accuracy, answer correctness, multi-hop reasoning} \\
+% \textit{Factuality, relevance, comprehensiveness, diversity, logicality, coherence} \\
+% \textit{Retrieval accuracy, answer correctness, multi-hop reasoning} \\
+A robust evaluation of RAG systems requires targeted metrics that reflect both retrieval performance and the quality of generated responses, particularly in multimodal and reasoning-intensive settings. This study employs a concise yet comprehensive set of metrics to ensure meaningful assessment: \\
+\textbf{Normalized Discounted Cumulative Gain (nDCG)}\ref{appendix:nDCG} evaluates the quality of ranked retrieval results by rewarding the correct placement of relevant documents near the top of the list. It accounts for the graded relevance of retrieved chunks and penalizes lower-ranked relevant items, providing an effective measure of ranking quality in RAG pipelines. \\
+\textbf{Context Recall}\ref{appendix:recall} measures the proportion of relevant evidence that was successfully retrieved. In high-stakes or imbalanced settings such as multimodal reasoning tasks, recall is critical, as it captures the model's ability to detect all relevant content, minimizing the risk of omitting essential information. \\
+\textbf{Context Precision}\ref{appendix:precision} assesses the proportion of retrieved evidence that is truly relevant. It highlights how accurately the system avoids bringing in irrelevant or misleading documents. Precision is especially valuable in reducing noise in the retrieved context, which can negatively influence the generation phase. \\
+\textbf{Faithfulness}\ref{appendix:faithfulness} measures the degree to which the generated answer adheres to the retrieved context. An answer is considered faithful if its claims can be directly inferred from the evidence provided. This metric involves extracting factual claims from the output and validating them against the source context, yielding a score between 0 and 1. \\
+\textbf{Answer Relevance}\ref{appendix:relevance} evaluates the pertinence and completeness of the generated answer with respect to the user query. It involves generating multiple questions from the answer itself and comparing them to the original question using vector similarity (e.g., cosine or dot product). High similarity indicates that the answer effectively addresses the original query without redundancy or omission. \\
+Together, these metrics offer a nuanced and rigorous framework for evaluating the effectiveness of multimodal RAG systems, balancing retrieval precision with output integrity and user relevance.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{Project Plan}
 \section{Evaluation dataset generation framework}
+The initial focus of the project will be the development of a robust evaluation dataset through a well-defined and reproducible pipeline. This framework will ensure that the generated dataset adheres to the structural and semantic conventions of existing benchmarks, facilitating meaningful comparisons with datasets such as DocVQA, InfoVQA, on the ViDoRe benchmark. Particular emphasis will be placed on dataset consistency, annotation quality, and the inclusion of complex, multimodal, and multi-hop queries.
+
 \section{Implementation of RAG pipeline to assess benchmark}
-\section{Experimentation of novel multimodal graph RAG framework}
+Following the dataset generation, a modular RAG pipeline will be implemented to evaluate a range of retrieval and generation techniques. This framework will support plug-and-play capabilities, allowing researchers to toggle specific components (e.g., chunking strategies, retrievers, embedding models, rerankers) and to combine them in various configurations. The goal is to enable both isolated performance evaluation of individual techniques and comprehensive grid-search experimentation to identify synergistic combinations.
+
+\section{Experimentation of novel Multimodal Graph RAG framework}
+Once the modular infrastructure is in place, the project will explore novel configurations of multimodal Graph-RAG systems. These experiments will focus on modality fusion techniques for embedding alignment and effective cross-modal retrieval. In particular, the research will investigate: \\
+\textbf{Fusion strategies}\ref{appendix:fusionStrategies} for combining embeddings of heterogeneous dimensions (e.g., vision and text embeddings).
+\textbf{Similarity metrics and alignment loss functions}\ref{appendix:similarityMetrics} for integrating multi-vector representations.
+\textbf{Graph-based reasoning}\ref{appendix:graphBasedReasoning}, leveraging structural relationships between multimodal entities to enhance interpretability and retrieval quality.
+
+These experiments aim to better understand how multimodal embeddings interact, and how graph structures can support long-range dependencies and improved reasoning.
+
 \section{GANTT Chart}
+\includegraphics[width = 15cm]{./figures/GANTT.png}
+
+\section{Deliverables}
+The project will produce a set of deliverables to ensure transparency, reproducibility, and usability: \\
+A public code repository containing the full dataset generation pipeline, modular RAG framework, and evaluation scripts. \\
+A runnable demo, packaged within a Docker container for reproducibility, consisting of two interactive web interfaces: \\
+Demo Interface: Allows users to run queries against selected datasets using customizable RAG configurations. Users can select different pipeline components via a control panel and input queries via a text field. The system will return generated answers, highlighting retrieved documents and relevant evidence.
+
+\includegraphics[width = 15cm]{./figures/demo_page1.png}
+
+Evaluation Interface: Presents detailed explanations of evaluation metrics and the dataset generation methodology. It includes an interactive table that displays benchmark results, allowing users to filter and compare different RAG configurations dynamically.
+
+\includegraphics[width = 15cm]{./figures/demo_page2.png}
+
+These deliverables aim to support both academic analysis and practical deployment, offering a flexible platform for future research and experimentation in the RAG community.
 
 %% bibliography
 \bibliographystyle{unsrtnat}
 \bibliography{References}
 
+\newpage
+\appendix
+\section{Transformer Architecture}
+\label{appendix:transformer}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+    \includegraphics[width = 8cm]{./figures/transformer.png}
+  \end{center}
+\end{wrapfigure}
+
+The Transformer architecture is a deep learning model used for processing sequential data, particularly in natural language processing (NLP) and computer vision. It utilizes a self-attention mechanism, which allows the model to learn relationships between different parts of the input sequence. This architecture consists of an encoder and a decoder, both built from stacked layers of attention mechanisms and feed-forward networks. \\
+
+Key Components and Functionality: \\
+\textbf{Self-Attention}:
+The core of the Transformer architecture, enabling it to weigh the importance of different parts of the input sequence when generating output.
+\textbf{Encoder}:
+Processes the input sequence and generates contextualized representations.
+\textbf{Decoder}:
+Generates the output sequence based on the encoder's output and its own attention mechanism.
+\textbf{Positional Encoding}:
+Since Transformers lack recurrence, positional encodings are used to capture the order of tokens in the input sequence.
+\textbf{Multi-Head Attention}:
+Allows the model to attend to different parts of the input simultaneously, capturing richer contextual relationships. \\
+
+How it Works:
+\textbf{1. Input}:
+The model takes an input sequence, which can be text, images, or other data. 
+\textbf{2. Embedding}:
+The input sequence is converted into numerical vectors called embeddings. 
+\textbf{3. Encoding}:
+The encoder processes the embeddings, using self-attention and feed-forward networks to generate contextualized representations. 
+\textbf{4. Decoding}:
+The decoder uses the encoder's output and its own attention mechanisms to generate the output sequence. 
+\textbf{5. Output}:
+The model produces the desired output, which can be a translation, a summary, or another type of sequence. 
+
+\section{Inverted File System}
+\label{appendix:invertedFileSystem}
+The Inverted File System (IVF) is a data structure used in approximate nearest neighbor (ANN) search, particularly in vector databases and large-scale similarity search systems. It is widely used in libraries like FAISS (Facebook AI Similarity Search) to speed up the process of finding the nearest vectors in a high-dimensional space. \\
+
+Core Concepts
+\textbf{Coarse Quantization} (Clustering):
+The dataset vectors are clustered using a method like k-means into nlist clusters (e.g., 1000). Each cluster center is a coarse centroid. Each data vector is assigned to its nearest centroid.
+\textbf{Inverted Lists}:
+Each cluster (centroid) maintains a list of the vectors assigned to it, this is the inverted list. Instead of storing the full vectors, some systems store residuals (difference between the vector and the centroid), or quantized versions of the vectors to save space.
+\textbf{Querying}:
+To find nearest neighbors for a query vector:
+The query is first compared to the centroids.
+The nprobe closest centroids are selected (e.g., 10).
+Search is performed only within the corresponding inverted lists, reducing the number of comparisons. \\
+The advantages of this data structure are a scalability to millions or billions of vectors, and a tunable tradeoff between speed and accuracy.
+
+It works well with quantization techniques like PQ (Product Quantization) for further compression.
+
+\section{Quantization techniques}
+\label{appendix:quantizationTechniques}
+TODO
+
+\section{Hierarchical Navigable Small World graphs}
+\label{appendix:HNSW}
+TODO
+
+\section{Metrics}
+\textcolor{red}{TODO: Write these out in Latex}
+\subsection{Normalized Discounted Cumulative Gain (nDCG)}
+\label{appendix:nDCG}
+
+\subsection{Context Recall}
+\label{appendix:recall}
+\includegraphics{figures/ContextRecall.png}
+
+\subsection{Context Precision}
+\label{appendix:precision}
+\includegraphics{figures/ContextPrecision.png}
+
+\subsection{Faithfulness}
+\label{appendix:faithfulness}
+\includegraphics{figures/FaithfulnessScore.png}
+
+\subsection{Answer Relevance}
+\label{appendix:relevance}
+\includegraphics{figures/AnswerRelevancy.png}
+
+\section{Fusion Strategies}
+\label{appendix:fusionStrategies}
+TODO
+
+\section{Similarity Metrics}
+\label{appendix:similarityMetrics}
+TODO
+
+\section{Graph-Based Reasoning}
+\label{appendix:graphBasedReasoning}
+TODO
 
 \end{document}
