@@ -34,6 +34,7 @@
 \usepackage{latexsym}
 \usepackage{wrapfig}
 \usepackage[pdftex,pagebackref,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
+\usepackage{parskip}
 
 \hypersetup{pdftitle={},
   pdfsubject={}, 
@@ -110,12 +111,15 @@
 
 \makeatletter
 \def\@makechapterhead#1{%
-  \vspace*{10\p@}%
   {\parindent \z@ \raggedright \sffamily
     \interlinepenalty\@M
     \Huge\bfseries \chaptername\ \thechapter\ --\ #1\par\nobreak
-    \vskip 10\p@
+    \vskip 20\p@
   }}
 \makeatother
+
+% Disable forced page breaks at start of chapters
+\usepackage{etoolbox}
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
 
 \allowdisplaybreaks
