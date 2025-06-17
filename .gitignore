@@ -1,21 +1,30 @@
+# Environment
 .DS_Store
-projectenv
-__pycache__
 .vscode
-.byaldi
+.venv
+.env
 
-# Practice data
-human-nutrition-text.pdf
-text_chunks_and_embeddings_df.csv
-data/coffee_txt
-data/drones_information_word
-data/math_for_ml_pdf
-data/random_image
-outputs/
+# Cache
+__pycache__
+.ipynb_checkpoints
 
-# Ignore all vscode generated files for latex
+# Notebook Practices
+notebooks/practice
+
+# Data
+data
+
+# Logs
+logs
+*.log
+
+# Outputs
+outputs
+
+# Latex
 reports/background-report/latex/*
 !reports/background-report/latex/main.tex
 !reports/background-report/latex/includes.tex
 !reports/background-report/latex/notation.tex
 !reports/background-report/latex/titlepage.tex
+!reports/background-report/latex/References.bib

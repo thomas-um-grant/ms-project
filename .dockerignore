@@ -1,0 +1,19 @@
+# Environment
+.DS_Store
+.vscode
+.venv
+
+# Cache
+__pycache__
+.ipynb_checkpoints
+
+# Build
+.python-version
+
+# Project folders
+background
+data
+notebooks
+logs
+reports
+outputs

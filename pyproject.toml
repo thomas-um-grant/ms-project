@@ -1,0 +1,22 @@
+[project]
+name = "current"
+version = "0.1.0"
+description = "RAG Optimization - MS Project"
+readme = "README.md"
+requires-python = "==3.12.11"
+dependencies = [
+	"fastapi==0.115.9",
+	"uvicorn==0.34.3",
+	"chromadb==1.0.12",
+	"sqlalchemy==2.0.41",
+	"streamlit==1.45.1",
+	"watchdog==6.0.0",
+	"torch==2.7.1",
+	"PyMuPDF==1.26.1",
+	"pandas==2.3.0",
+	"tqdm==4.67.1",
+	"spacy==3.8.7",
+	"tenacity==8.2.3",
+	"requests==2.31.0",
+	"python-dotenv>=1.1.0",
+]
