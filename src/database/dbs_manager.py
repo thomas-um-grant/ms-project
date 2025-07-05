@@ -71,3 +71,31 @@ class RelationalDB:
 
         finally:
             self.close_connection(conn)
+
+
+class JsonDB:
+    """Class for Json databases."""
+
+    def __init__(self, db_name: str = "datasets.json") -> None:
+        self.db_name = db_name
+
+        # Check if the database file exists or create it
+        if (Path(__file__).parent / db_name).exists():
+            logger.info(f"Database {db_name} exists, using existing database.")
+        else:
+            logger.info(f"Database {db_name} does not exist, creating a new database.")
+            # Create a new json file where the data will be stored
+            with (Path(__file__).parent / db_name).open("w") as db_file:
+                db_file.write("{}")
+
+
+class VectorDB:
+    """Class for Vector databases."""
+
+    # NotImplementedError
+
+
+class GraphDB:
+    """Class for Graph databases."""
+
+    # NotImplementedError

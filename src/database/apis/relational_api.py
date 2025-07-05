@@ -4,7 +4,7 @@ import sqlite3
 
 from utils.exceptions import RelationalDBError
 
-from .dbs_manager import RelationalDB
+from ..dbs_manager import RelationalDB
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,9 @@ def add_corpuses(corpus_data: list[dict]) -> str:
 
 
 def get_corpus_path(
-    dataset_name: str, doc_id: str, corpus_id: int
+    dataset_name: str,
+    doc_id: str,
+    corpus_id: int,
 ) -> sqlite3.Row | None:
     """
     Get a corpus from the relational database.

@@ -1,18 +1,21 @@
 import json
+import logging
 from pathlib import Path
 
 import pandas as pd
 
+logger = logging.getLogger(__name__)
+
 
 def format_beir_dataset(folder: Path) -> None:
     """Format the dataset to BEIR format."""
-    print("Formatting dataset to BEIR format...")
+    logger.info("Formatting dataset to BEIR format...")
 
-    # BEIR Format:
+    # Dataset Format:
     # "test": {
     #     "corpus":  [{"corpus_id": int, "file_name": str, "azure_file_id": str}],
     #     "queries": [{"query_id": str, "query": str, "query_type": str}],
-    #     "qrels": [{"query_id": str, "corpus_id": int, "score": int}],
+    #     "qrels": [{"query_id": str, "corpus_id": int, "pages": list[int], "score": int}, "answer": str],
     # }
 
     # Get generate questions and answers from the dataset folder
@@ -47,10 +50,34 @@ def format_beir_dataset(folder: Path) -> None:
 
     for question_type, questions_by_type in generated_questions.items():
         for question_id, question_item in questions_by_type.items():
+            # Validate file structure
+            if "files" not in question_item or len(question_item["files"]) < 2:
+                logger.warning(f"Invalid file structure for question {question_id}")
+                continue
+            if len(question_item["files"][0]) != len(question_item["files"][1]):
+                logger.warning(f"Mismatched file lists for question {question_id}")
+                continue
+
             for corpus_id, file_id in [
                 (question_item["files"][0][x], question_item["files"][1][x])
                 for x in range(len(question_item["files"][0]))
             ]:
+                if question_type not in generated_answers:
+                    logger.warning(
+                        f"No answers found for question type {question_type}. Skipping."
+                    )
+                    continue
+                if question_id not in generated_answers[question_type]:
+                    logger.warning(
+                        f"No answers found for question {question_id} of type {question_type}. Skipping."
+                    )
+                    continue
+                if "references" not in generated_answers[question_type][question_id]:
+                    logger.warning(
+                        f"No references found for question {question_id} of type {question_type}. Skipping."
+                    )
+                    continue
+
                 question = question_item["question"]
                 corpus_list.append(
                     {
@@ -71,7 +98,7 @@ def format_beir_dataset(folder: Path) -> None:
                 for reference in generated_answers[question_type][question_id][
                     "references"
                 ]:
-                    if reference[0].split(".")[0] == corpus_id:
+                    if reference[0] == corpus_id:
                         pages.append(reference[1])
 
                 qrels_list.append(
@@ -98,8 +125,8 @@ def format_beir_dataset(folder: Path) -> None:
 
 
 def generate_human_evaluation_json(folder: Path) -> None:
-    """Generate a CSV file for human evaluation."""
-    print("Generating CSV file for human evaluation...")
+    """Generate a JSON file for human evaluation."""
+    logger.info("Generating JSON file for human evaluation...")
     qa_pairs = []
 
     beir_dataset_file = folder / "generated_data/beir_dataset.json"
@@ -209,4 +236,4 @@ def convert_to_excel(folder: Path):
     excel_path = folder / "generated_data/human_evaluation_qa_pairs.xlsx"
     formatted.to_excel(excel_path, index=False)
 
-    print(f"Excel file saved to {excel_path}")
+    logger.info(f"Excel file saved to {excel_path}")
