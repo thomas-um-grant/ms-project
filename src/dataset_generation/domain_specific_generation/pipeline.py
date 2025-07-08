@@ -14,7 +14,9 @@ from extractor import (
 )
 from formatter import (
     convert_to_excel,
+    extract_final_corpuses,
     format_beir_dataset,
+    generate_final_dataset,
     generate_human_evaluation_json,
 )
 from generator import generate_answers, generate_questions
@@ -36,14 +38,16 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 AZURE_ENDPOINT = os.getenv(
-    "AZURE_OPENAI_ENDPOINT", "https://openai-charter.openai.azure.com/"
+    "AZURE_OPENAI_ENDPOINT",
+    "https://openai-charter.openai.azure.com/",
 )
 AZURE_API_KEY = os.getenv("AZURE_OPENAI_API_KEY")
 AZURE_API_VERSION = os.getenv("AZURE_OPENAI_API_VERSION", "2024-10-21")
 AZURE_MODEL = os.getenv("AZURE_OPENAI_MODEL", "gpt-4o-v2")
 AZURE_MINI_MODEL = os.getenv("AZURE_OPENAI_MINI_MODEL", "gpt-4o-mini")
 AZURE_EMBEDDING_MODEL = os.getenv(
-    "AZURE_OPENAI_EMBEDDING_MODEL", "text-embedding-3-large"
+    "AZURE_OPENAI_EMBEDDING_MODEL",
+    "text-embedding-3-large",
 )
 
 
@@ -97,7 +101,10 @@ async def main(data_folder_path: str = "pdfs") -> None:
     # Generate metadata for each page using an LLM.
     logger.info("Extracting metadata for each page...")
     await extract_metadata_pages_from_dataset(
-        langfuse_client, openai_client, model=AZURE_MINI_MODEL, data_folder=data_folder
+        langfuse_client,
+        openai_client,
+        model=AZURE_MINI_MODEL,
+        data_folder=data_folder,
     )
 
     # Retrieve the top k pages for each question based on their embeddings.
@@ -135,6 +142,14 @@ async def main(data_folder_path: str = "pdfs") -> None:
     generate_human_evaluation_json(data_folder)
     convert_to_excel(data_folder)
 
+    # Extract final corpuses from the dataset
+    logger.info("Extracting final corpuses from the dataset...")
+    extract_final_corpuses(data_folder)
+
+    # Generate the final dataset in the required format
+    logger.info("Generating final dataset...")
+    generate_final_dataset(data_folder)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run dataset generation pipeline.")
@@ -151,7 +166,7 @@ if __name__ == "__main__":
     asyncio.run(
         main(
             data_folder_path=args.data_folder_path,
-        )
+        ),
     )
     end_time = time.time()
     logger.info(f"Execution time: {end_time - start_time} seconds")

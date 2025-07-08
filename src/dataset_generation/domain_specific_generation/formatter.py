@@ -3,6 +3,8 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+from pdf2image import convert_from_path
+from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -64,17 +66,17 @@ def format_beir_dataset(folder: Path) -> None:
             ]:
                 if question_type not in generated_answers:
                     logger.warning(
-                        f"No answers found for question type {question_type}. Skipping."
+                        f"No answers found for question type {question_type}. Skipping.",
                     )
                     continue
                 if question_id not in generated_answers[question_type]:
                     logger.warning(
-                        f"No answers found for question {question_id} of type {question_type}. Skipping."
+                        f"No answers found for question {question_id} of type {question_type}. Skipping.",
                     )
                     continue
                 if "references" not in generated_answers[question_type][question_id]:
                     logger.warning(
-                        f"No references found for question {question_id} of type {question_type}. Skipping."
+                        f"No references found for question {question_id} of type {question_type}. Skipping.",
                     )
                     continue
 
@@ -237,3 +239,151 @@ def convert_to_excel(folder: Path):
     formatted.to_excel(excel_path, index=False)
 
     logger.info(f"Excel file saved to {excel_path}")
+
+
+def extract_final_corpuses(folder: Path) -> None:
+    # Load the metadata
+    metadata_file = folder / "extracted_data/metadata.json"
+    if not metadata_file.exists():
+        msg = "Metadata file not found. Please run format_beir_dataset first."
+        raise FileNotFoundError(msg)
+
+    metadata = {}
+    with metadata_file.open() as mf:
+        metadata = json.load(mf)
+
+    # Extract all pages from the pdfs into images with id {corpus_id}_{page_id}.jpg
+    images_folder = folder / "final_dataset/corpuses"
+    if not images_folder.exists():
+        msg = "Images folder not found. Please run format_beir_dataset first."
+        raise FileNotFoundError(msg)
+
+    MAX_HEIGHT = 1200
+
+    for corpus_id, corpus in metadata.items():
+        # Open PDF to extract individual pages
+        corpus_path = folder / corpus["pdf_path"]
+        if corpus_path.suffix == ".pdf":
+            # Convert all pages to images
+            try:
+                images = convert_from_path(corpus_path)
+
+                # Save each page as an image
+                for page_number, image in enumerate(images, start=1):
+                    # Resize only if image is taller than MAX_HEIGHT
+                    w, h = image.size
+                    if h > MAX_HEIGHT:
+                        # Calculate proportional width
+                        new_width = int(w * (MAX_HEIGHT / h))
+                        image = image.resize(
+                            (new_width, MAX_HEIGHT),
+                            resample=Image.Resampling.LANCZOS,
+                        )
+
+                    output_path = images_folder / f"{corpus_id}_{page_number}.jpg"
+                    image.save(output_path, "JPEG")
+                    print(f"Saved: {output_path}")
+
+            except Exception:
+                print(f"Failed to convert {corpus_path}")
+                continue
+
+
+def generate_final_dataset(folder: Path) -> None:
+    """Generate the final datasets."""
+    logger.info("Generating final datasets...")
+
+    # Load the BEIR dataset
+    beir_dataset_file = folder / "generated_data/beir_dataset.json"
+    if not beir_dataset_file.exists():
+        msg = "BEIR dataset file not found. Please run format_beir_dataset first."
+        raise FileNotFoundError(msg)
+
+    with beir_dataset_file.open() as bdf:
+        beir_dataset = json.load(bdf)
+
+    # Load the generated questions
+    questions_file = folder / "generated_data/generated_questions.json"
+    if not questions_file.exists():
+        msg = (
+            "Generated questions file not found. Please run format_beir_dataset first."
+        )
+        raise FileNotFoundError(msg)
+
+    questions = {}
+    with questions_file.open() as qf:
+        questions = json.load(qf)
+
+    # Create the dataset properly formatted with individual lines for each corpus_id / doc_id
+    dataset: dict = {
+        "corpus": [],
+        "queries": [],
+        "qrels": [],
+    }
+
+    def get_query_type(qid):
+        if qid < 50:
+            return "recency-bias"
+        if qid < 100:
+            return "single-fact"
+        if qid < 150:
+            return "single-slide"
+        if qid < 200:
+            return "multi-slide"
+        if qid < 250:
+            return "aggregation"
+        return "top-level-strategic"
+
+    qid = 0
+    for qrel in beir_dataset["test"]["qrels"]:
+        if len(qrel["pages"]) == 0:
+            # If no pages are present, we ignore this qrel
+            continue
+
+        for page in qrel.get("pages", []):
+            query_type = get_query_type(int(qrel["query_id"]))
+
+            query_entry = {
+                "query-id": str(qid),
+                "query": questions[query_type][qrel["query_id"]]["question"],
+                "query-type": query_type,
+            }
+
+            qrel_entry = {
+                "query-id": str(qid),
+                "corpus-id": qrel["corpus_id"],
+                "doc-id": page,
+                "answer": qrel["answer"],
+                "score": qrel["score"],
+            }
+
+            dataset["queries"].append(query_entry)
+            dataset["qrels"].append(qrel_entry)
+
+            qid += 1
+
+    # Load all corpuses from the corpuses folder
+    corpus_folder = folder / "final_dataset/corpuses"
+    if not corpus_folder.exists():
+        msg = "Corpus folder not found. Please run extract_final_corpuses first."
+        raise FileNotFoundError(msg)
+
+    corpus_files = list(corpus_folder.glob("*.jpg"))
+    for corpus_file in corpus_files:
+        # Extract the corpus_id and doc_id from the file name
+        corpus_id, doc_id = corpus_file.stem.split("_")
+        corpus_entry = {
+            "id": f"{corpus_id}_{doc_id}",
+            "corpus-id": corpus_id,
+            "image": corpus_file.name,
+            "doc-id": doc_id,
+        }
+
+        dataset["corpus"].append(corpus_entry)
+
+    # Save the dataset
+    dataset_path = folder / "final_dataset/dataset.json"
+    with dataset_path.open("w") as df:
+        json.dump(dataset, df, indent=4)
+
+    logger.info(f"Final dataset saved to {dataset_path}")

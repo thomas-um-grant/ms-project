@@ -10,7 +10,7 @@ dependencies = [
 	"chromadb==1.0.12",
 	"streamlit==1.45.1",
 	"watchdog==6.0.0",
-	"torch==2.7.1",
+	"torch==2.5.1",
 	"pymupdf==1.26.1",
 	"pandas==2.3.0",
 	"tqdm==4.67.1",
@@ -32,9 +32,22 @@ dependencies = [
 	"langchain>=0.3.26",
 	"langchain-google-genai>=2.1.6",
 	"bs4>=0.0.2",
+	"datasets>=2.19.1",
+	"pytorch-lightning>=2.5.2",
+	"mteb>=1.38.33",
+	"ir-measures>=0.3.7",
+	"numpy>=2.3.0",
+	"colpali-engine",
+	"einops>=0.8.1",
+	"matplotlib>=3.10.3",
+	"seaborn>=0.13.2",
+	"transformers>=4.53.1",
 ]
 
 [dependency-groups]
 dev = [
     "ipykernel>=6.29.5",
 ]
+
+[tool.uv.sources]
+colpali-engine = { git = "https://github.com/illuin-tech/colpali" }
