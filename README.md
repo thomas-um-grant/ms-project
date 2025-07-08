@@ -1,8 +1,11 @@
 # ms-project
+
 Imperial College London - Computing Master's Individual Project
 
 ## Structure
+
 The structure below is used to separate code, experiments, logs, notes, and results.
+
 ```
 /ms-project
 ├── background/          # literature review and other background research content
@@ -18,4 +21,5 @@ The structure below is used to separate code, experiments, logs, notes, and resu
 ```
 
 ## License
+
 [![License: Non-Commercial Apache](https://img.shields.io/badge/license-NC--Apache%202.0-blue.svg)](./LICENSE)
