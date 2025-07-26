@@ -1,0 +1,5579 @@
+[
+  {
+    "id": "0.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page1.png"
+    }
+  },
+  {
+    "id": "0.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page2.png"
+    }
+  },
+  {
+    "id": "0.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page3.png"
+    }
+  },
+  {
+    "id": "0.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page4.png"
+    }
+  },
+  {
+    "id": "0.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page5.png"
+    }
+  },
+  {
+    "id": "0.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page6.png"
+    }
+  },
+  {
+    "id": "0.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page7.png"
+    }
+  },
+  {
+    "id": "0.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page8.png"
+    }
+  },
+  {
+    "id": "0.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page9.png"
+    }
+  },
+  {
+    "id": "0.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page10.png"
+    }
+  },
+  {
+    "id": "0.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page11.png"
+    }
+  },
+  {
+    "id": "0.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page12.png"
+    }
+  },
+  {
+    "id": "0.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page13.png"
+    }
+  },
+  {
+    "id": "0.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page14.png"
+    }
+  },
+  {
+    "id": "0.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page15.png"
+    }
+  },
+  {
+    "id": "0.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page16.png"
+    }
+  },
+  {
+    "id": "0.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page17.png"
+    }
+  },
+  {
+    "id": "0.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page18.png"
+    }
+  },
+  {
+    "id": "0.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page19.png"
+    }
+  },
+  {
+    "id": "0.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page20.png"
+    }
+  },
+  {
+    "id": "0.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page21.png"
+    }
+  },
+  {
+    "id": "0.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page22.png"
+    }
+  },
+  {
+    "id": "0.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page23.png"
+    }
+  },
+  {
+    "id": "0.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page24.png"
+    }
+  },
+  {
+    "id": "0.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page25.png"
+    }
+  },
+  {
+    "id": "0.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page26.png"
+    }
+  },
+  {
+    "id": "0.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page27.png"
+    }
+  },
+  {
+    "id": "0.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page28.png"
+    }
+  },
+  {
+    "id": "0.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page29.png"
+    }
+  },
+  {
+    "id": "0.pdf_page30",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page30.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 30,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page30",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page30.png"
+    }
+  },
+  {
+    "id": "0.pdf_page31",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page31.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 31,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page31",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page31.png"
+    }
+  },
+  {
+    "id": "0.pdf_page32",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page32.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 32,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page32",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page32.png"
+    }
+  },
+  {
+    "id": "0.pdf_page33",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page33.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 33,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page33",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page33.png"
+    }
+  },
+  {
+    "id": "0.pdf_page34",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page34.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 34,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page34",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page34.png"
+    }
+  },
+  {
+    "id": "0.pdf_page35",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page35.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 35,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page35",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page35.png"
+    }
+  },
+  {
+    "id": "0.pdf_page36",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page36.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 36,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page36",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page36.png"
+    }
+  },
+  {
+    "id": "0.pdf_page37",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/0.pdf_page37.pt"
+    },
+    "metadata": {
+      "original_doc": "0.pdf",
+      "page_number": 37,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page37",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/0.pdf_page37.png"
+    }
+  },
+  {
+    "id": "1.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page1.png"
+    }
+  },
+  {
+    "id": "1.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page2.png"
+    }
+  },
+  {
+    "id": "1.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page3.png"
+    }
+  },
+  {
+    "id": "1.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page4.png"
+    }
+  },
+  {
+    "id": "1.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page5.png"
+    }
+  },
+  {
+    "id": "1.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page6.png"
+    }
+  },
+  {
+    "id": "1.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page7.png"
+    }
+  },
+  {
+    "id": "1.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page8.png"
+    }
+  },
+  {
+    "id": "1.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page9.png"
+    }
+  },
+  {
+    "id": "1.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page10.png"
+    }
+  },
+  {
+    "id": "1.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page11.png"
+    }
+  },
+  {
+    "id": "1.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page12.png"
+    }
+  },
+  {
+    "id": "1.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page13.png"
+    }
+  },
+  {
+    "id": "1.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page14.png"
+    }
+  },
+  {
+    "id": "1.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page15.png"
+    }
+  },
+  {
+    "id": "1.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page16.png"
+    }
+  },
+  {
+    "id": "1.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page17.png"
+    }
+  },
+  {
+    "id": "1.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page18.png"
+    }
+  },
+  {
+    "id": "1.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page19.png"
+    }
+  },
+  {
+    "id": "1.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page20.png"
+    }
+  },
+  {
+    "id": "1.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page21.png"
+    }
+  },
+  {
+    "id": "1.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page22.png"
+    }
+  },
+  {
+    "id": "1.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page23.png"
+    }
+  },
+  {
+    "id": "1.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page24.png"
+    }
+  },
+  {
+    "id": "1.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page25.png"
+    }
+  },
+  {
+    "id": "1.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page26.png"
+    }
+  },
+  {
+    "id": "1.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/1.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "1.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/1.pdf_page27.png"
+    }
+  },
+  {
+    "id": "10.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page1.png"
+    }
+  },
+  {
+    "id": "10.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page2.png"
+    }
+  },
+  {
+    "id": "10.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page3.png"
+    }
+  },
+  {
+    "id": "10.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page4.png"
+    }
+  },
+  {
+    "id": "10.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page5.png"
+    }
+  },
+  {
+    "id": "10.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page6.png"
+    }
+  },
+  {
+    "id": "10.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page7.png"
+    }
+  },
+  {
+    "id": "10.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page8.png"
+    }
+  },
+  {
+    "id": "10.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page9.png"
+    }
+  },
+  {
+    "id": "10.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page10.png"
+    }
+  },
+  {
+    "id": "10.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page11.png"
+    }
+  },
+  {
+    "id": "10.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page12.png"
+    }
+  },
+  {
+    "id": "10.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/10.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "10.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/10.pdf_page13.png"
+    }
+  },
+  {
+    "id": "2.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page1.png"
+    }
+  },
+  {
+    "id": "2.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page2.png"
+    }
+  },
+  {
+    "id": "2.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page3.png"
+    }
+  },
+  {
+    "id": "2.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page4.png"
+    }
+  },
+  {
+    "id": "2.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page5.png"
+    }
+  },
+  {
+    "id": "2.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page6.png"
+    }
+  },
+  {
+    "id": "2.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page7.png"
+    }
+  },
+  {
+    "id": "2.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page8.png"
+    }
+  },
+  {
+    "id": "2.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page9.png"
+    }
+  },
+  {
+    "id": "2.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page10.png"
+    }
+  },
+  {
+    "id": "2.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page11.png"
+    }
+  },
+  {
+    "id": "2.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page12.png"
+    }
+  },
+  {
+    "id": "2.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page13.png"
+    }
+  },
+  {
+    "id": "2.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page14.png"
+    }
+  },
+  {
+    "id": "2.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page15.png"
+    }
+  },
+  {
+    "id": "2.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page16.png"
+    }
+  },
+  {
+    "id": "2.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page17.png"
+    }
+  },
+  {
+    "id": "2.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page18.png"
+    }
+  },
+  {
+    "id": "2.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page19.png"
+    }
+  },
+  {
+    "id": "2.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page20.png"
+    }
+  },
+  {
+    "id": "2.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page21.png"
+    }
+  },
+  {
+    "id": "2.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page22.png"
+    }
+  },
+  {
+    "id": "2.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page23.png"
+    }
+  },
+  {
+    "id": "2.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page24.png"
+    }
+  },
+  {
+    "id": "2.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page25.png"
+    }
+  },
+  {
+    "id": "2.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page26.png"
+    }
+  },
+  {
+    "id": "2.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page27.png"
+    }
+  },
+  {
+    "id": "2.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page28.png"
+    }
+  },
+  {
+    "id": "2.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page29.png"
+    }
+  },
+  {
+    "id": "2.pdf_page30",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page30.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 30,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page30",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page30.png"
+    }
+  },
+  {
+    "id": "2.pdf_page31",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page31.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 31,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page31",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page31.png"
+    }
+  },
+  {
+    "id": "2.pdf_page32",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/2.pdf_page32.pt"
+    },
+    "metadata": {
+      "original_doc": "2.pdf",
+      "page_number": 32,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page32",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/2.pdf_page32.png"
+    }
+  },
+  {
+    "id": "3.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page1.png"
+    }
+  },
+  {
+    "id": "3.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page2.png"
+    }
+  },
+  {
+    "id": "3.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page3.png"
+    }
+  },
+  {
+    "id": "3.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page4.png"
+    }
+  },
+  {
+    "id": "3.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page5.png"
+    }
+  },
+  {
+    "id": "3.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page6.png"
+    }
+  },
+  {
+    "id": "3.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page7.png"
+    }
+  },
+  {
+    "id": "3.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page8.png"
+    }
+  },
+  {
+    "id": "3.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page9.png"
+    }
+  },
+  {
+    "id": "3.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page10.png"
+    }
+  },
+  {
+    "id": "3.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page11.png"
+    }
+  },
+  {
+    "id": "3.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page12.png"
+    }
+  },
+  {
+    "id": "3.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page13.png"
+    }
+  },
+  {
+    "id": "3.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page14.png"
+    }
+  },
+  {
+    "id": "3.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page15.png"
+    }
+  },
+  {
+    "id": "3.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page16.png"
+    }
+  },
+  {
+    "id": "3.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page17.png"
+    }
+  },
+  {
+    "id": "3.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page18.png"
+    }
+  },
+  {
+    "id": "3.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page19.png"
+    }
+  },
+  {
+    "id": "3.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page20.png"
+    }
+  },
+  {
+    "id": "3.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page21.png"
+    }
+  },
+  {
+    "id": "3.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page22.png"
+    }
+  },
+  {
+    "id": "3.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page23.png"
+    }
+  },
+  {
+    "id": "3.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page24.png"
+    }
+  },
+  {
+    "id": "3.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page25.png"
+    }
+  },
+  {
+    "id": "3.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page26.png"
+    }
+  },
+  {
+    "id": "3.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page27.png"
+    }
+  },
+  {
+    "id": "3.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page28.png"
+    }
+  },
+  {
+    "id": "3.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page29.png"
+    }
+  },
+  {
+    "id": "3.pdf_page30",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page30.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 30,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page30",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page30.png"
+    }
+  },
+  {
+    "id": "3.pdf_page31",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page31.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 31,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page31",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page31.png"
+    }
+  },
+  {
+    "id": "3.pdf_page32",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page32.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 32,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page32",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page32.png"
+    }
+  },
+  {
+    "id": "3.pdf_page33",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page33.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 33,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page33",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page33.png"
+    }
+  },
+  {
+    "id": "3.pdf_page34",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page34.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 34,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page34",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page34.png"
+    }
+  },
+  {
+    "id": "3.pdf_page35",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page35.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 35,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page35",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page35.png"
+    }
+  },
+  {
+    "id": "3.pdf_page36",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page36.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 36,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page36",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page36.png"
+    }
+  },
+  {
+    "id": "3.pdf_page37",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page37.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 37,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page37",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page37.png"
+    }
+  },
+  {
+    "id": "3.pdf_page38",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page38.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 38,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page38",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page38.png"
+    }
+  },
+  {
+    "id": "3.pdf_page39",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page39.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 39,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page39",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page39.png"
+    }
+  },
+  {
+    "id": "3.pdf_page40",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page40.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 40,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page40",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page40.png"
+    }
+  },
+  {
+    "id": "3.pdf_page41",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page41.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 41,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page41",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page41.png"
+    }
+  },
+  {
+    "id": "3.pdf_page42",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page42.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 42,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page42",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page42.png"
+    }
+  },
+  {
+    "id": "3.pdf_page43",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page43.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 43,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page43",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page43.png"
+    }
+  },
+  {
+    "id": "3.pdf_page44",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page44.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 44,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page44",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page44.png"
+    }
+  },
+  {
+    "id": "3.pdf_page45",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page45.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 45,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page45",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page45.png"
+    }
+  },
+  {
+    "id": "3.pdf_page46",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page46.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 46,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page46",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page46.png"
+    }
+  },
+  {
+    "id": "3.pdf_page47",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page47.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 47,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page47",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page47.png"
+    }
+  },
+  {
+    "id": "3.pdf_page48",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page48.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 48,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page48",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page48.png"
+    }
+  },
+  {
+    "id": "3.pdf_page49",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page49.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 49,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page49",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page49.png"
+    }
+  },
+  {
+    "id": "3.pdf_page50",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page50.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 50,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page50",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page50.png"
+    }
+  },
+  {
+    "id": "3.pdf_page51",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page51.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 51,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page51",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page51.png"
+    }
+  },
+  {
+    "id": "3.pdf_page52",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page52.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 52,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page52",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page52.png"
+    }
+  },
+  {
+    "id": "3.pdf_page53",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page53.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 53,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page53",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page53.png"
+    }
+  },
+  {
+    "id": "3.pdf_page54",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page54.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 54,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page54",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page54.png"
+    }
+  },
+  {
+    "id": "3.pdf_page55",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page55.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 55,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page55",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page55.png"
+    }
+  },
+  {
+    "id": "3.pdf_page56",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page56.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 56,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page56",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page56.png"
+    }
+  },
+  {
+    "id": "3.pdf_page57",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page57.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 57,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page57",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page57.png"
+    }
+  },
+  {
+    "id": "3.pdf_page58",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page58.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 58,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page58",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page58.png"
+    }
+  },
+  {
+    "id": "3.pdf_page59",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page59.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 59,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page59",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page59.png"
+    }
+  },
+  {
+    "id": "3.pdf_page60",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page60.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 60,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page60",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page60.png"
+    }
+  },
+  {
+    "id": "3.pdf_page61",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page61.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 61,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page61",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page61.png"
+    }
+  },
+  {
+    "id": "3.pdf_page62",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page62.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 62,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page62",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page62.png"
+    }
+  },
+  {
+    "id": "3.pdf_page63",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page63.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 63,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page63",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page63.png"
+    }
+  },
+  {
+    "id": "3.pdf_page64",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page64.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 64,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page64",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page64.png"
+    }
+  },
+  {
+    "id": "3.pdf_page65",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page65.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 65,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page65",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page65.png"
+    }
+  },
+  {
+    "id": "3.pdf_page66",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page66.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 66,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page66",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page66.png"
+    }
+  },
+  {
+    "id": "3.pdf_page67",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page67.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 67,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page67",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page67.png"
+    }
+  },
+  {
+    "id": "3.pdf_page68",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page68.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 68,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page68",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page68.png"
+    }
+  },
+  {
+    "id": "3.pdf_page69",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page69.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 69,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page69",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page69.png"
+    }
+  },
+  {
+    "id": "3.pdf_page70",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page70.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 70,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page70",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page70.png"
+    }
+  },
+  {
+    "id": "3.pdf_page71",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page71.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 71,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page71",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page71.png"
+    }
+  },
+  {
+    "id": "3.pdf_page72",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/3.pdf_page72.pt"
+    },
+    "metadata": {
+      "original_doc": "3.pdf",
+      "page_number": 72,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page72",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/3.pdf_page72.png"
+    }
+  },
+  {
+    "id": "4.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page1.png"
+    }
+  },
+  {
+    "id": "4.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page2.png"
+    }
+  },
+  {
+    "id": "4.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page3.png"
+    }
+  },
+  {
+    "id": "4.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page4.png"
+    }
+  },
+  {
+    "id": "4.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page5.png"
+    }
+  },
+  {
+    "id": "4.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page6.png"
+    }
+  },
+  {
+    "id": "4.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page7.png"
+    }
+  },
+  {
+    "id": "4.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page8.png"
+    }
+  },
+  {
+    "id": "4.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page9.png"
+    }
+  },
+  {
+    "id": "4.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page10.png"
+    }
+  },
+  {
+    "id": "4.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page11.png"
+    }
+  },
+  {
+    "id": "4.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/4.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "4.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/4.pdf_page12.png"
+    }
+  },
+  {
+    "id": "5.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page1.png"
+    }
+  },
+  {
+    "id": "5.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page2.png"
+    }
+  },
+  {
+    "id": "5.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page3.png"
+    }
+  },
+  {
+    "id": "5.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page4.png"
+    }
+  },
+  {
+    "id": "5.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page5.png"
+    }
+  },
+  {
+    "id": "5.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page6.png"
+    }
+  },
+  {
+    "id": "5.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page7.png"
+    }
+  },
+  {
+    "id": "5.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page8.png"
+    }
+  },
+  {
+    "id": "5.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page9.png"
+    }
+  },
+  {
+    "id": "5.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page10.png"
+    }
+  },
+  {
+    "id": "5.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page11.png"
+    }
+  },
+  {
+    "id": "5.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page12.png"
+    }
+  },
+  {
+    "id": "5.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page13.png"
+    }
+  },
+  {
+    "id": "5.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page14.png"
+    }
+  },
+  {
+    "id": "5.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page15.png"
+    }
+  },
+  {
+    "id": "5.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page16.png"
+    }
+  },
+  {
+    "id": "5.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page17.png"
+    }
+  },
+  {
+    "id": "5.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page18.png"
+    }
+  },
+  {
+    "id": "5.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page19.png"
+    }
+  },
+  {
+    "id": "5.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page20.png"
+    }
+  },
+  {
+    "id": "5.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page21.png"
+    }
+  },
+  {
+    "id": "5.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page22.png"
+    }
+  },
+  {
+    "id": "5.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page23.png"
+    }
+  },
+  {
+    "id": "5.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page24.png"
+    }
+  },
+  {
+    "id": "5.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page25.png"
+    }
+  },
+  {
+    "id": "5.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page26.png"
+    }
+  },
+  {
+    "id": "5.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page27.png"
+    }
+  },
+  {
+    "id": "5.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page28.png"
+    }
+  },
+  {
+    "id": "5.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/5.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "5.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/5.pdf_page29.png"
+    }
+  },
+  {
+    "id": "6.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page1.png"
+    }
+  },
+  {
+    "id": "6.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page2.png"
+    }
+  },
+  {
+    "id": "6.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page3.png"
+    }
+  },
+  {
+    "id": "6.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page4.png"
+    }
+  },
+  {
+    "id": "6.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page5.png"
+    }
+  },
+  {
+    "id": "6.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page6.png"
+    }
+  },
+  {
+    "id": "6.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page7.png"
+    }
+  },
+  {
+    "id": "6.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page8.png"
+    }
+  },
+  {
+    "id": "6.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page9.png"
+    }
+  },
+  {
+    "id": "6.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page10.png"
+    }
+  },
+  {
+    "id": "6.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page11.png"
+    }
+  },
+  {
+    "id": "6.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page12.png"
+    }
+  },
+  {
+    "id": "6.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page13.png"
+    }
+  },
+  {
+    "id": "6.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page14.png"
+    }
+  },
+  {
+    "id": "6.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page15.png"
+    }
+  },
+  {
+    "id": "6.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page16.png"
+    }
+  },
+  {
+    "id": "6.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page17.png"
+    }
+  },
+  {
+    "id": "6.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page18.png"
+    }
+  },
+  {
+    "id": "6.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page19.png"
+    }
+  },
+  {
+    "id": "6.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page20.png"
+    }
+  },
+  {
+    "id": "6.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page21.png"
+    }
+  },
+  {
+    "id": "6.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page22.png"
+    }
+  },
+  {
+    "id": "6.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page23.png"
+    }
+  },
+  {
+    "id": "6.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page24.png"
+    }
+  },
+  {
+    "id": "6.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page25.png"
+    }
+  },
+  {
+    "id": "6.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page26.png"
+    }
+  },
+  {
+    "id": "6.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/6.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "6.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/6.pdf_page27.png"
+    }
+  },
+  {
+    "id": "7.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page1.png"
+    }
+  },
+  {
+    "id": "7.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page2.png"
+    }
+  },
+  {
+    "id": "7.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page3.png"
+    }
+  },
+  {
+    "id": "7.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page4.png"
+    }
+  },
+  {
+    "id": "7.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page5.png"
+    }
+  },
+  {
+    "id": "7.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page6.png"
+    }
+  },
+  {
+    "id": "7.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page7.png"
+    }
+  },
+  {
+    "id": "7.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page8.png"
+    }
+  },
+  {
+    "id": "7.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page9.png"
+    }
+  },
+  {
+    "id": "7.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page10.png"
+    }
+  },
+  {
+    "id": "7.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page11.png"
+    }
+  },
+  {
+    "id": "7.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page12.png"
+    }
+  },
+  {
+    "id": "7.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page13.png"
+    }
+  },
+  {
+    "id": "7.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page14.png"
+    }
+  },
+  {
+    "id": "7.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page15.png"
+    }
+  },
+  {
+    "id": "7.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page16.png"
+    }
+  },
+  {
+    "id": "7.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page17.png"
+    }
+  },
+  {
+    "id": "7.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page18.png"
+    }
+  },
+  {
+    "id": "7.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page19.png"
+    }
+  },
+  {
+    "id": "7.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page20.png"
+    }
+  },
+  {
+    "id": "7.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page21.png"
+    }
+  },
+  {
+    "id": "7.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page22.png"
+    }
+  },
+  {
+    "id": "7.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page23.png"
+    }
+  },
+  {
+    "id": "7.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page24.png"
+    }
+  },
+  {
+    "id": "7.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page25.png"
+    }
+  },
+  {
+    "id": "7.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page26.png"
+    }
+  },
+  {
+    "id": "7.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page27.png"
+    }
+  },
+  {
+    "id": "7.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page28.png"
+    }
+  },
+  {
+    "id": "7.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page29.png"
+    }
+  },
+  {
+    "id": "7.pdf_page30",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page30.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 30,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page30",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page30.png"
+    }
+  },
+  {
+    "id": "7.pdf_page31",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page31.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 31,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page31",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page31.png"
+    }
+  },
+  {
+    "id": "7.pdf_page32",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page32.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 32,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page32",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page32.png"
+    }
+  },
+  {
+    "id": "7.pdf_page33",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page33.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 33,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page33",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page33.png"
+    }
+  },
+  {
+    "id": "7.pdf_page34",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page34.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 34,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page34",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page34.png"
+    }
+  },
+  {
+    "id": "7.pdf_page35",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page35.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 35,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page35",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page35.png"
+    }
+  },
+  {
+    "id": "7.pdf_page36",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page36.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 36,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page36",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page36.png"
+    }
+  },
+  {
+    "id": "7.pdf_page37",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page37.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 37,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page37",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page37.png"
+    }
+  },
+  {
+    "id": "7.pdf_page38",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page38.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 38,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page38",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page38.png"
+    }
+  },
+  {
+    "id": "7.pdf_page39",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page39.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 39,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page39",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page39.png"
+    }
+  },
+  {
+    "id": "7.pdf_page40",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page40.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 40,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page40",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page40.png"
+    }
+  },
+  {
+    "id": "7.pdf_page41",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page41.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 41,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page41",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page41.png"
+    }
+  },
+  {
+    "id": "7.pdf_page42",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page42.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 42,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page42",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page42.png"
+    }
+  },
+  {
+    "id": "7.pdf_page43",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page43.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 43,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page43",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page43.png"
+    }
+  },
+  {
+    "id": "7.pdf_page44",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page44.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 44,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page44",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page44.png"
+    }
+  },
+  {
+    "id": "7.pdf_page45",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/7.pdf_page45.pt"
+    },
+    "metadata": {
+      "original_doc": "7.pdf",
+      "page_number": 45,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page45",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/7.pdf_page45.png"
+    }
+  },
+  {
+    "id": "8.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page1.png"
+    }
+  },
+  {
+    "id": "8.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page2.png"
+    }
+  },
+  {
+    "id": "8.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page3.png"
+    }
+  },
+  {
+    "id": "8.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page4.png"
+    }
+  },
+  {
+    "id": "8.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page5.png"
+    }
+  },
+  {
+    "id": "8.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page6.png"
+    }
+  },
+  {
+    "id": "8.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page7.png"
+    }
+  },
+  {
+    "id": "8.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page8.png"
+    }
+  },
+  {
+    "id": "8.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page9.png"
+    }
+  },
+  {
+    "id": "8.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page10.png"
+    }
+  },
+  {
+    "id": "8.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page11.png"
+    }
+  },
+  {
+    "id": "8.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page12.png"
+    }
+  },
+  {
+    "id": "8.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page13.png"
+    }
+  },
+  {
+    "id": "8.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page14.png"
+    }
+  },
+  {
+    "id": "8.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page15.png"
+    }
+  },
+  {
+    "id": "8.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page16.png"
+    }
+  },
+  {
+    "id": "8.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page17.png"
+    }
+  },
+  {
+    "id": "8.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page18.png"
+    }
+  },
+  {
+    "id": "8.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page19.png"
+    }
+  },
+  {
+    "id": "8.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page20.png"
+    }
+  },
+  {
+    "id": "8.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page21.png"
+    }
+  },
+  {
+    "id": "8.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page22.png"
+    }
+  },
+  {
+    "id": "8.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/8.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "8.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/8.pdf_page23.png"
+    }
+  },
+  {
+    "id": "9.pdf_page1",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page1.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 1,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page1",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page1.png"
+    }
+  },
+  {
+    "id": "9.pdf_page2",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page2.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 2,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page2",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page2.png"
+    }
+  },
+  {
+    "id": "9.pdf_page3",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page3.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 3,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page3",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page3.png"
+    }
+  },
+  {
+    "id": "9.pdf_page4",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page4.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 4,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page4",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page4.png"
+    }
+  },
+  {
+    "id": "9.pdf_page5",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page5.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 5,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page5",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page5.png"
+    }
+  },
+  {
+    "id": "9.pdf_page6",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page6.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 6,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page6",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page6.png"
+    }
+  },
+  {
+    "id": "9.pdf_page7",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page7.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 7,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page7",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page7.png"
+    }
+  },
+  {
+    "id": "9.pdf_page8",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page8.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 8,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page8",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page8.png"
+    }
+  },
+  {
+    "id": "9.pdf_page9",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page9.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 9,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page9",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page9.png"
+    }
+  },
+  {
+    "id": "9.pdf_page10",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page10.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 10,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page10",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page10.png"
+    }
+  },
+  {
+    "id": "9.pdf_page11",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page11.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 11,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page11",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page11.png"
+    }
+  },
+  {
+    "id": "9.pdf_page12",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page12.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 12,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page12",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page12.png"
+    }
+  },
+  {
+    "id": "9.pdf_page13",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page13.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 13,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page13",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page13.png"
+    }
+  },
+  {
+    "id": "9.pdf_page14",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page14.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 14,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page14",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page14.png"
+    }
+  },
+  {
+    "id": "9.pdf_page15",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page15.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 15,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page15",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page15.png"
+    }
+  },
+  {
+    "id": "9.pdf_page16",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page16.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 16,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page16",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page16.png"
+    }
+  },
+  {
+    "id": "9.pdf_page17",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page17.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 17,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page17",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page17.png"
+    }
+  },
+  {
+    "id": "9.pdf_page18",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page18.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 18,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page18",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page18.png"
+    }
+  },
+  {
+    "id": "9.pdf_page19",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page19.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 19,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page19",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page19.png"
+    }
+  },
+  {
+    "id": "9.pdf_page20",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page20.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 20,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page20",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page20.png"
+    }
+  },
+  {
+    "id": "9.pdf_page21",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page21.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 21,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page21",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page21.png"
+    }
+  },
+  {
+    "id": "9.pdf_page22",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page22.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 22,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page22",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page22.png"
+    }
+  },
+  {
+    "id": "9.pdf_page23",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page23.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 23,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page23",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page23.png"
+    }
+  },
+  {
+    "id": "9.pdf_page24",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page24.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 24,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page24",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page24.png"
+    }
+  },
+  {
+    "id": "9.pdf_page25",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page25.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 25,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page25",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page25.png"
+    }
+  },
+  {
+    "id": "9.pdf_page26",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page26.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 26,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page26",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page26.png"
+    }
+  },
+  {
+    "id": "9.pdf_page27",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page27.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 27,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page27",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page27.png"
+    }
+  },
+  {
+    "id": "9.pdf_page28",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page28.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 28,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page28",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page28.png"
+    }
+  },
+  {
+    "id": "9.pdf_page29",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page29.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 29,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page29",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page29.png"
+    }
+  },
+  {
+    "id": "9.pdf_page30",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page30.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 30,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page30",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page30.png"
+    }
+  },
+  {
+    "id": "9.pdf_page31",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page31.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 31,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page31",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page31.png"
+    }
+  },
+  {
+    "id": "9.pdf_page32",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page32.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 32,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page32",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page32.png"
+    }
+  },
+  {
+    "id": "9.pdf_page33",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page33.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 33,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page33",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page33.png"
+    }
+  },
+  {
+    "id": "9.pdf_page34",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page34.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 34,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page34",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page34.png"
+    }
+  },
+  {
+    "id": "9.pdf_page35",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page35.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 35,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page35",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page35.png"
+    }
+  },
+  {
+    "id": "9.pdf_page36",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page36.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 36,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page36",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page36.png"
+    }
+  },
+  {
+    "id": "9.pdf_page37",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page37.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 37,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page37",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page37.png"
+    }
+  },
+  {
+    "id": "9.pdf_page38",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page38.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 38,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page38",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page38.png"
+    }
+  },
+  {
+    "id": "9.pdf_page39",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page39.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 39,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page39",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page39.png"
+    }
+  },
+  {
+    "id": "9.pdf_page40",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page40.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 40,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page40",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page40.png"
+    }
+  },
+  {
+    "id": "9.pdf_page41",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page41.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 41,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page41",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page41.png"
+    }
+  },
+  {
+    "id": "9.pdf_page42",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page42.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 42,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page42",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page42.png"
+    }
+  },
+  {
+    "id": "9.pdf_page43",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page43.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 43,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page43",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page43.png"
+    }
+  },
+  {
+    "id": "9.pdf_page44",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page44.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 44,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page44",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page44.png"
+    }
+  },
+  {
+    "id": "9.pdf_page45",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page45.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 45,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page45",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page45.png"
+    }
+  },
+  {
+    "id": "9.pdf_page46",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page46.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 46,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page46",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page46.png"
+    }
+  },
+  {
+    "id": "9.pdf_page47",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page47.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 47,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page47",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page47.png"
+    }
+  },
+  {
+    "id": "9.pdf_page48",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page48.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 48,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page48",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page48.png"
+    }
+  },
+  {
+    "id": "9.pdf_page49",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page49.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 49,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page49",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page49.png"
+    }
+  },
+  {
+    "id": "9.pdf_page50",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page50.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 50,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page50",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page50.png"
+    }
+  },
+  {
+    "id": "9.pdf_page51",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page51.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 51,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page51",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page51.png"
+    }
+  },
+  {
+    "id": "9.pdf_page52",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page52.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 52,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page52",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page52.png"
+    }
+  },
+  {
+    "id": "9.pdf_page53",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page53.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 53,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page53",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page53.png"
+    }
+  },
+  {
+    "id": "9.pdf_page54",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page54.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 54,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page54",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page54.png"
+    }
+  },
+  {
+    "id": "9.pdf_page55",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page55.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 55,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page55",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page55.png"
+    }
+  },
+  {
+    "id": "9.pdf_page56",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page56.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 56,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page56",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page56.png"
+    }
+  },
+  {
+    "id": "9.pdf_page57",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page57.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 57,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page57",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page57.png"
+    }
+  },
+  {
+    "id": "9.pdf_page58",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page58.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 58,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page58",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page58.png"
+    }
+  },
+  {
+    "id": "9.pdf_page59",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page59.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 59,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page59",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page59.png"
+    }
+  },
+  {
+    "id": "9.pdf_page60",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page60.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 60,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page60",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page60.png"
+    }
+  },
+  {
+    "id": "9.pdf_page61",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page61.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 61,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page61",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page61.png"
+    }
+  },
+  {
+    "id": "9.pdf_page62",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page62.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 62,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page62",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page62.png"
+    }
+  },
+  {
+    "id": "9.pdf_page63",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page63.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 63,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page63",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page63.png"
+    }
+  },
+  {
+    "id": "9.pdf_page64",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page64.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 64,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page64",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page64.png"
+    }
+  },
+  {
+    "id": "9.pdf_page65",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page65.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 65,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page65",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page65.png"
+    }
+  },
+  {
+    "id": "9.pdf_page66",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page66.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 66,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page66",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page66.png"
+    }
+  },
+  {
+    "id": "9.pdf_page67",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page67.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 67,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page67",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page67.png"
+    }
+  },
+  {
+    "id": "9.pdf_page68",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page68.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 68,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page68",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page68.png"
+    }
+  },
+  {
+    "id": "9.pdf_page69",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page69.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 69,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page69",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page69.png"
+    }
+  },
+  {
+    "id": "9.pdf_page70",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page70.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 70,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page70",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page70.png"
+    }
+  },
+  {
+    "id": "9.pdf_page71",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page71.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 71,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page71",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page71.png"
+    }
+  },
+  {
+    "id": "9.pdf_page72",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page72.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 72,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page72",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page72.png"
+    }
+  },
+  {
+    "id": "9.pdf_page73",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page73.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 73,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page73",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page73.png"
+    }
+  },
+  {
+    "id": "9.pdf_page74",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page74.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 74,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page74",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page74.png"
+    }
+  },
+  {
+    "id": "9.pdf_page75",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page75.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 75,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page75",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page75.png"
+    }
+  },
+  {
+    "id": "9.pdf_page76",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page76.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 76,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page76",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page76.png"
+    }
+  },
+  {
+    "id": "9.pdf_page77",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page77.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 77,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page77",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page77.png"
+    }
+  },
+  {
+    "id": "9.pdf_page78",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page78.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 78,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page78",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page78.png"
+    }
+  },
+  {
+    "id": "9.pdf_page79",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page79.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 79,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page79",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page79.png"
+    }
+  },
+  {
+    "id": "9.pdf_page80",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page80.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 80,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page80",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page80.png"
+    }
+  },
+  {
+    "id": "9.pdf_page81",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page81.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 81,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page81",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page81.png"
+    }
+  },
+  {
+    "id": "9.pdf_page82",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page82.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 82,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page82",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page82.png"
+    }
+  },
+  {
+    "id": "9.pdf_page83",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page83.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 83,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page83",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page83.png"
+    }
+  },
+  {
+    "id": "9.pdf_page84",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page84.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 84,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page84",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page84.png"
+    }
+  },
+  {
+    "id": "9.pdf_page85",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page85.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 85,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page85",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page85.png"
+    }
+  },
+  {
+    "id": "9.pdf_page86",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page86.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 86,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page86",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page86.png"
+    }
+  },
+  {
+    "id": "9.pdf_page87",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page87.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 87,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page87",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page87.png"
+    }
+  },
+  {
+    "id": "9.pdf_page88",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page88.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 88,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page88",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page88.png"
+    }
+  },
+  {
+    "id": "9.pdf_page89",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page89.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 89,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page89",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page89.png"
+    }
+  },
+  {
+    "id": "9.pdf_page90",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page90.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 90,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page90",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page90.png"
+    }
+  },
+  {
+    "id": "9.pdf_page91",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page91.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 91,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page91",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page91.png"
+    }
+  },
+  {
+    "id": "9.pdf_page92",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page92.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 92,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page92",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page92.png"
+    }
+  },
+  {
+    "id": "9.pdf_page93",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page93.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 93,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page93",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page93.png"
+    }
+  },
+  {
+    "id": "9.pdf_page94",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page94.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 94,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page94",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page94.png"
+    }
+  },
+  {
+    "id": "9.pdf_page95",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page95.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 95,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page95",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page95.png"
+    }
+  },
+  {
+    "id": "9.pdf_page96",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page96.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 96,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page96",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page96.png"
+    }
+  },
+  {
+    "id": "9.pdf_page97",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page97.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 97,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page97",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page97.png"
+    }
+  },
+  {
+    "id": "9.pdf_page98",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page98.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 98,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page98",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page98.png"
+    }
+  },
+  {
+    "id": "9.pdf_page99",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page99.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 99,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page99",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page99.png"
+    }
+  },
+  {
+    "id": "9.pdf_page100",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page100.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 100,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page100",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page100.png"
+    }
+  },
+  {
+    "id": "9.pdf_page101",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page101.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 101,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page101",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page101.png"
+    }
+  },
+  {
+    "id": "9.pdf_page102",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page102.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 102,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page102",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page102.png"
+    }
+  },
+  {
+    "id": "9.pdf_page103",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page103.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 103,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page103",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page103.png"
+    }
+  },
+  {
+    "id": "9.pdf_page104",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page104.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 104,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page104",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page104.png"
+    }
+  },
+  {
+    "id": "9.pdf_page105",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page105.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 105,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page105",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page105.png"
+    }
+  },
+  {
+    "id": "9.pdf_page106",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page106.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 106,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page106",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page106.png"
+    }
+  },
+  {
+    "id": "9.pdf_page107",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page107.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 107,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page107",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page107.png"
+    }
+  },
+  {
+    "id": "9.pdf_page108",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page108.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 108,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page108",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page108.png"
+    }
+  },
+  {
+    "id": "9.pdf_page109",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page109.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 109,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page109",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page109.png"
+    }
+  },
+  {
+    "id": "9.pdf_page110",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page110.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 110,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page110",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page110.png"
+    }
+  },
+  {
+    "id": "9.pdf_page111",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page111.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 111,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page111",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page111.png"
+    }
+  },
+  {
+    "id": "9.pdf_page112",
+    "embedding_files": {
+      "image": "/content/drive/My Drive/data_test/image_embeddings/9.pdf_page112.pt"
+    },
+    "metadata": {
+      "original_doc": "9.pdf",
+      "page_number": 112,
+      "chunk_path": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page112",
+      "chunk_type": "image",
+      "chunk_file": "/content/drive/My Drive/data_test/pdf_chunks/9.pdf_page112.png"
+    }
+  }
+]

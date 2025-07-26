@@ -24,8 +24,9 @@ if str(SRC_DIR) not in sys.path:
 if str(EVAL_DIR) not in sys.path:
     sys.path.insert(0, str(EVAL_DIR))
 
-from evaluation.retriever.sherpa_retriever import SherpaVisionRetriever  # noqa: E402
+from evaluation.retriever.custom_retriever import CustomVisionRetriever  # noqa: E402
 from evaluation.utils.dataset_utils import (  # noqa: E402
+    load_dataset_from_folder,
     load_vidore_dataset,
     prepare_dataset,
 )
@@ -46,18 +47,18 @@ async def main():
     Main function to ulpload an evaluation dataset to Vespa.
 
     Usage:
-    python3 apps/digital_brain_be/evaluation/load_eval_dataset.py --tenant-name "sherpa-dev" --instance-name "default" --vespa-app-name "sherpadbevals" --model-name "vidore/colqwen2-v1.0" --dataset-name "vidore/tabfquad_test_subsampled_beir"
+    python3 apps/digital_brain_be/evaluation/load_eval_dataset.py --tenant-name "dev" --instance-name "default" --vespa-app-name "dbevals" --model-name "vidore/colqwen2-v1.0" --dataset-name "vidore/tabfquad_test_subsampled_beir"
     """
     os.environ["TOKENIZERS_PARALLELISM"] = "false"
     parser = argparse.ArgumentParser(description="Process dataset and upload to Vespa")
     parser.add_argument(
         "--vespa-app-name",
-        default=os.getenv("VESPA_EVALS_APP_NAME", "sherpadbevals"),
+        default=os.getenv("VESPA_EVALS_APP_NAME", "dbevals"),
         help="Vespa application name",
     )
     parser.add_argument(
         "--tenant-name",
-        default=os.getenv("VESPA_TENANT_NAME", "sherpa-dev"),
+        default=os.getenv("VESPA_TENANT_NAME", "dev"),
         help="Vespa tenant name",
     )
     parser.add_argument(
@@ -77,7 +78,9 @@ async def main():
     )
     parser.add_argument("--dataset-dir", help="Directory containing dataset to process")
     parser.add_argument(
-        "--vespa-mode", choices=["deploy", "connect"], default="connect"
+        "--vespa-mode",
+        choices=["deploy", "connect"],
+        default="connect",
     )
     args = parser.parse_args()
 
@@ -85,21 +88,27 @@ async def main():
 
     # Load dataset
     if not args.dataset_name.startswith("vidore/"):
-        # TODO: Load dataset from local folder
-        pass
+        # Load dataset from local folder
+        load_dataset_from_folder(args.dataset_name)
     else:
         ds = load_vidore_dataset(
-            args.dataset_name
+            args.dataset_name,
         )  # Only loads the first 5 documents with head=5
 
     # Setup retriever
-    retriever = SherpaVisionRetriever(
-        model_name=args.model_name, dtype="auto", device="cuda", num_workers=4
+    retriever = CustomVisionRetriever(
+        model_name=args.model_name,
+        dtype="auto",
+        device="cuda",
+        num_workers=4,
     )
 
     # Prepare dataset
     formatted_data = await prepare_dataset(
-        args.dataset_name, ds, retriever, batch_size=4
+        args.dataset_name,
+        ds,
+        retriever,
+        batch_size=4,
     )
 
     if args.vespa_mode == "deploy":

@@ -203,7 +203,7 @@ class BaseEmbeddingModel(ABC):
 
 # Local ColQwen2 Model
 class ColQwen2Model(BaseEmbeddingModel):
-    def __init__(self, model_name, device):
+    def __init__(self, model_name, device, concurrency_images=4, concurrency_texts=8):
         self.model = (
             ColQwen2.from_pretrained(
                 model_name,
@@ -217,28 +217,51 @@ class ColQwen2Model(BaseEmbeddingModel):
         )
         self.processor = ColQwen2Processor.from_pretrained(model_name)
         self.device = device
+        self._sem_images = asyncio.Semaphore(concurrency_images)
+        self._sem_texts = asyncio.Semaphore(concurrency_texts)
 
-    async def embed_images(self, images: list[Image.Image]):
-        loop = asyncio.get_event_loop()
+    def _embed_one_image(self, image: Image.Image):
+        batch = self.processor.process_images([image]).to(self.device)
+        with torch.inference_mode():
+            emb = self.model(**batch)
+        # Return as list of tensors
+        return torch.unbind(emb.cpu())
 
-        def _embed():
-            batch = self.processor.process_images(images).to(self.device)
-            with torch.no_grad():
-                img_emb = self.model(**batch)
-            return img_emb
+    async def embed_images(self, images: list[Image.Image], concurrency: int = 4):
+        sem = (
+            self._sem_images
+            if hasattr(self, "_sem_images")
+            else asyncio.Semaphore(concurrency)
+        )
 
-        return await loop.run_in_executor(None, _embed)
+        async def _one(img):
+            async with sem:
+                return await asyncio.to_thread(self._embed_one_image, img)
 
-    async def embed_texts(self, texts: list[str]):
-        loop = asyncio.get_event_loop()
+        # Each result is a tuple of tensors; stack/mean as needed in pipeline
+        return await asyncio.gather(*[_one(i) for i in images])
 
-        def _embed():
-            batch = self.processor.process_queries(texts).to(self.device)
-            with torch.no_grad():
-                q_emb = self.model(**batch)
-            return q_emb
+    def _embed_one_text(self, text: str):
+        batch = self.processor.process_queries([text]).to(self.device)
+        with torch.inference_mode():
+            emb = self.model(**batch)
+        # Return as list of tensors
+        return torch.unbind(emb.cpu())
 
-        return await loop.run_in_executor(None, _embed)
+    async def embed_texts(self, texts: list[str], concurrency: int = 8):
+        sem = (
+            self._sem_texts
+            if hasattr(self, "_sem_texts")
+            else asyncio.Semaphore(concurrency)
+        )
+
+        async def _one(text):
+            async with sem:
+                embeddings = await asyncio.to_thread(self._embed_one_text, text)
+                stacked = torch.stack(embeddings)
+                return stacked.mean(dim=0)  # shape: [D]
+
+        return await asyncio.gather(*[_one(q) for q in texts])
 
 
 # Nomic Model via Ollama API (text embedding only)
@@ -413,7 +436,7 @@ async def main(folder: Path):
     image_ids = [entry["id"] for entry in image_entries]
 
     print("Embedding extracted images in batch and saving embeddings...")
-    batch_size = 10
+    batch_size = 4
     for i in range(0, len(image_paths), batch_size):
         batch_paths = image_paths[i : i + batch_size]
         batch_ids = image_ids[i : i + batch_size]

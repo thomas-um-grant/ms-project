@@ -492,16 +492,27 @@ These experiments aim to better understand how multimodal embeddings interact, a
 \section{GANTT Chart}
 \includegraphics[width = 16cm]{./figures/GANTT.png}
 
+% \begin{figure}[h]
+%     \includegraphics[width = 6cm]{./figures/transformer.png}
+%     \caption{Transformer architecture illustration.}
+% \end{figure}
+
 \section{Deliverables}
 The project will produce a set of deliverables to ensure transparency, reproducibility, and usability: \\
 A public code repository containing the full dataset generation pipeline, modular RAG framework, and evaluation scripts. \\
 A runnable demo, packaged within a Docker container for reproducibility, consisting of two interactive web interfaces: \\
 Demo Interface: Allows users to run queries against selected datasets using customizable RAG configurations. Users can select different pipeline components via a control panel and input queries via a text field. The system will return generated answers, highlighting retrieved documents and relevant evidence.
-
-\includegraphics[width = 15cm]{./figures/demo_page1.png}
+\begin{figure}[h]
+    \includegraphics[width = 15cm]{./figures/demo_page1.png}
+    \caption{Demo interface for running queries and viewing results.}
+\end{figure}
 
 Evaluation Interface: Presents detailed explanations of evaluation metrics and the dataset generation methodology. It includes an interactive table that displays benchmark results, allowing users to filter and compare different RAG configurations dynamically.
 
+\begin{figure}[h]
+    \includegraphics[width = 15cm]{./figures/demo_page2.png}
+    \caption{Evaluation interface with interactive benchmark results.}
+\end{figure}
 \includegraphics[width = 15cm]{./figures/demo_page2.png}
 
 These deliverables aim to support both academic analysis and practical deployment, offering a flexible platform for future research and experimentation in the RAG community.

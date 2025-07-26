@@ -1,20 +1,22 @@
 import hashlib
+import json
 import logging
 import math
 from enum import Enum
+from pathlib import Path
 from typing import Any
 
 import numpy as np
 import torch
-from datasets import Dataset, load_dataset
-from tqdm import tqdm
-from vidore_benchmark.utils.iter_utils import batched
-
-from evaluation.retriever.sherpa_retriever import SherpaVisionRetriever
+from datasets import Dataset, DatasetDict, load_dataset
+from evaluation.retriever.custom_retriever import CustomVisionRetriever
 from evaluation.utils.vespa_utils import (
     get_base64_image,
     resize_image,
 )
+from PIL import Image
+from tqdm import tqdm
+from vidore_benchmark.utils.iter_utils import batched
 
 logger = logging.getLogger(__name__)
 
@@ -59,19 +61,58 @@ def load_vidore_dataset(dataset_name, head: int = None):
 
     Raises:
             ValueError: If the provided dataset name is not supported.
+
     """
     if dataset_name in ColPaliEvaluationBEIRDatasets:
         return load_dataset(
-            dataset_name, name="corpus", split=f"test{f'[:{head}]' if head else ''}"
+            dataset_name,
+            name="corpus",
+            split=f"test{f'[:{head}]' if head else ''}",
         )
-    else:
-        raise ValueError(f"The dataset ({dataset_name}) is not supported.")
+    raise ValueError(f"The dataset ({dataset_name}) is not supported.")
+
+
+def load_dataset_from_folder(dataset_name: str) -> Dataset:
+    """Load a dataset from a local folder."""
+    dataset_path = Path(__file__).parent / f"dataset/data/{dataset_name}"
+
+    if not dataset_path.exists():
+        raise FileNotFoundError(
+            f"Dataset folder {dataset_path} does not exist. Please check the dataset name.",
+        )
+
+    dataset = {}
+    with (dataset_path / "dataset.json").open("r") as f:
+        dataset = json.load(f)
+
+    # Replace all image path with PIL images
+    for i in range(len(dataset["corpus"])):
+        image_path = dataset["corpus"][i]["image"]
+        dataset["corpus"][i]["image"] = Image.open(
+            Path(dataset_path / f"corpuses/{image_path}"),
+        )
+
+    corpus_columns = ["id", "image", "doc-id", "corpus-id"]
+
+    # Convert list of lists into column-wise dicts
+    corpus_data = {
+        col: [row[i] for row in dataset["corpus"]]
+        for i, col in enumerate(corpus_columns)
+    }
+
+    dataset = DatasetDict(
+        {
+            "corpus": Dataset.from_dict(corpus_data),
+        },
+    )
+
+    return dataset["corpus"]
 
 
 async def prepare_dataset(
     dataset_name: str,
     dataset: Dataset,
-    retriever: SherpaVisionRetriever,
+    retriever: CustomVisionRetriever,
     batch_size: int = 4,
     dataloader_prebatch_size: int | None = None,
 ) -> list[dict]:
@@ -81,10 +122,11 @@ async def prepare_dataset(
     Args:
             dataset_name (str): Name of the dataset being processed.
             dataset (Dataset): Hugging Face Dataset containing image and metadata fields.
-            retriever (SherpaVisionRetriever): The retriever used to generate image embeddings.
+            retriever (CustomVisionRetriever): The retriever used to generate image embeddings.
 
     Returns:
             List[dict]: A list of document records formatted for Vespa indexing.
+
     """
     data_feed = []
 
@@ -105,7 +147,7 @@ async def prepare_dataset(
     if dataloader_prebatch_size < batch_size:
         logger.warning(
             f"`dataloader_prebatch_size` ({dataloader_prebatch_size}) is smaller than `batch_passage` "
-            f"({batch_size}). Setting the pre-batch size to the passager batch size."
+            f"({batch_size}). Setting the pre-batch size to the passager batch size.",
         )
         dataloader_prebatch_size = batch_size
 
@@ -125,7 +167,7 @@ async def prepare_dataset(
 
         if isinstance(batch_embedding_passages, torch.Tensor):
             batch_embedding_passages = list(
-                torch.unbind(batch_embedding_passages.to("cpu"))
+                torch.unbind(batch_embedding_passages.to("cpu")),
             )
             embeddings.extend(batch_embedding_passages)
         else:
@@ -172,7 +214,7 @@ async def prepare_dataset(
             {
                 "id": id_hash,
                 "fields": fields,
-            }
+            },
         )
 
     return data_feed

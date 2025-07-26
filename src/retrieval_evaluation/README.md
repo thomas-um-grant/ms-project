@@ -11,7 +11,7 @@
 ### Run locally
 
 - Load a BEIR Formatted Dataset (from _digital_brain_be_):
-  `python3 evaluation/load_eval_dataset.py --tenant-name "sherpa-dev" --instance-name "default" --vespa-app-name "sherpadbevals" --model-name "vidore/colqwen2-v1.0" --dataset-name "vidore/tabfquad_test_subsampled_beir"`
+  `python3 evaluation/load_eval_dataset.py --tenant-name "dev" --instance-name "default" --vespa-app-name "dbevals" --model-name "vidore/colqwen2-v1.0" --dataset-name "vidore/tabfquad_test_subsampled_beir"`
 
 - Evaluate a model on a dataset (from _digital_brain_be_):
   `python3 evaluation/evaluate.py --model-names "vidore/colqwen2-v1.0" --dataset-names "vidore/tabfquad_test_subsampled_beir" --metrics-output-path "evaluation/results/metrics.json"`

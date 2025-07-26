@@ -4,22 +4,21 @@ import logging
 from collections import defaultdict
 
 import httpx
-from vespa.application import VespaAsync
-from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
-
 from evaluation.evaluator.base_vidore_evaluator import BaseViDoReEvaluator
 from evaluation.utils.vespa_utils import connect_existing_vespa
 from repositories.vespa_repository import VespaRepository
 from schemas.vespa_schema import QueryRequest
 from services.vespa_service import VespaService
+from vespa.application import VespaAsync
+from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
 
 logger = logging.getLogger(__name__)
 
 
-class SherpaEvaluator(BaseViDoReEvaluator):
+class CustomEvaluator(BaseViDoReEvaluator):
     """
     Evaluator for the ViDoRe benchmark for datasets with a BEIR format.
-    Uses the SherpaVisionRetriever for embeddings and direct scoring, and Vespa for document storage and retrieval.
+    Uses the CustomVisionRetriever for embeddings and direct scoring, and Vespa for document storage and retrieval.
 
     BEIR dataset type. A BEIR dataset must contain 3 subsets:
     corpus: The dataset containing the corpus of documents. Should contain the following columns:
@@ -115,20 +114,25 @@ class SherpaEvaluator(BaseViDoReEvaluator):
                 document_filters=[("dataset_name", ds_name)],
             )
             for query_text, query_embedding in zip(
-                ds_queries[self.query_column], query_embeddings, strict=False
+                ds_queries[self.query_column],
+                query_embeddings,
+                strict=False,
             )
         ]
 
         # Connect to Vespa
         vespa_app = connect_existing_vespa(
-            "sherpadbevals",
-            tenant_name="sherpa-dev",
+            "dbevals",
+            tenant_name="dev",
             instance_name="default",
         )
 
         limits = httpx.Limits(max_connections=10, max_keepalive_connections=5)
         async with VespaAsync(
-            vespa_app, connections=1, limits=limits, timeout=30
+            vespa_app,
+            connections=1,
+            limits=limits,
+            timeout=30,
         ) as vespa_session:
             vespa_repo = VespaRepository(vespa_session)
             vespa_service = VespaService(vespa_repo)
@@ -136,13 +140,17 @@ class SherpaEvaluator(BaseViDoReEvaluator):
 
             # Retrieve documents from Vespa using search_many
             vespa_results = await vespa_service.search_many(
-                query_requests, variant="evaluation", schema="EvaluationDatasetFields"
+                query_requests,
+                variant="evaluation",
+                schema="EvaluationDatasetFields",
             )
 
             # Get the retrieved document IDs and their Vespa scores
             query_to_hits = {}
             for query_id, result in zip(
-                ds_queries[self.query_id_column], vespa_results, strict=False
+                ds_queries[self.query_id_column],
+                vespa_results,
+                strict=False,
             ):
                 query_to_hits[str(query_id)] = result.hits
 

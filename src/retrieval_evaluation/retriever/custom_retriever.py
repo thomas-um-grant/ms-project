@@ -1,17 +1,17 @@
 from typing import Any
 
 import torch
+from config import settings
+from evaluation.utils.score_utils import score_multi_vector
 from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
 
-from evaluation.utils.score_utils import score_multi_vector
-from src.repositories.colpali_repository import ColPaliRepository
-from src.services.colpali_service import ColPaliService
+from src.repositories.embeddings_repository import EmbeddingsRepository
 from src.utils.gpu_utils import get_torch_device
 
 
-class SherpaVisionRetriever(BaseVisionRetriever):
+class CustomVisionRetriever(BaseVisionRetriever):
     """
-    A retriever that leverages ColPaliService for embeddings and scoring.
+    A retriever that leverages EmbeddingsRepository for embeddings and scoring.
     """
 
     def __init__(
@@ -25,18 +25,22 @@ class SherpaVisionRetriever(BaseVisionRetriever):
         self.device = get_torch_device(device)
         self.num_workers = num_workers
 
-        # Setup ColPali
-        colpali_repo = ColPaliRepository(
-            model_name=model_name, dtype=dtype, device=device
+        # Setup EmbeddingsRepository
+        self.embeddings_repository = EmbeddingsRepository(
+            x_api_key=settings.embeddings_secret_key,
+            base_url=settings.embeddings_base_url,
         )
-        self.colpali_service = ColPaliService(colpali_repo)
 
     async def forward_queries(
-        self, queries: list[str] | str, **kwargs
+        self,
+        queries: list[str] | str,
+        **kwargs,
     ) -> list[torch.Tensor]:
-        """Embed queries using ColPaliService."""
+        """Embed queries using EmbeddingsRepository."""
         enriched_queries = [queries] if isinstance(queries, str) else queries
-        query_embeddings = await self.colpali_service.embed_queries(enriched_queries)
+        query_embeddings = await self.embeddings_repository.embed_queries(
+            enriched_queries,
+        )
 
         assert len(query_embeddings) == len(enriched_queries), (
             f"Query embeddings and enriched queries must be the same length, {len(query_embeddings)} != {len(enriched_queries)}"
@@ -45,10 +49,12 @@ class SherpaVisionRetriever(BaseVisionRetriever):
         return query_embeddings
 
     async def forward_passages(
-        self, passages: list[Any], **kwargs
+        self,
+        passages: list[Any],
+        **kwargs,
     ) -> list[torch.Tensor]:
-        """Embed passages (images) using ColPaliService."""
-        passage_embeddings = await self.colpali_service.embed_images(passages)
+        """Embed passages (images) using EmbeddingsRepository."""
+        passage_embeddings = await self.embeddings_repository.embed_images(passages)
 
         return passage_embeddings
 
@@ -71,6 +77,7 @@ class SherpaVisionRetriever(BaseVisionRetriever):
 
         Returns:
                 Tensor of shape (n_queries, n_passages) containing similarity scores
+
         """
         if score_method == "multi_vector":
             return score_multi_vector(
@@ -79,11 +86,10 @@ class SherpaVisionRetriever(BaseVisionRetriever):
                 batch_size=batch_size,
                 device=self.device,
             )
-        elif score_method == "colpali":
-            return self.colpali_service.get_scores(
+        if score_method == "colpali":
+            return self.embeddings_repository.get_scores(
                 query_embeddings=query_embeddings,
                 passage_embeddings=passage_embeddings,
                 batch_size=batch_size,
             )
-        else:
-            raise ValueError(f"Unknown score method: {score_method}")
+        raise ValueError(f"Unknown score method: {score_method}")
