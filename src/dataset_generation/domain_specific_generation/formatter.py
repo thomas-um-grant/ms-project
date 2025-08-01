@@ -241,7 +241,7 @@ def convert_to_excel(folder: Path):
     logger.info(f"Excel file saved to {excel_path}")
 
 
-def extract_final_corpuses(folder: Path) -> None:
+def extract_final_corpuses(folder: Path, dataset_name: str = "final_dataset") -> None:
     # Load the metadata
     metadata_file = folder / "extracted_data/metadata.json"
     if not metadata_file.exists():
@@ -253,7 +253,7 @@ def extract_final_corpuses(folder: Path) -> None:
         metadata = json.load(mf)
 
     # Extract all pages from the pdfs into images with id {corpus_id}_{page_id}.jpg
-    images_folder = folder / "final_dataset/corpuses"
+    images_folder = folder / f"{dataset_name}/corpuses"
     if not images_folder.exists():
         msg = "Images folder not found. Please run format_beir_dataset first."
         raise FileNotFoundError(msg)
@@ -289,7 +289,7 @@ def extract_final_corpuses(folder: Path) -> None:
                 continue
 
 
-def generate_final_dataset(folder: Path) -> None:
+def generate_final_dataset(folder: Path, dataset_name: str = "final_dataset") -> None:
     """Generate the final datasets."""
     logger.info("Generating final datasets...")
 
@@ -363,7 +363,7 @@ def generate_final_dataset(folder: Path) -> None:
             qid += 1
 
     # Load all corpuses from the corpuses folder
-    corpus_folder = folder / "final_dataset/corpuses"
+    corpus_folder = folder / f"{dataset_name}/corpuses"
     if not corpus_folder.exists():
         msg = "Corpus folder not found. Please run extract_final_corpuses first."
         raise FileNotFoundError(msg)
@@ -382,7 +382,7 @@ def generate_final_dataset(folder: Path) -> None:
         dataset["corpus"].append(corpus_entry)
 
     # Save the dataset
-    dataset_path = folder / "final_dataset/dataset.json"
+    dataset_path = folder / f"{dataset_name}/dataset.json"
     with dataset_path.open("w") as df:
         json.dump(dataset, df, indent=4)
 

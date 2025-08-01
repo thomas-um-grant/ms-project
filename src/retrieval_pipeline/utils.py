@@ -1,9 +1,42 @@
+import base64
+from enum import Enum
+from io import BytesIO
+
+import numpy as np
 import torch
+from PIL import Image
 
-from retrieval_pipeline.utils import get_torch_device
+
+class ColPaliEvaluationBEIRDatasets(Enum):
+    ARXIVQA_DATASET = "vidore/arxivqa_test_subsampled_beir"
+    DOCVQA_DATASET = "vidore/docvqa_test_subsampled_beir"
+    INFOVQA_DATASET = "vidore/infovqa_test_subsampled_beir"
+    TABFQUAD_DATASET = "vidore/tabfquad_test_subsampled_beir"
+    TATQDA_DATASET = "vidore/tatdqa_test_beir"
+    GOVERNMENTAL_DATASET = "vidore/syntheticDocQA_government_reports_test_beir"
 
 
-def score_multi_vector(
+def get_torch_device(device: str = "auto") -> str:
+    """
+    Get the appropriate torch device based on the input string.
+
+    Args:
+        device (str): Device type, can be 'auto', 'cuda', 'mps', or 'cpu'.
+
+    Returns:
+        str: The selected device type.
+
+    """
+    if device == "auto":
+        if torch.backends.mps.is_available():
+            return "mps"
+        if torch.cuda.is_available():
+            return "cuda"
+        return "cpu"
+    return device
+
+
+def score_max_sim(
     qs: torch.Tensor | list[torch.Tensor],
     ps: torch.Tensor | list[torch.Tensor],
     batch_size: int = 128,
@@ -72,3 +105,58 @@ def score_multi_vector(
 
     scores = scores.to(torch.float32)
     return scores
+
+
+def get_base64_image(image: Image.Image) -> str:
+    """
+    Convert PIL image to base64 string.
+
+    Args:
+    image: PIL Image object
+
+    Returns:
+    str: Base64 encoded string of the image
+
+    """
+    buffered = BytesIO()
+    image.save(buffered, format="JPEG")
+    return str(base64.b64encode(buffered.getvalue()), "utf-8")
+
+
+def binarize_tensor(tensor: torch.Tensor) -> str:
+    """Binarize a floating-point 1-d tensor by thresholding at zero and packing the bits into bytes. Returns the hex str representation of the bytes."""
+    if not tensor.is_floating_point():
+        msg = "Input tensor must be of floating-point type."
+        raise ValueError(msg)
+    return (
+        np.packbits(np.where(tensor > 0, 1, 0), axis=0).astype(np.int8).tobytes().hex()
+    )
+
+
+def resize_image(image: Image.Image, max_dim: int = 2048) -> Image.Image:
+    """
+    Resize image while maintaining aspect ratio.
+
+    Args:
+    image: PIL Image object
+    max_dim: Maximum dimension (width or height)
+
+    Returns:
+    Image.Image: Resized image
+
+    """
+    img_width, img_height = image.size
+    aspect_ratio = img_width / img_height
+
+    if img_width > max_dim:
+        new_width = max_dim
+        new_height = int(new_width / aspect_ratio)
+    else:
+        new_width = img_width
+        new_height = img_height
+
+    if new_height > max_dim:
+        new_height = max_dim
+        new_width = int(new_height * aspect_ratio)
+
+    return image.resize((new_width, new_height), Image.Resampling.LANCZOS)

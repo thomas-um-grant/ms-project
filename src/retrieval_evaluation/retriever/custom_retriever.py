@@ -2,9 +2,9 @@ from typing import Any
 
 import torch
 from config import settings
-from evaluation.utils.score_utils import score_multi_vector
 from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
 
+from retrieval_evaluation.utils.score_utils import score_multi_vector
 from src.repositories.embeddings_repository import EmbeddingsRepository
 from src.utils.gpu_utils import get_torch_device
 
@@ -63,8 +63,6 @@ class CustomVisionRetriever(BaseVisionRetriever):
         query_embeddings: list[torch.Tensor] | torch.Tensor,
         passage_embeddings: list[torch.Tensor] | torch.Tensor,
         batch_size: int = 128,
-        score_method: str = "multi_vector",
-        **kwargs,
     ) -> torch.Tensor:
         """
         Get similarity scores between queries and passages.
@@ -79,17 +77,9 @@ class CustomVisionRetriever(BaseVisionRetriever):
                 Tensor of shape (n_queries, n_passages) containing similarity scores
 
         """
-        if score_method == "multi_vector":
-            return score_multi_vector(
-                qs=query_embeddings,
-                ps=passage_embeddings,
-                batch_size=batch_size,
-                device=self.device,
-            )
-        if score_method == "colpali":
-            return self.embeddings_repository.get_scores(
-                query_embeddings=query_embeddings,
-                passage_embeddings=passage_embeddings,
-                batch_size=batch_size,
-            )
-        raise ValueError(f"Unknown score method: {score_method}")
+        return score_multi_vector(
+            qs=query_embeddings,
+            ps=passage_embeddings,
+            batch_size=batch_size,
+            device=self.device,
+        )

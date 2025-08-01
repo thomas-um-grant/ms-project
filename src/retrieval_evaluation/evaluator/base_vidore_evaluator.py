@@ -8,7 +8,7 @@ from typing import Any
 import torch
 from datasets import Dataset
 from tqdm import tqdm
-from vidore_benchmark.evaluation.eval_utils import CustomRetrievalEvaluator
+from vidore_benchmark.retrieval_evaluation.eval_utils import CustomRetrievalEvaluator
 from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
 from vidore_benchmark.utils.iter_utils import batched
 
@@ -21,6 +21,7 @@ class BaseViDoReEvaluator(ABC):
 
     Args:
             vision_retriever (BaseVisionRetriever): The vision retriever used to retrieve the embeddings.
+
     """
 
     def __init__(self, vision_retriever: BaseVisionRetriever):
@@ -54,8 +55,8 @@ class BaseViDoReEvaluator(ABC):
                 (if `use_visual_embedding`) image (PIL.Image): The image of the document page.
                 (if not `use_visual_embedding`) text_description (str): The text of the document page,
                         plus eventual description of visual elements.
+
         """
-        pass
 
     async def _get_passage_embeddings(
         self,
@@ -78,6 +79,7 @@ class BaseViDoReEvaluator(ABC):
 
         Returns:
                 Union[torch.Tensor, List[torch.Tensor]]: The passage embeddings.
+
         """
         passage_embeddings: list[torch.Tensor] = []
 
@@ -90,7 +92,7 @@ class BaseViDoReEvaluator(ABC):
         if dataloader_prebatch_size < batch_passage:
             logger.warning(
                 f"`dataloader_prebatch_size` ({dataloader_prebatch_size}) is smaller than `batch_passage` "
-                f"({batch_passage}). Setting the pre-batch size to the passager batch size."
+                f"({batch_passage}). Setting the pre-batch size to the passager batch size.",
             )
             dataloader_prebatch_size = batch_passage
 
@@ -109,13 +111,13 @@ class BaseViDoReEvaluator(ABC):
 
             if isinstance(batch_embedding_passages, torch.Tensor):
                 batch_embedding_passages = list(
-                    torch.unbind(batch_embedding_passages.to("cpu"))
+                    torch.unbind(batch_embedding_passages.to("cpu")),
                 )
                 passage_embeddings.extend(batch_embedding_passages)
             else:
                 for embedding_passage in batch_embedding_passages:
                     passage_embeddings.append(
-                        torch.as_tensor(embedding_passage).to("cpu")
+                        torch.as_tensor(embedding_passage).to("cpu"),
                     )
         return passage_embeddings
 
@@ -140,6 +142,7 @@ class BaseViDoReEvaluator(ABC):
 
         Returns:
                 Union[torch.Tensor, List[torch.Tensor]]: The query embeddings.
+
         """
         query_embeddings: list[torch.Tensor] = []
 
@@ -152,7 +155,7 @@ class BaseViDoReEvaluator(ABC):
         if dataloader_prebatch_size < batch_query:
             logger.warning(
                 f"`dataloader_prebatch_size` ({dataloader_prebatch_size}) is smaller than `batch_query` "
-                f"({batch_query}). Setting the pre-batch size to the passager batch size."
+                f"({batch_query}). Setting the pre-batch size to the passager batch size.",
             )
             dataloader_prebatch_size = batch_query
 
@@ -170,7 +173,7 @@ class BaseViDoReEvaluator(ABC):
 
             if isinstance(batch_embedding_queries, torch.Tensor):
                 batch_embedding_queries = list(
-                    torch.unbind(batch_embedding_queries.to("cpu"))
+                    torch.unbind(batch_embedding_queries.to("cpu")),
                 )
                 query_embeddings.extend(batch_embedding_queries)
             else:
@@ -205,6 +208,7 @@ class BaseViDoReEvaluator(ABC):
                 ignore_identical_ids: Whether to ignore identical IDs in the results, e.g. set to `True` if the
                         queries and documents have overlapping IDs.
                 **kwargs: Additional keyword arguments.
+
         """
         mteb_evaluator = CustomRetrievalEvaluator()
 
@@ -216,7 +220,10 @@ class BaseViDoReEvaluator(ABC):
         )
 
         mrr = mteb_evaluator.evaluate_custom(
-            qrels, results, mteb_evaluator.k_values, "mrr"
+            qrels,
+            results,
+            mteb_evaluator.k_values,
+            "mrr",
         )
 
         scores: dict[str, float | None] = {

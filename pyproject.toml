@@ -42,6 +42,10 @@ dependencies = [
 	"matplotlib>=3.10.3",
 	"seaborn>=0.13.2",
 	"transformers>=4.53.1",
+	"joblib>=1.5.1",
+	"weaviate>=0.1.2",
+	"weaviate-client>=4.16.4",
+	"pillow>=11.2.1",
 ]
 
 [dependency-groups]

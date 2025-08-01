@@ -24,13 +24,15 @@ if str(SRC_DIR) not in sys.path:
 if str(EVAL_DIR) not in sys.path:
     sys.path.insert(0, str(EVAL_DIR))
 
-from evaluation.retriever.custom_retriever import CustomVisionRetriever  # noqa: E402
-from evaluation.utils.dataset_utils import (  # noqa: E402
+from retrieval_evaluation.retriever.custom_retriever import (
+    CustomVisionRetriever,
+)
+from retrieval_evaluation.utils.dataset_utils import (  # noqa: E402
     load_dataset_from_folder,
     load_vidore_dataset,
     prepare_dataset,
 )
-from evaluation.utils.vespa_utils import (  # noqa: E402
+from retrieval_evaluation.utils.vespa_utils import (  # noqa: E402
     add_rank_profiles,
     connect_existing_vespa,
     create_vespa_application,

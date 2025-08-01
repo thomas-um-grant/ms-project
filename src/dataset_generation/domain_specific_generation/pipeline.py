@@ -20,7 +20,7 @@ from formatter import (
     generate_human_evaluation_json,
 )
 from generator import generate_answers, generate_questions
-from langfuse import Langfuse, observe
+from langfuse import Langfuse
 from openai import AzureOpenAI
 from retriever import retrieve_top_k_pages_for_questions
 from reviewer import review_answers
@@ -51,8 +51,10 @@ AZURE_EMBEDDING_MODEL = os.getenv(
 )
 
 
-@observe()
-async def main(data_folder_path: str = "pdfs") -> None:
+async def main(
+    data_folder_path: str = "dataset/data",
+    dataset_name: str = "final_dataset",
+) -> None:
     # Setup Langfuse and AzureOpenAI
     langfuse_client = Langfuse()
 
@@ -144,11 +146,11 @@ async def main(data_folder_path: str = "pdfs") -> None:
 
     # Extract final corpuses from the dataset
     logger.info("Extracting final corpuses from the dataset...")
-    extract_final_corpuses(data_folder)
+    extract_final_corpuses(data_folder, dataset_name)
 
     # Generate the final dataset in the required format
     logger.info("Generating final dataset...")
-    generate_final_dataset(data_folder)
+    generate_final_dataset(data_folder, dataset_name)
 
 
 if __name__ == "__main__":
@@ -159,6 +161,12 @@ if __name__ == "__main__":
         default="dataset/data",
         help="Path to the folder containing raw PDF files.",
     )
+    parser.add_argument(
+        "--dataset_name",
+        type=str,
+        default="final_dataset",
+        help="Name of the dataset to generate.",
+    )
     args = parser.parse_args()
 
     # Time the execution
@@ -166,6 +174,7 @@ if __name__ == "__main__":
     asyncio.run(
         main(
             data_folder_path=args.data_folder_path,
+            dataset_name=args.dataset_name,
         ),
     )
     end_time = time.time()

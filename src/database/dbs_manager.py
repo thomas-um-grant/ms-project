@@ -2,6 +2,10 @@ import logging
 import sqlite3
 from pathlib import Path
 
+import weaviate
+from weaviate.classes.config import Configure
+from weaviate.util import generate_uuid5
+
 from utils.exceptions import RelationalDBError
 
 logger = logging.getLogger(__name__)
@@ -90,9 +94,75 @@ class JsonDB:
 
 
 class VectorDB:
-    """Class for Vector databases."""
+    def __init__(self, client_config: dict | None = None):
+        self.client = (
+            weaviate.connect_to_local()
+            if not client_config
+            else weaviate.connect_to_custom(**client_config)
+        )
 
-    # NotImplementedError
+        print(self.client.is_ready())
+
+    async def create_collection(self, collection_name: str, schema: dict) -> None:
+        if not self.client.collections.exists(collection_name):
+            self.client.collections.create(
+                name=collection_name,
+                vector_config=[
+                    Configure.MultiVectors.self_provided(
+                        name="multi_vector",
+                    ),
+                ],
+                properties=schema.get("properties", []),
+            )
+
+    async def insert_vectors(
+        self,
+        collection_name: str,
+        corpuses: list[dict],
+        batch_size: int = 10,
+    ) -> None:
+        collection = self.client.collections.get(collection_name)
+
+        with collection.batch.dynamic() as batch:
+            for vector_data in corpuses:
+                batch.add_object(
+                    properties=vector_data["properties"],
+                    vector=vector_data["vector"],
+                )
+
+        with collection.batch.fixed_size(batch_size=batch_size) as batch:
+            for corpus in corpuses:
+                batch.add_object(
+                    properties=corpus["properties"],
+                    uuid=generate_uuid5(corpus["properties"]["dataset_name"]),
+                    vector={"multi_vector": corpus["vector"]},
+                )
+
+        if collection.batch.failed_objects:
+            print(f"Number of failed imports: {len(collection.batch.failed_objects)}")
+            # print(f"First failed object: {collection.batch.failed_objects[0]}")
+
+    async def search_vectors(
+        self,
+        collection_name: str,
+        query_vector: list[float],
+        top_k: int,
+    ) -> list[dict]:
+        collection = self.client.collections.get(collection_name)
+        response = collection.query.near_vector(
+            near_vector=query_vector,
+            target_vector="multi_vector",
+            limit=top_k,
+        )
+
+        return [
+            {
+                "id": str(obj.uuid),
+                "properties": obj.properties,
+                "score": obj.metadata.distance,
+            }
+            for obj in response.objects
+        ]
 
 
 class GraphDB:

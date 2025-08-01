@@ -11,13 +11,13 @@
 ### Run locally
 
 - Load a BEIR Formatted Dataset (from _digital_brain_be_):
-  `python3 evaluation/load_eval_dataset.py --tenant-name "dev" --instance-name "default" --vespa-app-name "dbevals" --model-name "vidore/colqwen2-v1.0" --dataset-name "vidore/tabfquad_test_subsampled_beir"`
+  `uv run evaluation/load_eval_dataset.py --model-name "vidore/colqwen2-v1.0" --dataset-name "consulting_dataset"`
 
 - Evaluate a model on a dataset (from _digital_brain_be_):
-  `python3 evaluation/evaluate.py --model-names "vidore/colqwen2-v1.0" --dataset-names "vidore/tabfquad_test_subsampled_beir" --metrics-output-path "evaluation/results/metrics.json"`
+  `uv run evaluation/evaluate.py --dataset-names "consulting_dataset" --evaluation-name "default"`
 
 - Generate a dataset from pdf documents (from _digital_brain_be_)
-  `uv run evaluation/dataset/domain_specific_generation/pipeline.py --data_folder_path="evaluation/dataset/data"`
+  `uv run evaluation/dataset/domain_specific_generation/pipeline.py --data_folder_path="evaluation/dataset/data" --dataset_name="consulting_dataset"`
 
 ## Overview Diagrams
 

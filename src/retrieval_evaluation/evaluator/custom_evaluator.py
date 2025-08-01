@@ -4,13 +4,14 @@ import logging
 from collections import defaultdict
 
 import httpx
-from evaluation.evaluator.base_vidore_evaluator import BaseViDoReEvaluator
-from evaluation.utils.vespa_utils import connect_existing_vespa
 from repositories.vespa_repository import VespaRepository
 from schemas.vespa_schema import QueryRequest
 from services.vespa_service import VespaService
 from vespa.application import VespaAsync
 from vidore_benchmark.retrievers.base_vision_retriever import BaseVisionRetriever
+
+from retrieval_evaluation.evaluator.base_vidore_evaluator import BaseViDoReEvaluator
+from retrieval_evaluation.utils.vespa_utils import connect_existing_vespa
 
 logger = logging.getLogger(__name__)
 
