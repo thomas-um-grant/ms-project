@@ -1,15 +1,16 @@
 import asyncio
+from typing import ClassVar
 
 import aiohttp
 import torch
 from colpali_engine.models import ColQwen2, ColQwen2Processor
 from PIL import Image
-from transformers.utils.import_utils import is_flash_attn_2_available
 
+from retrieval_pipeline.device import DeviceConfig
 from retrieval_pipeline.models.base_embedder import BaseEmbeddingModel
 
 
-# Nomic Model via Ollama API (text embedding only)
+# Local Nomic Model (text embedding only)
 class NomicOllamaModel(BaseEmbeddingModel):
     def __init__(
         self,
@@ -38,30 +39,22 @@ class NomicOllamaModel(BaseEmbeddingModel):
 
 # Local ColQwen2 Model (multi-modal embedding)
 class ColQwen2Model(BaseEmbeddingModel):
-    def __init__(self, device, dtype="auto"):
-        self.model_name = "vidore/colqwen2-v1.0"
-        # Convert string device to torch.device if needed
-        self.device = torch.device(device) if isinstance(device, str) else device
-        self.dtype = (
-            torch.bfloat16
-            if dtype == "auto" and torch.cuda.is_available()
-            else getattr(torch, dtype)
-            if dtype != "auto"
-            else torch.float32
-        )
+    _model_cache: ClassVar[dict[str, tuple[ColQwen2, ColQwen2Processor]]] = {}
 
-        self.model = (
-            ColQwen2.from_pretrained(
-                self.model_name,
-                torch_dtype=self.dtype,
-                attn_implementation="flash_attention_2"
-                if is_flash_attn_2_available()
-                else None,
-            )
-            .to(self.device)
-            .eval()
-        )
-        self.processor = ColQwen2Processor.from_pretrained(self.model_name)
+    def __init__(self, device_config: DeviceConfig):
+        self.model_name = "vidore/colqwen2-v1.0"
+        self.device_config = device_config
+        self._load_model()
+
+    @property
+    def device(self) -> str:
+        """Get the device from device config."""
+        return self.device_config.device_str
+
+    @property
+    def dtype(self) -> torch.dtype:
+        """Get the dtype from device config."""
+        return self.device_config.dtype
 
     def _embed_images_sync(
         self,
@@ -74,9 +67,13 @@ class ColQwen2Model(BaseEmbeddingModel):
         with torch.inference_mode():
             for i in range(0, len(images), batch_size):
                 batch_imgs = images[i : i + batch_size]
-                inputs = self.processor.process_images(batch_imgs).to(self.device)
+                inputs = self.processor.process_images(batch_imgs).to(
+                    device=self.device,
+                    dtype=self.dtype,
+                )
                 embeddings = self.model(**inputs)
-                all_embeddings.append(embeddings.cpu())
+                # Move to CPU with consistent dtype for concatenation
+                all_embeddings.append(embeddings.to(dtype=torch.float32, device="cpu"))
 
         return torch.cat(all_embeddings, dim=0)
 
@@ -103,11 +100,11 @@ class ColQwen2Model(BaseEmbeddingModel):
                     text=batch_texts,
                     return_tensors="pt",
                     padding=True,
-                ).to(self.device)
+                ).to(device=self.device, dtype=self.dtype)
 
-                outputs = self.model(**inputs)
-                embeddings = outputs.embeddings
-                all_embeddings.append(embeddings.cpu())
+                embeddings = self.model(**inputs)
+                # Move to CPU with consistent dtype for concatenation
+                all_embeddings.append(embeddings.to(dtype=torch.float32, device="cpu"))
 
         return torch.cat(all_embeddings, dim=0)
 
@@ -118,28 +115,56 @@ class ColQwen2Model(BaseEmbeddingModel):
             lambda: self._embed_texts_sync(texts, batch_size),
         )
 
+    def _load_model(self):
+        """Load the ColQwen model with device-specific configuration and caching."""
+        cache_key = f"{self.model_name}_{self.device_config.device_str}_{self.device_config.dtype}"
 
-def setup_embedding_model(model_name: str, device: str = "auto") -> BaseEmbeddingModel:
+        if cache_key in self._model_cache:
+            print(f"Using cached model for {cache_key}")
+            self.model, self.processor = self._model_cache[cache_key]
+            # Move model to current device if needed
+            if (
+                hasattr(self.model, "device")
+                and str(self.model.device) != self.device_config.device_str
+            ):
+                self.model = self.model.to(self.device_config.device_str)
+        else:
+            print(f"Loading new model for {cache_key}")
+            self.model = ColQwen2.from_pretrained(
+                self.model_name,
+                torch_dtype=self.device_config.dtype,
+                device_map=self.device_config.device_map_str,
+            ).eval()
+            self.processor = ColQwen2Processor.from_pretrained(self.model_name)
+
+            # Cache the loaded model
+            self._model_cache[cache_key] = (self.model, self.processor)
+
+
+def setup_embedding_model(
+    model_name: str,
+    device_config: DeviceConfig,
+) -> BaseEmbeddingModel:
     """
     Setup the embedding model based on the provided model name and device.
 
     Args:
         model_name (str): Name of the embedding model.
-        device (str): Device to run the model on, can be 'auto', 'cuda', 'mps', or 'cpu'.
+        device_config (DeviceConfig): Device configuration containing device, dtype, and device_map settings.
 
     Returns:
         BaseEmbeddingModel: An instance of the embedding model.
 
     """
-    if model_name == "nomic-text":
+    if model_name == "nomic_embed":
         return NomicOllamaModel(
             ollama_url="http://localhost:11434/api/embeddings",
             model_name="nomic-embed-text",
         )
 
-    if model_name == "colqwen2":
+    if model_name == "colqwen2_embed":
         return ColQwen2Model(
-            device=device,
+            device_config=device_config,
         )
 
     msg = f"Unsupported model name: {model_name}"

@@ -1,199 +1,36 @@
-import asyncio
-import logging
+import json
 import sys
 from pathlib import Path
+from typing import Any
 
+import numpy as np
 import torch
 from PIL import Image
+from tqdm import tqdm
 
 # Add src path for imports
 src_path = Path(__file__).parent.parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
-from database.dbs_manager import VectorDB
-from database.schemas.vector_db_schemas import CollectionSchemas
-from retrieval_pipeline.models.embedding_models import setup_embedding_model
-from retrieval_pipeline.models.generation_models import setup_generation_model
 from retrieval_pipeline.rags.base_rag import BaseRAG
-from retrieval_pipeline.utils import resize_image
-
-logging.basicConfig(
-    level=logging.INFO,
-    filename="multimodal_rag.log",
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger(__name__)
+from retrieval_pipeline.utils import pdf_to_images
 
 
 class MultiModalRAG(BaseRAG):
+    """Device-agnostic MultiModal RAG system."""
+
     def __init__(
         self,
         name: str,
-        vector_db: VectorDB,
+        data_dir: Path,
         embedding_model: str = "colqwen2",
         generation_model: str = "colqwen2",
         configs: dict | None = None,
     ):
-        super().__init__(vector_db, name)
-
         self._validate_params(configs)
 
-        self.embedding_model = setup_embedding_model(
-            embedding_model,
-            device=self.device,
-        )
-        self.generation_model = setup_generation_model(
-            generation_model,
-            device=self.device,
-        )
-
-        if configs:
-            self.chunking_strategy = configs.get(
-                "chunking_strategy",
-                "page_chunking",
-            )  # ["page_chunking", "token_chunking", "semantic_chunking", ""]
-            self.query_enhancement = configs.get(
-                "query_enhancement",
-                "none",
-            )  # ["none", "hyde", "step_back_prompting", "multi_query"]
-            self.retrieval_strategy = configs.get(
-                "retrieval_strategy",
-                "semantic",
-            )  # ["semantic", "bm25", "hybrid"]
-            self.similarity_metric = configs.get(
-                "similarity_metric",
-                "max_sim",
-            )  # ["cosine", "euclidean", "max_sim"]
-            self.routing_strategy = configs.get(
-                "routing_strategy",
-                "none",
-            )  # ["none", "semantic"]
-            self.top_k = configs.get("top_k", 5)  # Number of top results to retrieve
-            self.pruning_threshold = configs.get(
-                "pruning_threshold",
-                0.0,
-            )  # Whether to prune the retrieved passages based on relevance
-
-    def _get_collection_schema(self) -> dict:
-        return CollectionSchemas.multimodal_image_schema()
-
-    async def index(self, images_path: list[Path], batch_size: int = 4):
-        """Index images for retrieval with batching to avoid memory issues."""
-        # Filter out non-existent image paths
-        existing_images_path = [path for path in images_path if path.exists()]
-
-        logger.info(
-            f"Found {len(existing_images_path)} existing images out of {len(images_path)} total"
-        )
-
-        if not existing_images_path:
-            logger.warning("No existing images found to index!")
-            return
-
-        # Convert paths to PIL Images
-        images = []
-        for image_path in existing_images_path:
-            try:
-                images.append(Image.open(image_path))
-                logger.info(f"Successfully opened: {image_path}")
-            except Exception:
-                logger.exception(f"Failed to open {image_path}")
-                continue
-
-        if not images:
-            logger.error("No images could be opened!")
-            return
-
-        # Resize and embed images in batches to avoid memory issues
-        self.images = [resize_image(image) for image in images]
-
-        all_embeddings = []
-        logger.info(
-            f"Processing {len(self.images)} images in batches of {batch_size}...",
-        )
-
-        for i in range(0, len(self.images), batch_size):
-            batch_images = self.images[i : i + batch_size]
-
-            if type(batch_images) is not list:
-                batch_images = [batch_images]
-
-            logger.info(
-                f"Processing batch {i // batch_size + 1}/{(len(self.images) + batch_size - 1) // batch_size}",
-            )
-
-            batch_embeddings = await self.embedding_model.embed_images(batch_images)
-            # batch_embeddings is a tensor of shape (batch_size, tokens, dim)
-            # Convert each image's multi-vector embedding to a list
-            for batch_idx in range(batch_embeddings.shape[0]):
-                image_embedding = batch_embeddings[batch_idx]  # Shape: (tokens, dim)
-                all_embeddings.append(image_embedding.tolist())
-
-            logger.info(
-                f"Batch {i // batch_size + 1} processed: {len(batch_embeddings)} embeddings",
-            )
-
-            # Clear GPU memory if possible
-            if hasattr(self.embedding_model, "model") and hasattr(
-                self.embedding_model.model,
-                "cpu",
-            ):
-                torch.cuda.empty_cache() if torch.cuda.is_available() else None
-
-        # Store in db - use only existing images
-        data_points = []
-        for image_path, embedding in zip(
-            existing_images_path[
-                : len(all_embeddings)
-            ],  # Match the actual embeddings count
-            all_embeddings,
-            strict=True,
-        ):
-            data_points.append(
-                {
-                    "properties": {
-                        "dataset_name": self.collection_name,
-                        "corpus_id": image_path.stem.split("_")[0],
-                        "doc_id": image_path.stem.split("_")[1],
-                        "image_path": str(image_path),
-                    },
-                    "vector": {"multi_vector": embedding},
-                },
-            )
-
-        # Insert into vector database
-        await self.vector_db.insert_vectors(
-            self.collection_name,
-            data_points,
-            batch_size,
-        )
-
-    async def retrieve(self, texts: list[str], top_k: int = 5):
-        # TODO: Query enhancement
-
-        # Embed queries
-        query_embeddings = await self.embedding_model.embed_texts(texts)
-
-        # TODO: Retrieve using strategy and similarity metric
-        all_results = []
-        for query_embedding in query_embeddings:
-            results = await self.vector_db.search_vectors(
-                self.collection_name,
-                query_embedding,
-                top_k,
-            )
-            all_results.extend(results)
-
-        # TODO: Prune
-        pruned_results = all_results
-
-        # Return top K results
-        return pruned_results
-
-    async def answer(self, queries: list[str]):
-        # TODO: Implement answer generation
-        pass
+        super().__init__(name, data_dir, embedding_model, generation_model, configs)
 
     def _validate_params(
         self,
@@ -202,47 +39,7 @@ class MultiModalRAG(BaseRAG):
         if configs is None:
             return
 
-        if configs.get("embedding_model") and configs.get("embedding_model") not in [
-            "colqwen2",
-        ]:
-            e = f"Embedding model '{configs.get('embedding_model')}' is not available."
-            raise ValueError(e)
-
-        if configs.get("generation_model") and configs.get("generation_model") not in [
-            "colqwen2",
-        ]:
-            e = f"Generation model '{configs.get('generation_model')}' is not available."
-            raise ValueError(e)
-
-        if configs.get("chunking_strategy") and configs.get(
-            "chunking_strategy",
-        ) not in ["page_chunking"]:
-            e = f"Chunking strategy '{configs.get('chunking_strategy')}' is not supported."
-            raise ValueError(e)
-
-        if configs.get("query_enhancement") and configs.get(
-            "query_enhancement",
-        ) not in ["none"]:
-            e = f"Query enhancement '{configs.get('query_enhancement')}' is not supported."
-            raise ValueError(e)
-
-        if configs.get("retrieval_strategy") and configs.get(
-            "retrieval_strategy",
-        ) not in ["semantic"]:
-            e = f"Retrieval strategy '{configs.get('retrieval_strategy')}' is not supported."
-            raise ValueError(e)
-
-        if configs.get("similarity_metric") and configs.get(
-            "similarity_metric",
-        ) not in ["cosine", "max_sim"]:
-            e = f"Similarity metric '{configs.get('similarity_metric')}' is not supported."
-            raise ValueError(e)
-
-        if configs.get("routing_strategy") and configs.get("routing_strategy") not in [
-            "none",
-        ]:
-            e = f"Routing strategy '{configs.get('routing_strategy')}' is not supported."
-            raise ValueError(e)
+        # TODO: Add validations to ensure configs defined are valid for multimodal RAG
 
         if configs.get("top_k") is not None and (
             not isinstance(configs.get("top_k"), int) or configs.get("top_k") <= 0
@@ -257,102 +54,273 @@ class MultiModalRAG(BaseRAG):
             e = "Pruning threshold must be a number."
             raise TypeError(e)
 
+    def _safe_tensor_convert(
+        self,
+        tensor: torch.Tensor,
+        target_dtype: torch.dtype = torch.float32,
+    ) -> torch.Tensor:
+        """Safely convert tensor with NaN handling and dtype conversion."""
+        # Convert to target dtype if needed
+        if tensor.dtype != target_dtype:
+            tensor = tensor.to(dtype=target_dtype)
 
-async def main():
-    """Test the MultiModalRAG implementation."""
-    # 1. Setup vector database
-    logger.info("Setting up Weaviate connection...")
-    try:
-        vector_db = VectorDB()  # Uses local Weaviate by default
-        logger.info("✅ Weaviate connection successful")
-    except Exception as e:
-        logger.info(f"❌ Weaviate connection failed: {e}")
-        logger.info("Make sure Weaviate is running locally on port 8080")
-        logger.info(
-            "Run: docker run -p 8080:8080 -p 50051:50051 cr.weaviate.io/semitechnologies/weaviate:1.25.1",
+        # Move to CPU for storage
+        tensor_cpu = tensor.cpu()
+
+        # Handle NaN values
+        if torch.isnan(tensor_cpu).any():
+            print("Warning: NaN values detected, replacing with zeros")
+            tensor_cpu = torch.nan_to_num(tensor_cpu, nan=0.0)
+
+        return tensor_cpu
+
+    def _load_index(self) -> tuple[list[torch.Tensor], list, dict]:
+        """Load the indexed embeddings and metadata."""
+        if (
+            not self.embeddings_path.exists()
+            or not self.embeddings_ids_path.exists()
+            or not self.metadata_path.exists()
+        ):
+            msg = "Index files not found. Run indexing first."
+            raise FileNotFoundError(msg)
+
+        # Load embeddings using PyTorch with weights_only for security
+        embeddings = torch.load(
+            self.embeddings_path,
+            map_location="cpu",  # Load to CPU first for memory efficiency
+            weights_only=True,
         )
-        return
 
-    # 2. Create RAG instance
-    logger.info("\nCreating MultiModalRAG instance...")
-    try:
-        rag = MultiModalRAG(
-            name="test_multimodal_rag",
-            vector_db=vector_db,
-            embedding_model="colqwen2",
-            generation_model="colqwen2",
-            configs={
-                "chunking_strategy": "page_chunking",
-                "query_enhancement": "none",
-                "retrieval_strategy": "semantic",
-                "similarity_metric": "max_sim",
-                "routing_strategy": "none",
-                "top_k": 3,
-                "pruning_threshold": 0.0,
-            },
+        with self.embeddings_ids_path.open() as f:
+            embeddings_ids = [json.loads(line) for line in f]
+
+        with self.metadata_path.open() as f:
+            metadata = json.load(f)
+
+        return embeddings, embeddings_ids, metadata
+
+    async def _extract_image_description(self, image: Image.Image) -> str:
+        # Use generation model to extract image description
+        description = await self.generation_model.generate(
+            "Describe this image in great details, it will be used as the description metadata for retrieval. Return the description only in plain text.",
+            context=[{"type": "image", "image": image}],
         )
-        await rag.initialize()
-        logger.info("✅ MultiModalRAG instance created")
-    except Exception as e:
-        logger.info(f"❌ Failed to create RAG instance: {e}")
-        return
+        return description
 
-    # 3. Define test image paths (will be skipped if they don't exist)
-    logger.info("\nPreparing test images...")
-    test_images_dir = Path(__file__).parent.parent.parent / "data/test_images"
+    async def extract(self, documents: list[Path]) -> None:
+        """Extract relevant corpuses for retrieval."""
+        # Extract individual pages from PDFs into images, and store them as pngs in corpuses directory
+        # Create metadata for each image with 'embedded' flag set to False
+        corpuses_dir = self.data_dir / "corpuses"
+        corpuses_dir.mkdir(parents=True, exist_ok=True)
 
-    # Define test image paths - these will be skipped if they don't exist
-    test_image_paths = []
-    for i in range(1, 4):
-        test_image_paths.append(test_images_dir / f"0_{i}.jpg")
+        metadata = {}
+        if self.metadata_path.exists():
+            with self.metadata_path.open("r") as f:
+                metadata = json.load(f)
 
-    logger.info(f"Looking for {len(test_image_paths)} test images in {test_images_dir}")
-    existing_images = [path for path in test_image_paths if path.exists()]
-    logger.info(f"Found {len(existing_images)} existing images")
+        # Get existing corpus IDs to avoid duplicates
+        max_corpus_id = max(
+            (int(data["corpus-id"]) for data in metadata.values()),
+            default=-1,
+        )
 
-    # 4. Index the images with small batch size (if any exist)
-    logger.info(f"\nIndexing {len(test_image_paths)} images...")
-    try:
-        await rag.index(
-            test_image_paths,
-            batch_size=1,
-        )  # Use batch_size=1 for memory safety
+        for corpus_id, doc_path in tqdm(enumerate(documents, start=max_corpus_id + 1)):
+            # Convert each page of the PDF to an image
+            images = await pdf_to_images(doc_path)
 
-        # Check if any images were actually indexed
-        if existing_images:
-            logger.info("✅ Images indexed successfully")
+            for doc_id, img in tqdm(enumerate(images, start=1)):  # Pages start from 1
+                img.save(corpuses_dir / f"{corpus_id}_{doc_id}.png")
+
+                # Extract description of the image
+                description = await self._extract_image_description(img)
+
+                metadata[f"{corpus_id}_{doc_id}"] = {
+                    "corpus-id": corpus_id,
+                    "doc-id": doc_id,
+                    "name": f"{corpus_id}_{doc_id}.png",
+                    "description": description,
+                    "embedded": False,
+                }
+
+            with self.metadata_path.open("w") as f:
+                json.dump(metadata, f, indent=2)
+
+    async def index(self) -> None:
+        """
+        Index image pages with device-agnostic processing using async embedding.
+
+        Args:
+            corpuses: List of dictionaries, each containing corpus information.
+
+        """
+        metadata = {}
+        embs_ids = []
+        embs = []
+
+        if self.metadata_path.exists():
+            with self.metadata_path.open("r") as f:
+                metadata = json.load(f)
+
+        if self.embeddings_ids_path.exists():
+            with self.embeddings_ids_path.open("r") as f:
+                embs_ids = [json.loads(line) for line in f]
+
+        corpuses_to_embed = []
+        images_paths = []
+        for data_id, data in metadata.items():
+            if not data["embedded"]:
+                corpuses_to_embed.append(data_id)
+                images_paths.append(self.data_dir / "corpuses" / data["name"])
+
+        for i in tqdm(range(0, len(images_paths), self.batch_size)):
+            corps = corpuses_to_embed[i : i + self.batch_size]
+            imgs = [
+                Image.open(img_path)
+                for img_path in images_paths[i : i + self.batch_size]
+            ]
+
+            # Use async embedding method
+            embeddings = await self.embedding_model.embed_images(
+                imgs,
+                batch_size=len(imgs),
+            )
+
+            # Safe tensor conversion and dtype handling
+            embeddings_processed = self._safe_tensor_convert(
+                embeddings,
+                self.device_config.dtype,
+            )
+
+            # Add individual embeddings to the list
+            # Handle both single tensor and batch tensor cases
+            batch_embedding_dims = 3  # Expected dimensions for batch embeddings
+            if (
+                embeddings_processed.dim() == batch_embedding_dims
+            ):  # Batch of embeddings
+                for j in range(embeddings_processed.size(0)):
+                    embs.append(embeddings_processed[j])
+                    metadata[corps[j]]["embedded"] = True
+                    embs_ids.append(corps[j])
+            else:  # Single embedding
+                embs.append(embeddings_processed)
+                metadata[corps[0]]["embedded"] = True
+                embs_ids.append(corps[0])
+
+        # Concatenate all embeddings (existing + new)
+        if self.embeddings_path.exists():
+            print("Some embeddings already exist, loading existing index.")
+            existing_embs = torch.load(
+                self.embeddings_path,
+                map_location="cpu",
+                weights_only=True,
+            )
+            full_embs = existing_embs + embs
         else:
-            logger.info("⚠️ No images were found to index, but collection is ready")
-    except Exception as e:
-        logger.info(f"❌ Failed to index images: {e}")
-        return
+            full_embs = embs
 
-    # 5. Test retrieval with different queries
-    logger.info("\nTesting retrieval...")
-    test_queries = [
-        "Who is the strategic cost transformation leader at deloitte?",
-        "What is the world's economy representation in percentage in Deloitte surveys?",
-    ]
+        # Save embeddings using PyTorch (handles variable shapes naturally)
+        torch.save(full_embs, self.embeddings_path)
 
-    for query in test_queries:
-        # logger.info(f"\nQuery: '{query}'")
-        try:
-            results = await rag.retrieve([query], top_k=3)
-            logger.info(f"Found {len(results)} results:")
+        with self.metadata_path.open("w") as meta_file:
+            json.dump(metadata, meta_file, indent=2)
 
-            for i, result in enumerate(results):
-                # logger.info(f"     Properties: {result['properties']}")
-                logger.info(f"     Score: {result['score']:.4f}")
+        with self.embeddings_ids_path.open("w") as f:
+            for corp_id in embs_ids:
+                f.write(json.dumps(corp_id) + "\n")
 
-        except Exception:
-            # logger.info(f"❌ Retrieval failed for query '{query}': {e}")
-            pass
+        print(f"Indexed {len(images_paths)} images.")
 
-    # Close the Weaviate connection properly
-    vector_db.client.close()
+    async def retrieve(
+        self,
+        queries: str | list[str],
+        top_k: int = 5,
+    ) -> list[tuple[dict, float]]:
+        """
+        Retrieve top-k most similar documents for single or multiple queries using async embedding.
 
-    logger.info("\n🎉 Testing completed!")
+        Args:
+            queries: Text query or list of text queries to search for
+            top_k: Number of top results to return per query
 
+        Returns:
+            List of (metadata, score) tuples. For multiple queries, results are flattened.
 
-if __name__ == "__main__":
-    asyncio.run(main())
+        """
+        # Convert single query to list for uniform processing
+        query_texts = [queries] if isinstance(queries, str) else queries
+
+        if not query_texts:
+            return []
+
+        embeddings, embedding_ids, metadata = self._load_index()
+
+        # Use async text embedding method for all queries
+        q_emb_tensor = await self.embedding_model.embed_texts(query_texts)
+
+        # Handle NaN values in query embeddings
+        if torch.isnan(q_emb_tensor).any():
+            print("Warning: NaN values found in query embeddings, cleaning...")
+            q_emb_tensor = torch.nan_to_num(q_emb_tensor, nan=0.0)
+
+        # Convert embeddings to the correct device and dtype efficiently
+        doc_vectors = []
+        for emb_tensor in embeddings:
+            # Move to correct device and ensure correct dtype
+            doc_vector = emb_tensor.to(
+                dtype=self.device_config.dtype,
+                device=self.device_config.device_str,
+                non_blocking=True,  # Async transfer for better performance
+            )
+            doc_vectors.append(doc_vector)
+
+        # Process each query and collect all results
+        all_results = []
+        for i in tqdm(range(len(query_texts))):
+            query_vector = q_emb_tensor[i]  # Get the i-th query vector
+
+            # Use processor.score method for proper late interaction
+            scores = self.embedding_model.processor.score([query_vector], doc_vectors)
+
+            # Convert scores to numpy array if needed
+            if isinstance(scores, torch.Tensor):
+                scores = scores.cpu().numpy()
+
+            # Flatten scores if they have extra dimensions
+            if scores.ndim > 1:
+                scores = scores.flatten()
+
+            # Get top-k results for this query
+            ids = np.argsort(scores)[-top_k:][::-1]
+            query_results = [
+                (metadata[embedding_ids[j]], float(scores[j])) for j in ids
+            ]
+            all_results.extend(query_results)
+
+        return all_results
+
+    async def answer(
+        self,
+        query: str,
+        top_k: int = 5,
+    ) -> tuple[str, list[tuple[dict, float]]]:
+        """Generate answers based on the retrieved images or documents."""
+        # Retrieve the most relevant images or documents
+        results = await self.retrieve(query, top_k=top_k)
+
+        # Generate answers from the retrieved results
+        context: list[Any] = []
+        for metadata, _ in results:
+            context.append(
+                {
+                    "type": "image",
+                    "image": str(self.data_dir / "corpuses" / metadata["name"]),
+                },
+            )
+
+        response = await self.generation_model.generate(
+            query,
+            context=context,
+        )
+
+        return response, results

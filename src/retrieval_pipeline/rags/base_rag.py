@@ -1,38 +1,88 @@
+import sys
 from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import TYPE_CHECKING
 
-import torch
+# Add src path for imports
+src_path = Path(__file__).parent.parent.parent
+if str(src_path) not in sys.path:
+    sys.path.append(str(src_path))
 
-from database.dbs_manager import VectorDB
-from retrieval_pipeline.utils import get_torch_device
+if TYPE_CHECKING:
+    from retrieval_pipeline.strategy import (
+        ChunkingStrategy,
+        QueryEnhancement,
+        RetrievalStrategy,
+        RoutingStrategy,
+        SimilarityMetric,
+    )
+
+from retrieval_pipeline.device import DeviceConfig
+from retrieval_pipeline.models.embedding_models import setup_embedding_model
+from retrieval_pipeline.models.generation_models import setup_generation_model
 
 
 class BaseRAG(ABC):
-    def __init__(self, vector_db: VectorDB, collection_name: str):
-        self.vector_db = vector_db
-        self.collection_name = collection_name
-        self.device = torch.device(get_torch_device("auto"))
+    def __init__(
+        self,
+        name: str,
+        data_dir: Path,
+        embedding_model,
+        generation_model,
+        configs: dict | None,
+    ):
+        self.name = name
+        self.data_dir = data_dir / name
+        self.device_config = DeviceConfig.auto_detect(
+            configs.get("preferred_device") if configs else None,
+        )
+
+        # Prepare store structure
+        self.data_dir.mkdir(parents=True, exist_ok=True)
+        self.store_dir = self.data_dir / "store"
+        self.store_dir.mkdir(parents=True, exist_ok=True)
+        self.metadata_path = self.data_dir / "metadata.json"
+        self.embeddings_ids_path = self.store_dir / "embeddings_ids.jsonl"
+        self.embeddings_path = self.store_dir / "embeddings.pt"
+
+        # Setup models
+        self.embedding_model = setup_embedding_model(
+            embedding_model,
+            device_config=self.device_config,
+        )
+        self.generation_model = setup_generation_model(
+            generation_model,
+            device_config=self.device_config,
+        )
+
+        # Prepare configurations
+        if not configs:  # If no configs provided, use defaults
+            configs = {}
+
+        self.chunking_strategy: ChunkingStrategy = configs.get("chunking_strategy")
+        self.query_enhancement: QueryEnhancement = configs.get("query_enhancement")
+        self.retrieval_strategy: RetrievalStrategy = configs.get("retrieval_strategy")
+        self.similarity_metric: SimilarityMetric = configs.get("similarity_metric")
+        self.routing_strategy: RoutingStrategy = configs.get("routing_strategy")
+        self.top_k = configs.get("top_k", 5)  # Number of top results to retrieve
+        self.pruning_threshold = configs.get(
+            "pruning_threshold",
+            0.0,
+        )  # % of results to prune
+        self.batch_size = configs.get("batch_size", 8)
 
     @abstractmethod
-    def _get_collection_schema(self) -> dict:
-        """Return the schema for this RAG's collection."""
-
-    async def _setup_collection(self):
-        """Setup the vector database collection."""
-        schema = self._get_collection_schema()
-        await self.vector_db.create_collection(self.collection_name, schema)
-
-    async def initialize(self):
-        """Call this after creating the instance to setup the collection."""
-        await self._setup_collection()
+    async def extract(self):
+        """Extract relevant corpuses for retrieval."""
 
     @abstractmethod
     async def index(self, corpuses: list):
-        """Index images or documents for retrieval."""
+        """Index corpuses for retrieval."""
 
     @abstractmethod
     async def retrieve(self, queries: list, top_k: int | None = None):
-        """Retrieve the most relevant images or documents for the given queries."""
+        """Retrieve the most relevant corpuses for the given queries."""
 
     @abstractmethod
     async def answer(self, queries: list):
-        """Generate answers based on the retrieved images or documents."""
+        """Generate answers based on the retrieved corpuses."""

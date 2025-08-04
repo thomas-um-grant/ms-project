@@ -1,9 +1,11 @@
 import base64
 from enum import Enum
 from io import BytesIO
+from pathlib import Path
 
 import numpy as np
 import torch
+from pdf2image import convert_from_path
 from PIL import Image
 
 
@@ -160,3 +162,22 @@ def resize_image(image: Image.Image, max_dim: int = 2048) -> Image.Image:
         new_width = int(new_height * aspect_ratio)
 
     return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+
+async def pdf_to_images(pdf_path: Path) -> list[Image.Image]:
+    """
+    Convert PDF file to a list of PIL Image objects.
+
+    Args:
+        pdf_path (Path): Path to the PDF file.
+
+    Returns:
+        list[Image.Image]: List of images extracted from the PDF.
+
+    """
+    images = convert_from_path(str(pdf_path), dpi=400, fmt="png")
+
+    # Resize images to a maximum dimension of 500 pixels
+    images = [resize_image(img, max_dim=500) for img in images]
+
+    return images

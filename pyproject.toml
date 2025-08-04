@@ -46,6 +46,8 @@ dependencies = [
 	"weaviate>=0.1.2",
 	"weaviate-client>=4.16.4",
 	"pillow>=11.2.1",
+	"aiohttp>=3.8.0",
+	"ollama>=0.4.0",
 ]
 
 [dependency-groups]
