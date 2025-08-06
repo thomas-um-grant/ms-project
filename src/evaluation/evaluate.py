@@ -2,12 +2,20 @@ import argparse
 import asyncio
 import json
 import logging
+import os
+import sys
 from pathlib import Path
 
 from datasets import Dataset, DatasetDict
 from dotenv import load_dotenv
 
+# Add src path for imports
+src_path = Path(__file__).parent.parent
+if str(src_path) not in sys.path:
+    sys.path.append(str(src_path))
+
 from evaluation.evaluator import Evaluator
+from pipeline.rags.factory_rag import RAGFactory
 
 load_dotenv()
 logger = logging.getLogger(__name__)
@@ -77,11 +85,20 @@ async def _evaluate(rag_configs: dict):
     - pandas.DataFrame: A dataframe containing the evaluation metrics.
 
     """
+    rags_data_dir = os.getenv("RAGS_DATA_DIR")
+    if rags_data_dir is None:
+        # Fallback to default if environment variable is not set
+        rags_data_dir = str(src_path / "data/rags")
+        print(f"RAGS_DATA_DIR not set, using default: {rags_data_dir}")
+
+    data_dir = Path(rags_data_dir)
+
     ds = None
     try:
+        dataset_name = rag_configs["configs"]["knowledge_base"]
         dataset_json_path = (
             Path(__file__).parent.parent
-            / f"data/evaluation/{rag_configs['name']}/dataset.json"
+            / f"data/evaluation/{dataset_name}/dataset.json"
         )
         if not dataset_json_path.exists():
             raise FileNotFoundError(
@@ -114,19 +131,19 @@ async def _evaluate(rag_configs: dict):
             },
         )
     except Exception as e:
-        logger.error(f"Error loading custom dataset {dataset_to_load}: {e}")
-        raise ValueError(f"Custom dataset {dataset_to_load} could not be loaded.")
+        logger.error(f"Error loading custom dataset {dataset_name}: {e}")
+        raise ValueError(f"Custom dataset {dataset_name} could not be loaded.")
 
     # Setup retriever and evaluator
     logger.info("Setting up RAGFactory and Evaluator...")
-    retriever = RAGFactory(rag_configs)
-    evaluator = Evaluator(retriever)
+    evaluation_rag = RAGFactory.create_rag(rag_configs, data_dir)
+    evaluator = Evaluator(evaluation_rag)
     logger.info("RAGFactory and Evaluator set up successfully.")
 
     return await evaluator.evaluate_dataset(
         ds=ds,
         k=100,
-        ds_name=dataset_to_load,
+        ds_name=dataset_name,
     )
 
 
@@ -141,7 +158,7 @@ async def main():
 
     parser.add_argument(
         "--rag-configs",
-        default="multimodal_colqwen_page",
+        default="multimodal_page",
         help="RAG configurations",
     )
     parser.add_argument(
@@ -162,10 +179,4 @@ async def main():
 
 
 if __name__ == "__main__":
-    # Add this at the top of the file to allow running the script directly
-    # # Add src path for imports
-    # src_path = Path(__file__).parent.parent
-    # if str(src_path) not in sys.path:
-    #     sys.path.append(str(src_path))
-
     asyncio.run(main())

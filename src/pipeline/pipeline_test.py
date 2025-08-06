@@ -10,9 +10,9 @@ src_path = Path(__file__).parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
-load_dotenv()
-
 from pipeline.rags.factory_rag import RAGFactory
+
+load_dotenv()
 
 
 async def main():
@@ -21,7 +21,7 @@ async def main():
     rags_data_dir = os.getenv("RAGS_DATA_DIR")
     if rags_data_dir is None:
         # Fallback to default if environment variable is not set
-        rags_data_dir = "/Users/thomas/repos/imperial/project/ms-project/src/data/rags"
+        rags_data_dir = str(src_path / "data/rags")
         print(f"RAGS_DATA_DIR not set, using default: {rags_data_dir}")
 
     data_dir = Path(rags_data_dir)

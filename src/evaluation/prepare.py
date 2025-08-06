@@ -8,15 +8,14 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-load_dotenv()
-
 # Add src path for imports
 src_path = Path(__file__).parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
-from pipeline.rags.multimodal import MultiModalRAG
+from pipeline.rags.factory_rag import RAGFactory
 
+load_dotenv()
 logger = logging.getLogger(__name__)
 
 
@@ -68,45 +67,36 @@ async def main():
 
     # Create RAG system
     # Configuration
-    evaluation_data_dir = os.getenv("EVALS_DATA_DIR")
-    if evaluation_data_dir is None:
+    evaluation_dir = os.getenv("EVALS_DATA_DIR")
+    if evaluation_dir is None:
         # Fallback to default if environment variable is not set
-        evaluation_data_dir = (
-            "/Users/thomas/repos/imperial/project/ms-project/src/data/evaluation"
-        )
-        print(f"EVALS_DATA_DIR not set, using default: {evaluation_data_dir}")
+        evaluation_dir = str(src_path / "data/evaluation")
+        print(f"EVALS_DATA_DIR not set, using default: {evaluation_dir}")
 
-    evaluation_data_dir = Path(evaluation_data_dir)
+    evaluation_dir = Path(evaluation_dir)
+
+    data_dir = os.getenv("RAGS_DATA_DIR")
+    if data_dir is None:
+        # Fallback to default if environment variable is not set
+        data_dir = str(src_path / "data/rags")
+        print(f"RAGS_DATA_DIR not set, using default: {data_dir}")
+
+    data_dir = Path(data_dir)
 
     # Load RAG configs
     rag_configs = {}
     with rag_configs_path.open("r") as f:
         rag_configs = json.load(f)
 
-    if rag_configs["type"] == "traditional":
-        # evaluation_rag = TraditionalRAG(**rag_configs)
-        pass
-    elif rag_configs["type"] == "multimodal":
-        evaluation_rag = MultiModalRAG(
-            name=rag_configs["name"],
-            data_dir=evaluation_data_dir,
-            embedding_model=rag_configs["embedding_model"],
-            generation_model=rag_configs["generation_model"],
-            configs=rag_configs["configs"],
-        )
-    elif rag_configs["type"] == "graph":
-        # evaluation_rag = GraphRAG(**rag_configs)
-        pass
-    elif rag_configs["type"] == "custom":
-        # evaluation_rag = CustomRAG(**rag_configs)
-        pass
-    else:
-        msg = f"Unsupported RAG type: {rag_configs['type']}"
-        logger.error(msg)
-        raise ValueError(msg)
+    # Initialize the RAG using the factory
+    evaluation_rag = RAGFactory.create_rag(rag_configs, data_dir)
 
     # Extract metadata from corpuses
-    documents = list((dataset_path / "corpuses").glob("*.jpg"))
+    documents = list(
+        (evaluation_dir / rag_configs["configs"]["knowledge_base"] / "corpuses").glob(
+            "*.jpg",
+        ),
+    )
 
     print("Starting extraction...")
     await evaluation_rag.extract(documents, preprocessed=True)
