@@ -35,12 +35,14 @@ async def main():
     # Create configuration for the RAG factory
     config = {
         "type": "multimodal",
-        "name": "multimodal_testing",
-        "embedding_model": "colqwen2_embed",
-        "generation_model": "colqwen2_ollama_gen",
+        "name": "multimodal_page",
         "configs": {
+            "embedding_model": "colqwen2_embed",
+            "generation_model": "colqwen2_ollama_gen",
             "preferred_device": preferred_device,
             "batch_size": 8,
+            "chunking_strategy": "page",
+            "knowledge_base": "consulting_light",
         },
     }
 
@@ -108,9 +110,7 @@ async def main():
         #     print(f"Answer for '{query}': {answer}")
 
         # Test answer generation
-        test_query = (
-            "What was the example used to better understand the bag of words concept?"
-        )
+        test_query = "How have consumer shopping behaviors shifted towards online and mobile platforms since the onset of the COVID-19 pandemic?"
         answer, results = await rag.answer(test_query)
         print(f"Question:\n{test_query}")
         print("Retrieved documents:")

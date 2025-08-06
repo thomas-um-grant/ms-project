@@ -21,31 +21,34 @@ class BaseRAG(ABC):
         self,
         name: str,
         data_dir: Path,
-        embedding_model,
-        generation_model,
-        configs: dict | None,
+        configs: dict,
     ):
         self.name = name
+        knowledge_base = configs.get("knowledge_base", "default")
+        for prefix in ["vidore/", "sherpa/"]:
+            knowledge_base = knowledge_base.removeprefix(prefix)
+        self.knowledge_base = knowledge_base
+
         self.data_dir = data_dir / name
-        self.device_config = DeviceConfig.auto_detect(
-            configs.get("preferred_device") if configs else None,
-        )
+        self.device_config = DeviceConfig.auto_detect(configs.get("preferred_device"))
 
         # Prepare store structure
         self.data_dir.mkdir(parents=True, exist_ok=True)
-        self.store_dir = self.data_dir / "store"
+        self.store_dir = self.data_dir / self.knowledge_base / "store"
         self.store_dir.mkdir(parents=True, exist_ok=True)
-        self.metadata_path = self.data_dir / "metadata.json"
-        self.embeddings_ids_path = self.store_dir / "embeddings_ids.jsonl"
-        self.embeddings_path = self.store_dir / "embeddings.pt"
+        self.metadata_path = self.data_dir / self.knowledge_base / "metadata.json"
+        self.embeddings_ids_path = (
+            self.store_dir / self.knowledge_base / "embeddings_ids.jsonl"
+        )
+        self.embeddings_path = self.store_dir / self.knowledge_base / "embeddings.pt"
 
         # Setup models
         self.embedding_model = setup_embedding_model(
-            embedding_model,
+            configs.get("embedding_model"),
             device_config=self.device_config,
         )
         self.generation_model = setup_generation_model(
-            generation_model,
+            configs.get("generation_model"),
             device_config=self.device_config,
         )
 

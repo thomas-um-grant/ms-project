@@ -22,13 +22,11 @@ class MultiModalRAG(BaseRAG):
         self,
         name: str,
         data_dir: Path,
-        embedding_model: str = "colqwen2",
-        generation_model: str = "colqwen2",
         configs: dict | None = None,
     ):
         self._validate_params(configs)
 
-        super().__init__(name, data_dir, embedding_model, generation_model, configs)
+        super().__init__(name, data_dir, configs)
 
     def _resize_image(self, image: Image.Image, max_size: int = 1200) -> Image.Image:
         """Resize image to fit within max_size while maintaining aspect ratio."""

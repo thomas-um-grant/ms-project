@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import ClassVar
 
@@ -18,14 +17,14 @@ class RAGFactory:
     @classmethod
     def create_rag(
         cls,
-        config: dict | str | Path,
+        config: dict,
         data_dir: Path,
     ) -> BaseRAG:
         """
         Create a RAG instance based on configuration.
 
         Args:
-            config: Configuration dict or path to config file
+            config: Configuration dict
             data_dir: Base data directory for RAG storage
 
         Returns:
@@ -36,23 +35,12 @@ class RAGFactory:
             KeyError: If required config fields are missing
 
         """
-        # Load config if path provided
-        if isinstance(config, str | Path):
-            config_path = Path(config)
-            with config_path.open("r") as f:
-                config = json.load(f)
-
-        # At this point config is guaranteed to be a dict
-        config_dict: dict = config
-
         # Validate required fields
-        cls._validate_config(config_dict)
+        cls._validate_config(config)
 
-        rag_type = config_dict["type"]
-        name = config_dict["name"]
-        embedding_model = config_dict["embedding_model"]
-        generation_model = config_dict["generation_model"]
-        configs = config_dict.get("configs", {})
+        rag_type = config["type"]
+        name = config["name"]
+        configs = config.get("configs", {})
 
         # Get RAG class
         if rag_type not in cls._rag_types:
@@ -68,8 +56,6 @@ class RAGFactory:
         return rag_class(
             name=name,
             data_dir=data_dir,
-            embedding_model=embedding_model,
-            generation_model=generation_model,
             configs=configs,
         )
 
@@ -105,7 +91,7 @@ class RAGFactory:
             KeyError: If required fields are missing
 
         """
-        required_fields = ["type", "name", "embedding_model", "generation_model"]
+        required_fields = ["type", "name", "configs"]
 
         for field in required_fields:
             if field not in config:
