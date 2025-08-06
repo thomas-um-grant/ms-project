@@ -6,8 +6,8 @@ import torch
 from colpali_engine.models import ColQwen2, ColQwen2Processor
 from PIL import Image
 
-from retrieval_pipeline.device import DeviceConfig
-from retrieval_pipeline.models.base_embedder import BaseEmbeddingModel
+from pipeline.models.base_embedder import BaseEmbeddingModel
+from utils.device import DeviceConfig
 
 
 # Local Nomic Model (text embedding only)

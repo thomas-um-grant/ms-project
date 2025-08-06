@@ -8,8 +8,8 @@ import torch
 from PIL import Image
 from transformers import AutoProcessor, Qwen2VLForConditionalGeneration
 
-from retrieval_pipeline.device import DeviceConfig
-from retrieval_pipeline.models.base_generator import BaseGenerationModel
+from pipeline.models.base_generator import BaseGenerationModel
+from utils.device import DeviceConfig
 
 
 class ColQwen2Model(BaseGenerationModel):

@@ -1,15 +1,9 @@
-import sys
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-# Add src path for imports
-src_path = Path(__file__).parent.parent.parent
-if str(src_path) not in sys.path:
-    sys.path.append(str(src_path))
-
 if TYPE_CHECKING:
-    from retrieval_pipeline.strategy import (
+    from pipeline.strategy import (
         ChunkingStrategy,
         QueryEnhancement,
         RetrievalStrategy,
@@ -17,9 +11,9 @@ if TYPE_CHECKING:
         SimilarityMetric,
     )
 
-from retrieval_pipeline.device import DeviceConfig
-from retrieval_pipeline.models.embedding_models import setup_embedding_model
-from retrieval_pipeline.models.generation_models import setup_generation_model
+from pipeline.models.embedding_models import setup_embedding_model
+from pipeline.models.generation_models import setup_generation_model
+from utils.device import DeviceConfig
 
 
 class BaseRAG(ABC):

@@ -12,7 +12,7 @@ if str(src_path) not in sys.path:
 
 load_dotenv()
 
-from retrieval_pipeline.rags.multimodal import MultiModalRAG
+from pipeline.rags.factory_rag import RAGFactory
 
 
 async def main():
@@ -32,19 +32,20 @@ async def main():
     # preferred_device = "mps"      # Force Apple Silicon GPU
     # preferred_device = "cuda"     # Force NVIDIA GPU
 
-    configs = {
-        "preferred_device": preferred_device,
-        "batch_size": 8,
+    # Create configuration for the RAG factory
+    config = {
+        "type": "multimodal",
+        "name": "multimodal_testing",
+        "embedding_model": "colqwen2_embed",
+        "generation_model": "colqwen2_ollama_gen",
+        "configs": {
+            "preferred_device": preferred_device,
+            "batch_size": 8,
+        },
     }
 
-    # Initialize the RAG
-    rag = MultiModalRAG(
-        name="multimodal_testing",
-        data_dir=data_dir,
-        embedding_model="colqwen2_embed",
-        generation_model="colqwen2_ollama_gen",
-        configs=configs,
-    )
+    # Initialize the RAG using the factory
+    rag = RAGFactory.create_rag(config, data_dir)
 
     try:
         # Extract documents (PDFs) into images and embeddings

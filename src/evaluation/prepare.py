@@ -15,7 +15,7 @@ src_path = Path(__file__).parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
-from retrieval_pipeline.rags.multimodal import MultiModalRAG
+from pipeline.rags.multimodal import MultiModalRAG
 
 logger = logging.getLogger(__name__)
 

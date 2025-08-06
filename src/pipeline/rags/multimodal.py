@@ -2,7 +2,6 @@ import asyncio
 import gc
 import json
 import os
-import sys
 from pathlib import Path
 from typing import Any
 
@@ -12,13 +11,8 @@ import torch
 from PIL import Image
 from tqdm import tqdm
 
-# Add src path for imports
-src_path = Path(__file__).parent.parent.parent
-if str(src_path) not in sys.path:
-    sys.path.append(str(src_path))
-
-from retrieval_pipeline.rags.base_rag import BaseRAG
-from retrieval_pipeline.utils import pdf_to_images
+from pipeline.rags.base_rag import BaseRAG
+from utils.general import pdf_to_images
 
 
 class MultiModalRAG(BaseRAG):
