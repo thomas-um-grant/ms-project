@@ -58,17 +58,17 @@ class Evaluator:
         self,
         ds: dict,
         k: int = 100,  # Number of documents to retrieve
-        ds_name: str = None,  # Dataset name for DB filtering
+        rag_name: str = "default_rag",
         batch_size: int = 20,
         **kwargs,
     ) -> dict[str, dict[str, float | None]]:
         """
-        Evaluate a dataset using Vespa retrieval and scoring.
+        Evaluate a dataset.
 
         Flow:
         1. Embed queries using the retriever.
-        2. Retrieve documents from Vespa with scores.
-        3. Compute metrics comparing Vespa scores with ground truth relevance.
+        2. Retrieve documents with scores.
+        3. Compute metrics comparing scores with ground truth relevance.
         """
         # Load datasets
         ds_queries = ds["queries"]
@@ -85,16 +85,16 @@ class Evaluator:
 
         # Retrieve documents from Vespa using search_many
         logger.info(
-            f"Retrieving documents for {len(query_ids)} queries from Vespa for dataset '{ds_name}' with k={k}...",
+            f"Retrieving documents for {len(query_ids)} queries on rag '{rag_name}' with k={k}...",
         )
 
-        # Batch queries to avoid overloading Vespa
+        # Batch queries to avoid overloading
         queries = list(ds_queries[self.query_column])
-        all_vespa_results = {}  # Store results grouped by query index
+        all_results = {}  # Store results grouped by query index
 
         # Create checkpoint filename with dataset name and timestamp
         checkpoint_file = (
-            Path(__file__).parent / f"checkpoint_{ds_name}_{len(queries)}_queries.json"
+            Path(__file__).parent / f"checkpoint_{rag_name}_{len(queries)}_queries.json"
         )
 
         # Ensure the checkpoint directory exists
@@ -106,14 +106,14 @@ class Evaluator:
             try:
                 with checkpoint_file.open() as f:
                     checkpoint_data = json.load(f)
-                    all_vespa_results = checkpoint_data.get("results", {})
+                    all_results = checkpoint_data.get("results", {})
                     start_index = checkpoint_data.get("last_processed_index", 0)
                     logger.info(f"Resuming from checkpoint at index {start_index}")
             except (json.JSONDecodeError, KeyError) as e:
                 logger.warning(
                     f"Could not load checkpoint: {e}. Starting from beginning.",
                 )
-                all_vespa_results = {}
+                all_results = {}
                 start_index = 0
 
         for i in range(start_index, len(queries), batch_size):
@@ -125,7 +125,7 @@ class Evaluator:
                 queries=batch_queries,
                 num_results=k,
                 variant="ann_float",
-                document_filters=[("dataset_name", ds_name)],
+                document_filters=[("dataset_name", rag_name)],
             )
 
             # Process results and keep them grouped by query
@@ -149,14 +149,14 @@ class Evaluator:
                     }
                     filtered_hits.append(filtered_hit)
 
-                all_vespa_results[str(global_query_idx)] = filtered_hits
+                all_results[str(global_query_idx)] = filtered_hits
 
             # Save checkpoint after each batch
             checkpoint_data = {
-                "results": all_vespa_results,
+                "results": all_results,
                 "last_processed_index": i + batch_size,
                 "total_queries": len(queries),
-                "dataset_name": ds_name,
+                "rag_name": rag_name,
                 "batch_size": batch_size,
             }
 
@@ -178,13 +178,13 @@ class Evaluator:
 
         # Get the retrieved document IDs and their Vespa scores
         logger.info(
-            f"Retrieved {len(all_vespa_results)} results from Vespa for dataset '{ds_name}'. Computing metrics...",
+            f"Retrieved {len(all_results)} results from Vespa for dataset '{rag_name}'. Computing metrics...",
         )
 
         # Map query IDs to their hits using the stored query index
         query_to_hits = {}
         for i, query_id in enumerate(ds_queries[self.query_id_column]):
-            query_hits = all_vespa_results.get(str(i), [])
+            query_hits = all_results.get(str(i), [])
             query_to_hits[str(query_id)] = query_hits
 
         # Compute scores for retrieved documents using different methods

@@ -1,0 +1,23 @@
+{
+  "type": "multimodal",
+  "name": "multimodal_page",
+  "embedding_model": "colqwen2_embed",
+  "generation_model": "colqwen2_ollama_gen",
+  "configs": {
+    "preferred_device": "cpu",
+    "batch_size": 8,
+    "chunking_strategy": "page"
+  },
+  "knowledge_base": [
+    "sherpa/consulting_light",
+    "vidore/arxivqa_test_subsampled_beir",
+    "vidore/docvqa_test_subsampled_beir",
+    "vidore/infovqa_test_subsampled_beir",
+    "vidore/tabfquad_test_subsampled_beir",
+    "vidore/tatdqa_test_beir",
+    "vidore/esg_reports_v2",
+    "vidore/biomedical_lectures_v2",
+    "vidore/economics_reports_v2",
+    "vidore/esg_reports_human_labeled_v2"
+  ]
+}

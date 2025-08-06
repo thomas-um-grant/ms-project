@@ -1,5 +1,4 @@
 import base64
-from enum import Enum
 from io import BytesIO
 from pathlib import Path
 
@@ -7,15 +6,6 @@ import numpy as np
 import torch
 from pdf2image import convert_from_path
 from PIL import Image
-
-
-class ColPaliEvaluationBEIRDatasets(Enum):
-    ARXIVQA_DATASET = "vidore/arxivqa_test_subsampled_beir"
-    DOCVQA_DATASET = "vidore/docvqa_test_subsampled_beir"
-    INFOVQA_DATASET = "vidore/infovqa_test_subsampled_beir"
-    TABFQUAD_DATASET = "vidore/tabfquad_test_subsampled_beir"
-    TATQDA_DATASET = "vidore/tatdqa_test_beir"
-    GOVERNMENTAL_DATASET = "vidore/syntheticDocQA_government_reports_test_beir"
 
 
 def get_torch_device(device: str = "auto") -> str:
