@@ -143,7 +143,8 @@ async def _evaluate(rag_configs: dict):
     return await evaluator.evaluate_dataset(
         ds=ds,
         k=100,
-        ds_name=dataset_name,
+        batch_size=10,
+        complexity="v1",
     )
 
 

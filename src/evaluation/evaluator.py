@@ -5,63 +5,69 @@ import logging
 from collections import defaultdict
 from pathlib import Path
 
-from retrieval_evaluation.evaluation_retriever import (
-    EvaluationRetriever,
-)
-from retrieval_evaluation.mteb_evaluator import CustomRetrievalEvaluator
+from evaluation.mteb_evaluator import CustomRetrievalEvaluator
+from pipeline.rags.base_rag import BaseRAG
 
 logger = logging.getLogger(__name__)
 
 
 class Evaluator:
     """
-    Evaluator for the ViDoRe benchmark for datasets with a BEIR format.
-    Uses the EvaluationRetriever for embeddings and direct scoring, and Vespa for document storage and retrieval.
+    BEIR dataset type. A BEIR dataset must contain 3 subsets.
 
-    BEIR dataset type. A BEIR dataset must contain 3 subsets:
     corpus: The dataset containing the corpus of documents. Should contain the following columns:
-            - corpus-id: The column containing the document IDs as integers.
-            - image: The column containing the image data (PIL format).
+            - corpus-id: The column containing the id of all documents as strings.
+            - doc-id: (Optional)The column containing the id of all single pages of documents as strings.
+            - image: The column containing the image names as strings to be loaded as PIL images.
     queries: The dataset containing the queries. Should contain the following columns:
-            - query-id: The column containing the query IDs as integers.
-            - query: The column containing the query text.
-    qrels: The dataset containing the query relevance scores (TREC format). Should contain the following columns:
-            - query-id: The column containing the query IDs as integers.
-            - corpus-id: The column containing the document IDs as integers.
+            - query-id: The column containing the id of all queries as strings.
+            - query: The column containing all the query texts.
+            - query-type: (Optional) The column containing the type of the query as strings.
+    qrels: The dataset containing the query relevance scores. Should contain the following columns:
+            - query-id: The column containing the query ids as strings.
+            - corpus-id: The column containing the document ids as strings.
+            - doc-id: (Optional) The column containing the document ids as strings.
             - score: The column containing the relevance scores as integers.
 
     Note: In the TREC format used here, `score` is an integer indicating the relevance of the document to the query.
     For each query i, the relevance scores are integers in the range [0, N_i], where the higher the score, the more
     relevant the document is to the given query.
 
+    Adapted from
     Source: https://github.com/illuin-tech/vidore-benchmark/blob/main/src/vidore_benchmark/evaluation/vidore_evaluators/vidore_evaluator_beir.py
     """
 
     def __init__(
         self,
-        vision_retriever: EvaluationRetriever,
+        rag: BaseRAG,
         corpus_id_column: str | None = None,
+        doc_id_column: str | None = None,
         query_id_column: str | None = None,
         query_column: str | None = None,
         passage_column: str | None = None,
         score_column: str | None = None,
     ):
         # Dataset column names
-        self.vision_retriever = vision_retriever
+        self.rag = rag
         self.corpus_id_column = corpus_id_column if corpus_id_column else "corpus-id"
+        self.doc_id_column = doc_id_column if doc_id_column else "doc-id"
         self.query_id_column = query_id_column if query_id_column else "query-id"
         self.query_column = query_column if query_column else "query"
         self.passage_column = passage_column if passage_column else "image"
         self.score_column = score_column if score_column else "score"
 
+        # Custom evaluator for MTEB metrics
+        self.custom_evaluator = CustomRetrievalEvaluator(
+            k_values=[1, 3, 5, 10, 20, 50, 100],
+        )
+
     async def evaluate_dataset(
         self,
         ds: dict,
-        k: int = 100,  # Number of documents to retrieve
-        rag_name: str = "default_rag",
+        k: int = 100,
         batch_size: int = 20,
-        **kwargs,
-    ) -> dict[str, dict[str, float | None]]:
+        complexity: str = "v1",
+    ) -> dict[str, float | None]:
         """
         Evaluate a dataset.
 
@@ -77,15 +83,26 @@ class Evaluator:
         # Cast IDs to string to ensure compatibility with MTEB
         query_ids: list[str] = [str(elt) for elt in ds_queries[self.query_id_column]]
 
+        # If we score a v2 dataset, we need to adjust the qrels to take into account the doc-id
+        complexity_error = f"Unknown complexity level: {complexity}"
         qrels: dict[str, dict[str, int]] = defaultdict(dict)
         for qrel in ds_qrels:
             query_id = str(qrel[self.query_id_column])
             corpus_id = str(qrel[self.corpus_id_column])
-            qrels[query_id][corpus_id] = qrel[self.score_column]
+
+            if complexity == "v1":
+                qrels[query_id][corpus_id] = qrel[self.score_column]
+
+            elif complexity == "v2":
+                doc_id = str(qrel[self.doc_id_column])
+                qrels[query_id][f"{corpus_id}_{doc_id}"] = qrel[self.score_column]
+
+            else:
+                raise ValueError(complexity_error)
 
         # Retrieve documents from Vespa using search_many
         logger.info(
-            f"Retrieving documents for {len(query_ids)} queries on rag '{rag_name}' with k={k}...",
+            f"Retrieving documents for {len(query_ids)} queries with k={k}...",
         )
 
         # Batch queries to avoid overloading
@@ -94,7 +111,7 @@ class Evaluator:
 
         # Create checkpoint filename with dataset name and timestamp
         checkpoint_file = (
-            Path(__file__).parent / f"checkpoint_{rag_name}_{len(queries)}_queries.json"
+            Path(__file__).parent / f"checkpoint_rag_{len(queries)}_queries.json"
         )
 
         # Ensure the checkpoint directory exists
@@ -121,42 +138,21 @@ class Evaluator:
             if not batch_queries:
                 continue
 
-            vespa_results = await self.vision_retriever.retrieve(
+            results = await self.rag.retrieve(
                 queries=batch_queries,
                 num_results=k,
-                variant="ann_float",
-                document_filters=[("dataset_name", rag_name)],
             )
 
             # Process results and keep them grouped by query
-            for query_idx, response in enumerate(vespa_results):
+            for query_idx, response in enumerate(results):
                 global_query_idx = i + query_idx
-                hits = response.hits
-
-                filtered_hits = []
-                for hit in hits:
-                    hit.relevance = float(hit.relevance) if hit.relevance else 0.0
-
-                    filtered_hit = {
-                        "id": hit.id,
-                        "fields": {
-                            "id": hit.fields.id,
-                            "dataset_name": hit.fields.dataset_name,
-                            "corpus_id": hit.fields.corpus_id,
-                            "doc_id": hit.fields.doc_id,
-                        },
-                        "relevance": hit.relevance,
-                    }
-                    filtered_hits.append(filtered_hit)
-
-                all_results[str(global_query_idx)] = filtered_hits
+                all_results[str(global_query_idx)] = response
 
             # Save checkpoint after each batch
             checkpoint_data = {
                 "results": all_results,
                 "last_processed_index": i + batch_size,
                 "total_queries": len(queries),
-                "rag_name": rag_name,
                 "batch_size": batch_size,
             }
 
@@ -176,18 +172,10 @@ class Evaluator:
             checkpoint_file.unlink()
             logger.info("Evaluation completed successfully, checkpoint file removed")
 
-        # Get the retrieved document IDs and their Vespa scores
+        # Get the retrieved doc ids and their scores
         logger.info(
-            f"Retrieved {len(all_results)} results from Vespa for dataset '{rag_name}'. Computing metrics...",
+            f"Retrieved {len(all_results)} results. Computing metrics...",
         )
-
-        # Map query IDs to their hits using the stored query index
-        query_to_hits = {}
-        for i, query_id in enumerate(ds_queries[self.query_id_column]):
-            query_hits = all_results.get(str(i), [])
-            query_to_hits[str(query_id)] = query_hits
-
-        # Compute scores for retrieved documents using different methods
 
         # Need something like that for computing MTEB metrics:
         # results =
@@ -195,86 +183,36 @@ class Evaluator:
         # "query_0": {"doc_i": 19.125, "doc_1": 18.75, ...},
         # "query_1": {"doc_j": 17.25, "doc_1": 16.75, ...},
         # }
-        results: dict[str, dict[str, float]] = {}
+        scoring_results: dict[str, dict[str, float]] = {}
 
         for query_id in query_ids:
-            hits = query_to_hits[query_id]
-            retrieved_corpus = [
-                {
-                    "id": str(hit["fields"]["corpus_id"]),
-                    "score": float(hit["relevance"]),
-                }
-                for hit in hits
-            ]
+            hits = all_results[int(query_id)]
+            retrieved_corpus = []
+            for hit in hits:
+                metadata, score = hit[0], hit[1]
 
-            results[query_id] = {
+                if complexity == "v1":
+                    scoring_id = metadata["corpus-id"]
+                elif complexity == "v2":
+                    scoring_id = f"{metadata['corpus-id']}_{metadata['doc-id']}"
+                else:
+                    raise ValueError(complexity_error)
+
+                retrieved_corpus.append(
+                    {
+                        "id": scoring_id,
+                        "score": float(score),
+                    },
+                )
+
+            scoring_results[query_id] = {
                 corpus["id"]: corpus["score"] for corpus in retrieved_corpus
             }
 
-            for i in range(len(query_ids)):
-                if str(i) not in results[query_id]:
-                    results[query_id][str(i)] = 0
-
         # Compute the MTEB metrics
-        metrics = self.compute_retrieval_scores(
+        metrics = self.custom_evaluator.compute_retrieval_scores(
             qrels=qrels,
-            results=results,
-            ignore_identical_ids=False,
+            results=scoring_results,
         )
 
         return metrics
-
-    @staticmethod
-    def compute_retrieval_scores(
-        qrels: dict[str, dict[str, int]],
-        results: dict[str, dict[str, float]],
-        ignore_identical_ids: bool = False,
-        **kwargs,
-    ) -> dict[str, float | None]:
-        """
-        Compute the MTEB retrieval metrics (NDCG, MAP, Recall, Precision, NDCG, MRR, NDCG, and NDCG).
-
-        Args:
-                qrels: A dictionary containing the degree of relevance between queries and documents,
-                        following the BEIR convention (0: irrelevant, 1: relevant).
-                results: A dictionary containing the retrieval results, i.e. the retrieval
-                        scores for each document for each query.
-                        Example input:
-                        ```python
-                        {
-                                "query_0": {"doc_i": 19.125, "doc_1": 18.75, ...},
-                                "query_1": {"doc_j": 17.25, "doc_1": 16.75, ...},
-                                ...
-                        }
-                        ```
-                ignore_identical_ids: Whether to ignore identical IDs in the results, e.g. set to `True` if the
-                        queries and documents have overlapping IDs.
-                **kwargs: Additional keyword arguments.
-
-        """
-        mteb_evaluator = CustomRetrievalEvaluator()
-
-        ndcg, _map, recall, precision, naucs = mteb_evaluator.evaluate(
-            qrels=qrels,
-            results=results,
-            k_values=mteb_evaluator.k_values,
-            ignore_identical_ids=ignore_identical_ids,
-        )
-
-        mrr = mteb_evaluator.evaluate_custom(
-            qrels,
-            results,
-            mteb_evaluator.k_values,
-            "mrr",
-        )
-
-        scores: dict[str, float | None] = {
-            **{f"ndcg_at_{k.split('@')[1]}": v for (k, v) in ndcg.items()},
-            **{f"map_at_{k.split('@')[1]}": v for (k, v) in _map.items()},
-            **{f"recall_at_{k.split('@')[1]}": v for (k, v) in recall.items()},
-            **{f"precision_at_{k.split('@')[1]}": v for (k, v) in precision.items()},
-            **{f"mrr_at_{k.split('@')[1]}": v for (k, v) in mrr[0].items()},
-            **{f"naucs_at_{k.split('@')[1]}": v for (k, v) in naucs.items()},
-        }
-
-        return scores

@@ -1,15 +1,12 @@
-# Source: https://github.com/illuin-tech/vidore-benchmark/blob/main/src/vidore_benchmark/evaluation/eval_utils.py#L19
+# Adapted from Source: https://github.com/illuin-tech/vidore-benchmark/blob/main/src/vidore_benchmark/evaluation/eval_utils.py#L19
 
 import logging
 
-import numpy as np
 import pytrec_eval
 from mteb.retrieval_evaluation.evaluators.RetrievalEvaluator import RetrievalEvaluator
 from mteb.retrieval_evaluation.evaluators.utils import (
-    confidence_scores,
     hole,
     mrr,
-    nAUC,
     recall_cap,
     top_k_accuracy,
 )
@@ -18,32 +15,50 @@ logger = logging.getLogger(__name__)
 
 
 class CustomRetrievalEvaluator:
-    """
-    Wrapper class for the MTEB retrieval evaluator.
-    """
+    """Wrapper class for the MTEB retrieval evaluator."""
 
-    def __init__(self, k_values: list[int] = [1, 3, 5, 10, 20, 50, 100]):
+    def __init__(self, k_values: list[int] | None = None):
+        if k_values is None:
+            k_values = [1, 3, 5, 10, 20, 50, 100]
         self.k_values = k_values
 
-    def compute_mteb_metrics(
+    def compute_retrieval_scores(
         self,
-        relevant_docs: dict[str, dict[str, int]],
+        qrels: dict[str, dict[str, int]],
         results: dict[str, dict[str, float]],
-        **kwargs,
-    ) -> dict[str, float]:
+    ) -> dict[str, float | None]:
         """
-        Compute the MTEB retrieval metrics.
+        Compute the MTEB retrieval metrics (NDCG, MAP, Recall, Precision, NDCG, MRR, NDCG, and NDCG).
+
+        Args:
+                qrels: A dictionary containing the degree of relevance between queries and documents,
+                        following the BEIR convention (0: irrelevant, 1: relevant).
+                results: A dictionary containing the retrieval results, i.e. the retrieval
+                        scores for each document for each query.
+                        Example input:
+                        ```python
+                        {
+                                "query_0": {"doc_i": 19.125, "doc_1": 18.75, ...},
+                                "query_1": {"doc_j": 17.25, "doc_1": 16.75, ...},
+                                ...
+                        }
+                        ```
+
         """
-        ndcg, _map, recall, precision, naucs = self.evaluate(
-            relevant_docs,
-            results,
-            self.k_values,
-            ignore_identical_ids=kwargs.get("ignore_identical_ids", True),
+        ndcg, _map, recall, precision, naucs = self._evaluate(
+            qrels=qrels,
+            results=results,
+            k_values=self.k_values,
         )
 
-        mrr = self.evaluate_custom(relevant_docs, results, self.k_values, "mrr")
+        mrr = self._evaluate_custom(
+            qrels,
+            results,
+            self.k_values,
+            "mrr",
+        )
 
-        scores = {
+        scores: dict[str, float | None] = {
             **{f"ndcg_at_{k.split('@')[1]}": v for (k, v) in ndcg.items()},
             **{f"map_at_{k.split('@')[1]}": v for (k, v) in _map.items()},
             **{f"recall_at_{k.split('@')[1]}": v for (k, v) in recall.items()},
@@ -51,14 +66,14 @@ class CustomRetrievalEvaluator:
             **{f"mrr_at_{k.split('@')[1]}": v for (k, v) in mrr[0].items()},
             **{f"naucs_at_{k.split('@')[1]}": v for (k, v) in naucs.items()},
         }
+
         return scores
 
     @staticmethod
-    def evaluate(
+    def _evaluate(
         qrels: dict[str, dict[str, int]],
         results: dict[str, dict[str, float]],
         k_values: list[int],
-        ignore_identical_ids: bool = False,
     ) -> tuple[
         dict[str, float],
         dict[str, float],
@@ -66,23 +81,10 @@ class CustomRetrievalEvaluator:
         dict[str, float],
         dict[str, float],
     ]:
-        if ignore_identical_ids:
-            logger.debug(
-                "For evaluation, ``ignore_identical_ids=True`` is set to True, the evaluator will ignore "
-                "identical query and document ids.",
-            )
-            # Remove identical ids from results dict
-            for qid, rels in results.items():
-                for pid in list(rels):
-                    if qid == pid:
-                        results[qid].pop(pid)
-        else:
-            logger.debug(
-                "For evaluation, we DO NOT ignore identical query and document ids (default), please explicitly "
-                "set ``ignore_identical_ids=True`` to ignore this.",
-            )
-
-        all_ndcgs, all_aps, all_recalls, all_precisions = {}, {}, {}, {}
+        all_ndcgs: dict[str, list[float]] = {}
+        all_aps: dict[str, list[float]] = {}
+        all_recalls: dict[str, list[float]] = {}
+        all_precisions: dict[str, list[float]] = {}
 
         for k in k_values:
             all_ndcgs[f"NDCG@{k}"] = []
@@ -100,35 +102,45 @@ class CustomRetrievalEvaluator:
         )
         scores = evaluator.evaluate(results)
 
-        for query_id in scores.keys():
+        for query_id in scores:
             for k in k_values:
                 all_ndcgs[f"NDCG@{k}"].append(scores[query_id]["ndcg_cut_" + str(k)])
                 all_aps[f"MAP@{k}"].append(scores[query_id]["map_cut_" + str(k)])
                 all_recalls[f"Recall@{k}"].append(scores[query_id]["recall_" + str(k)])
                 all_precisions[f"P@{k}"].append(scores[query_id]["P_" + str(k)])
 
-        ndcg, _map, recall, precision = (
-            all_ndcgs.copy(),
-            all_aps.copy(),
-            all_recalls.copy(),
-            all_precisions.copy(),
-        )
+        # Create separate dictionaries for averaged results
+        ndcg: dict[str, float] = {}
+        _map: dict[str, float] = {}
+        recall: dict[str, float] = {}
+        precision: dict[str, float] = {}
 
         for k in k_values:
-            ndcg[f"NDCG@{k}"] = round(sum(ndcg[f"NDCG@{k}"]) / len(scores), 5)
-            _map[f"MAP@{k}"] = round(sum(_map[f"MAP@{k}"]) / len(scores), 5)
-            recall[f"Recall@{k}"] = round(sum(recall[f"Recall@{k}"]) / len(scores), 5)
-            precision[f"P@{k}"] = round(sum(precision[f"P@{k}"]) / len(scores), 5)
+            ndcg[f"NDCG@{k}"] = round(sum(all_ndcgs[f"NDCG@{k}"]) / len(scores), 5)
+            _map[f"MAP@{k}"] = round(sum(all_aps[f"MAP@{k}"]) / len(scores), 5)
+            recall[f"Recall@{k}"] = round(
+                sum(all_recalls[f"Recall@{k}"]) / len(scores),
+                5,
+            )
+            precision[f"P@{k}"] = round(sum(all_precisions[f"P@{k}"]) / len(scores), 5)
+
+        # Create a safe copy of the dictionaries for evaluate_abstention
+        abstention_data = {
+            **{k: v.copy() for k, v in all_ndcgs.items()},
+            **{k: v.copy() for k, v in all_aps.items()},
+            **{k: v.copy() for k, v in all_recalls.items()},
+            **{k: v.copy() for k, v in all_precisions.items()},
+        }
 
         naucs = RetrievalEvaluator.evaluate_abstention(
             results,
-            {**all_ndcgs, **all_aps, **all_recalls, **all_precisions},
+            abstention_data,
         )
 
         return ndcg, _map, recall, precision, naucs
 
     @staticmethod
-    def evaluate_custom(
+    def _evaluate_custom(
         qrels: dict[str, dict[str, int]],
         results: dict[str, dict[str, float]],
         k_values: list[int],
@@ -157,29 +169,3 @@ class CustomRetrievalEvaluator:
         metric_scores_avg = {k: sum(v) / len(v) for k, v in metric_scores.items()}
 
         return metric_scores_avg, naucs
-
-    @staticmethod
-    def evaluate_abstention(
-        results: dict[str, dict[str, float]],
-        metric_scores: dict[str, list[float]],
-    ) -> dict[str, float]:
-        """
-        Computes normalized Area Under the Curve on a set of evaluated instances as presented in
-        the paper https://arxiv.org/abs/2402.12997
-        """
-        all_sim_scores = [list(results[qid].values()) for qid in list(results.keys())]
-        all_conf_scores = [
-            confidence_scores(sim_scores) for sim_scores in all_sim_scores
-        ]
-        conf_fcts = list(all_conf_scores[0].keys())
-        all_conf_scores = {
-            fct: np.array([x[fct] for x in all_conf_scores]) for fct in conf_fcts
-        }
-        metric_scores = {k: np.array(v) for k, v in metric_scores.items()}
-        naucs = {}
-
-        for metric_name, scores in metric_scores.items():
-            for fct, conf_scores in all_conf_scores.items():
-                naucs[f"nAUC_{metric_name}_{fct}"] = nAUC(conf_scores, scores)
-
-        return naucs

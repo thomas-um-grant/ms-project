@@ -482,7 +482,7 @@ class MultiModalRAG(BaseRAG):
         self,
         queries: str | list[str],
         top_k: int = 5,
-    ) -> list[tuple[dict, float]]:
+    ) -> list[list[tuple[dict, float]]]:
         """
         Retrieve top-k most similar documents for single or multiple queries using async embedding.
 
@@ -509,6 +509,13 @@ class MultiModalRAG(BaseRAG):
         if torch.isnan(q_emb_tensor).any():
             print("Warning: NaN values found in query embeddings, cleaning...")
             q_emb_tensor = torch.nan_to_num(q_emb_tensor, nan=0.0)
+
+        # Convert query embeddings to the correct device and dtype
+        q_emb_tensor = q_emb_tensor.to(
+            dtype=self.device_config.dtype,
+            device=self.device_config.device_str,
+            non_blocking=True,
+        )
 
         # Convert embeddings to the correct device and dtype efficiently
         doc_vectors = []
@@ -542,7 +549,7 @@ class MultiModalRAG(BaseRAG):
             query_results = [
                 (metadata[embedding_ids[j]], float(scores[j])) for j in ids
             ]
-            all_results.extend(query_results)
+            all_results.append(query_results)
 
         return all_results
 
@@ -551,17 +558,22 @@ class MultiModalRAG(BaseRAG):
         query: str,
         top_k: int = 5,
     ) -> tuple[str, list[tuple[dict, float]]]:
-        """Generate answers based on the retrieved images or documents."""
+        """Generate answer based on the retrieved images or documents."""
         # Retrieve the most relevant images or documents
         results = await self.retrieve(query, top_k=top_k)
 
         # Generate answers from the retrieved results
         context: list[Any] = []
-        for metadata, _ in results:
+        for metadata, _ in results[0]:
             context.append(
                 {
                     "type": "image",
-                    "image": str(self.data_dir / "corpuses" / metadata["name"]),
+                    "image": str(
+                        self.data_dir
+                        / self.knowledge_base
+                        / "corpuses"
+                        / metadata["name"],
+                    ),
                 },
             )
 
@@ -570,4 +582,4 @@ class MultiModalRAG(BaseRAG):
             context=context,
         )
 
-        return response, results
+        return response, results[0]

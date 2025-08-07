@@ -37,10 +37,8 @@ class BaseRAG(ABC):
         self.store_dir = self.data_dir / self.knowledge_base / "store"
         self.store_dir.mkdir(parents=True, exist_ok=True)
         self.metadata_path = self.data_dir / self.knowledge_base / "metadata.json"
-        self.embeddings_ids_path = (
-            self.store_dir / self.knowledge_base / "embeddings_ids.jsonl"
-        )
-        self.embeddings_path = self.store_dir / self.knowledge_base / "embeddings.pt"
+        self.embeddings_ids_path = self.store_dir / "embeddings_ids.jsonl"
+        self.embeddings_path = self.store_dir / "embeddings.pt"
 
         # Setup models
         self.embedding_model = setup_embedding_model(
@@ -69,17 +67,21 @@ class BaseRAG(ABC):
         self.batch_size = configs.get("batch_size", 8)
 
     @abstractmethod
-    async def extract(self):
+    async def extract(self) -> None:
         """Extract relevant corpuses for retrieval."""
 
     @abstractmethod
-    async def index(self, corpuses: list):
+    async def index(self, corpuses: list) -> None:
         """Index corpuses for retrieval."""
 
     @abstractmethod
-    async def retrieve(self, queries: list, top_k: int | None = None):
+    async def retrieve(
+        self,
+        queries: list,
+        top_k: int | None = None,
+    ) -> list[list[tuple[dict, float]]]:
         """Retrieve the most relevant corpuses for the given queries."""
 
     @abstractmethod
-    async def answer(self, queries: list):
+    async def answer(self, queries: list) -> tuple[str, list[tuple[dict, float]]]:
         """Generate answers based on the retrieved corpuses."""

@@ -48,7 +48,7 @@ class ColQwen2Model(BaseEmbeddingModel):
 
     @property
     def device(self) -> str:
-        """Get the device from device config."""
+        """Get the device for tensor operations."""
         return self.device_config.device_str
 
     @property
@@ -67,10 +67,20 @@ class ColQwen2Model(BaseEmbeddingModel):
         with torch.inference_mode():
             for i in range(0, len(images), batch_size):
                 batch_imgs = images[i : i + batch_size]
-                inputs = self.processor.process_images(batch_imgs).to(
-                    device=self.device,
-                    dtype=self.dtype,
-                )
+
+                # Process images and prepare inputs
+                inputs = self.processor.process_images(batch_imgs)
+
+                # Handle device placement carefully for device-mapped models
+                try:
+                    # Try to move inputs to the expected device
+                    inputs = inputs.to(device=self.device, dtype=self.dtype)
+                except (RuntimeError, ValueError) as e:
+                    print(
+                        f"Warning: Could not move inputs to {self.device}, using CPU: {e}",
+                    )
+                    inputs = inputs.to(device="cpu", dtype=self.dtype)
+
                 embeddings = self.model(**inputs)
                 # Move to CPU with consistent dtype for concatenation
                 all_embeddings.append(embeddings.to(dtype=torch.float32, device="cpu"))
@@ -100,7 +110,16 @@ class ColQwen2Model(BaseEmbeddingModel):
                     text=batch_texts,
                     return_tensors="pt",
                     padding=True,
-                ).to(device=self.device, dtype=self.dtype)
+                )
+
+                # Handle device placement carefully for device-mapped models
+                try:
+                    inputs = inputs.to(device=self.device, dtype=self.dtype)
+                except (RuntimeError, ValueError) as e:
+                    print(
+                        f"Warning: Could not move text inputs to {self.device}, using CPU: {e}",
+                    )
+                    inputs = inputs.to(device="cpu", dtype=self.dtype)
 
                 embeddings = self.model(**inputs)
                 # Move to CPU with consistent dtype for concatenation
@@ -122,19 +141,27 @@ class ColQwen2Model(BaseEmbeddingModel):
         if cache_key in self._model_cache:
             print(f"Using cached model for {cache_key}")
             self.model, self.processor = self._model_cache[cache_key]
-            # Move model to current device if needed
-            if (
-                hasattr(self.model, "device")
-                and str(self.model.device) != self.device_config.device_str
-            ):
-                self.model = self.model.to(self.device_config.device_str)
+            # Don't try to move device-mapped models
         else:
             print(f"Loading new model for {cache_key}")
             self.model = ColQwen2.from_pretrained(
                 self.model_name,
                 torch_dtype=self.device_config.dtype,
-                device_map=self.device_config.device_map_str,
             ).eval()
+
+            # Move to device
+            try:
+                self.model = self.model.to(self.device_config.device_str)
+                print(f"Successfully moved model to {self.device_config.device_str}")
+            except RuntimeError as e:
+                if "offloaded to cpu or disk" in str(e):
+                    print(
+                        f"Model already device-mapped, keeping current placement: {e}",
+                    )
+                else:
+                    print(f"Failed to move model to device: {e}")
+                    # Continue anyway, the model might still work on CPU
+
             self.processor = ColQwen2Processor.from_pretrained(self.model_name)
 
             # Cache the loaded model
