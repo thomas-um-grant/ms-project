@@ -125,33 +125,28 @@ def binarize_tensor(tensor: torch.Tensor) -> str:
     )
 
 
-def resize_image(image: Image.Image, max_dim: int = 2048) -> Image.Image:
-    """
-    Resize image while maintaining aspect ratio.
+def resize_image(image: Image.Image, max_size: int = 1200) -> Image.Image:
+    """Resize image to fit within max_size while maintaining aspect ratio."""
+    width, height = image.size
 
-    Args:
-    image: PIL Image object
-    max_dim: Maximum dimension (width or height)
+    # If image is already smaller than max_size, return as is
+    if max(width, height) <= max_size:
+        return image
 
-    Returns:
-    Image.Image: Resized image
-
-    """
-    img_width, img_height = image.size
-    aspect_ratio = img_width / img_height
-
-    if img_width > max_dim:
-        new_width = max_dim
-        new_height = int(new_width / aspect_ratio)
+    # Calculate new dimensions while maintaining aspect ratio
+    if width > height:
+        new_width = max_size
+        new_height = int((height * max_size) / width)
     else:
-        new_width = img_width
-        new_height = img_height
+        new_height = max_size
+        new_width = int((width * max_size) / height)
 
-    if new_height > max_dim:
-        new_height = max_dim
-        new_width = int(new_height * aspect_ratio)
+    print(f"Resizing image from {width}x{height} to {new_width}x{new_height}")
 
-    return image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+    # Resize with high-quality resampling
+    resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
+
+    return resized_image
 
 
 async def pdf_to_images(pdf_path: Path) -> list[Image.Image]:
@@ -168,6 +163,6 @@ async def pdf_to_images(pdf_path: Path) -> list[Image.Image]:
     images = convert_from_path(str(pdf_path), dpi=400, fmt="png")
 
     # Resize images to a maximum dimension of 500 pixels
-    images = [resize_image(img, max_dim=500) for img in images]
+    images = [resize_image(img, max_size=500) for img in images]
 
     return images

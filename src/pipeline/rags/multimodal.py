@@ -12,7 +12,8 @@ from PIL import Image
 from tqdm import tqdm
 
 from pipeline.rags.base_rag import BaseRAG
-from utils.general import pdf_to_images
+from utils.general import pdf_to_images, resize_image
+from utils.tensor import safe_tensor_convert
 
 
 class MultiModalRAG(BaseRAG):
@@ -27,28 +28,6 @@ class MultiModalRAG(BaseRAG):
         self._validate_params(configs)
 
         super().__init__(name, data_dir, configs)
-
-    def _resize_image(self, image: Image.Image, max_size: int = 1200) -> Image.Image:
-        """Resize image to fit within max_size while maintaining aspect ratio."""
-        width, height = image.size
-
-        # If image is already smaller than max_size, return as is
-        if max(width, height) <= max_size:
-            return image
-
-        # Calculate new dimensions while maintaining aspect ratio
-        if width > height:
-            new_width = max_size
-            new_height = int((height * max_size) / width)
-        else:
-            new_height = max_size
-            new_width = int((width * max_size) / height)
-
-        print(f"Resizing image from {width}x{height} to {new_width}x{new_height}")
-
-        # Resize with high-quality resampling
-        resized_image = image.resize((new_width, new_height), Image.Resampling.LANCZOS)
-        return resized_image
 
     def _cleanup_memory(self) -> None:
         """Force garbage collection and clear GPU/MPS cache."""
@@ -80,16 +59,16 @@ class MultiModalRAG(BaseRAG):
         self,
         images: list[Image.Image],
         corpus_ids: list[str],
-        batch_size: int = 1,
+        batch_size: int = 4,
         max_retries: int = 3,
     ) -> list[str]:
         """
-        Extract descriptions for multiple images with memory management and retry logic.
+        Extract descriptions for multiple images.
 
         Args:
             images: List of PIL images to process
             corpus_ids: List of corresponding corpus IDs for logging
-            batch_size: Number of images to process in each batch (default: 1 for stability)
+            batch_size: Number of images to process in each batch (default: 4)
             max_retries: Number of retry attempts per image (default: 3)
 
         Returns:
@@ -97,15 +76,17 @@ class MultiModalRAG(BaseRAG):
 
         """
         descriptions = []
+        total_batches = (len(images) + batch_size - 1) // batch_size
 
         for i in range(0, len(images), batch_size):
             batch_images = images[i : i + batch_size]
             batch_ids = corpus_ids[i : i + batch_size]
-            batch_descriptions = []
 
-            self._log_memory_usage(f"Batch {i // batch_size + 1} start")
+            batch_num = i // batch_size + 1
+            self._log_memory_usage(f"Batch {batch_num}/{total_batches} start")
 
             # Process each image in the batch with retry logic
+            batch_descriptions = []
             for j, img in enumerate(batch_images):
                 description = await self._generate_description_with_retries(
                     img,
@@ -114,19 +95,28 @@ class MultiModalRAG(BaseRAG):
                 )
                 batch_descriptions.append(description)
 
-                # Visual feedback for success/failure
-                status = "✓" if description != "Image description unavailable" else "✗"
-                print(f"{status} Generated description for {batch_ids[j]}")
-
-                # Delay between individual images to prevent server overload
-                await asyncio.sleep(1.0)
+                # Minimal delay between individual images
+                if j < len(batch_images) - 1:
+                    await asyncio.sleep(0.1)
 
             descriptions.extend(batch_descriptions)
 
-            # Clean up memory and add delay between batches
-            self._cleanup_memory()
-            self._log_memory_usage(f"Batch {i // batch_size + 1} end")
-            await asyncio.sleep(2.0)
+            # Show batch completion status
+            successful = sum(
+                1
+                for desc in batch_descriptions
+                if desc != "Image description unavailable"
+            )
+            print(
+                f"✓ Batch {batch_num}/{total_batches}: {successful}/{len(batch_descriptions)} successful",
+            )
+
+            if batch_num % 3 == 0:  # Cleanup every 3 batches
+                self._cleanup_memory()
+                self._log_memory_usage(f"Cleanup after batch {batch_num}")
+                await asyncio.sleep(0.1)
+            else:
+                await asyncio.sleep(0.05)
 
         return descriptions
 
@@ -137,7 +127,7 @@ class MultiModalRAG(BaseRAG):
         max_retries: int,
     ) -> str:
         """
-        Generate description for a single image with retry logic and memory cleanup.
+        Generate description for a single image with retry logic.
 
         Args:
             image: PIL image to describe
@@ -150,25 +140,19 @@ class MultiModalRAG(BaseRAG):
         """
         for attempt in range(max_retries):
             try:
-                self._log_memory_usage(f"{image_id} attempt {attempt + 1}")
-
                 description = await self.generation_model.generate(
                     "Describe this image in great details, it will be used as the description metadata for retrieval. Return the description only in plain text.",
                     context=[{"type": "image", "image": image}],
                 )
 
-                # Success - cleanup and return
-                self._cleanup_memory()
-                self._log_memory_usage(f"{image_id} success cleanup")
                 return description
 
             except Exception as e:
                 print(f"{image_id} attempt {attempt + 1} failed: {e}")
-                self._cleanup_memory()  # Cleanup even on failure
 
                 if attempt < max_retries - 1:
-                    # Progressive backoff: 2s, 4s, 6s
-                    delay = (attempt + 1) * 2
+                    # backoff: 1s, 2s, 3s
+                    delay = attempt + 1
                     print(f"Waiting {delay}s before retry...")
                     await asyncio.sleep(delay)
 
@@ -197,26 +181,6 @@ class MultiModalRAG(BaseRAG):
         ):
             e = "Pruning threshold must be a number."
             raise TypeError(e)
-
-    def _safe_tensor_convert(
-        self,
-        tensor: torch.Tensor,
-        target_dtype: torch.dtype = torch.float32,
-    ) -> torch.Tensor:
-        """Safely convert tensor with NaN handling and dtype conversion."""
-        # Convert to target dtype if needed
-        if tensor.dtype != target_dtype:
-            tensor = tensor.to(dtype=target_dtype)
-
-        # Move to CPU for storage
-        tensor_cpu = tensor.cpu()
-
-        # Handle NaN values
-        if torch.isnan(tensor_cpu).any():
-            print("Warning: NaN values detected, replacing with zeros")
-            tensor_cpu = torch.nan_to_num(tensor_cpu, nan=0.0)
-
-        return tensor_cpu
 
     def _load_index(self) -> tuple[list[torch.Tensor], list, dict]:
         """Load the indexed embeddings and metadata."""
@@ -260,49 +224,107 @@ class MultiModalRAG(BaseRAG):
             with self.metadata_path.open("r") as f:
                 metadata = json.load(f)
 
-        # Get existing corpus IDs to avoid duplicates
-        max_corpus_id = max(
-            (int(data["corpus-id"]) for data in metadata.values()),
-            default=-1,
-        )
+        # Step 1: Prepare all image paths and names based on preprocessed flag
+        image_data = []  # List of (image_path, doc_name) tuples
 
         if preprocessed:
-            batch_images = []
-            batch_ids = []
+            # For preprocessed images, just collect existing image files
+            for doc_path in documents:
+                splits = doc_path.stem.split("_")
+                if len(splits) < 2:
+                    corpus_id = str(doc_path.stem)
+                    doc_id = None
+                else:
+                    corpus_id, doc_id = splits
 
-            for i, doc_path in enumerate(documents):
-                corpus_id, doc_id = doc_path.stem.split("_")
+                doc_name = f"{corpus_id}_{doc_id}" if doc_id else corpus_id
 
-                # Check if this document is already processed
-                if f"{corpus_id}_{doc_id}" in metadata:
-                    print(f"Document {corpus_id}_{doc_id} already processed, skipping.")
+                # Check if already extracted
+                if doc_name in metadata:
+                    print(f"Document {doc_name} already extracted, skipping.")
                     continue
 
+                # Resize and save image
                 img = Image.open(doc_path)
-                img_resized = self._resize_image(img)
-                img_resized.save(corpuses_dir / f"{corpus_id}_{doc_id}.png")
+                img_resized = resize_image(img)
+                img_resized.save(corpuses_dir / f"{doc_name}.png")
 
-                # Add to batch for description processing
-                batch_images.append(img_resized)
-                batch_ids.append(f"{corpus_id}_{doc_id}")
+                image_data.append((corpuses_dir / f"{doc_name}.png", doc_name))
+        else:
+            # For non-preprocessed, extract from raw file first
+            max_corpus_id = max(
+                (int(data["corpus-id"]) for data in metadata.values()),
+                default=-1,
+            )
 
-                # Process batch when full or at end
-                if len(batch_images) >= batch_size or i == len(documents) - 1:
-                    self._log_memory_usage(
-                        f"Preprocessed batch {len(batch_images)} images",
-                    )
+            corpus_counter = max_corpus_id + 1
+            for doc_path in documents:
+                # Check document type and extract images
+                if doc_path.suffix.lower() == ".pdf":
+                    images = await pdf_to_images(doc_path)
+                elif doc_path.suffix.lower() in [".jpg", ".jpeg", ".png"]:
+                    images = [Image.open(doc_path)]
+                else:
+                    print(f"Unsupported file type: {doc_path.suffix}. Skipping.")
+                    continue
 
-                    # Generate descriptions one at a time for maximum stability
+                for doc_id, img in enumerate(images, start=1):
+                    doc_name = f"{corpus_counter}_{doc_id}"
+
+                    # Check if already processed
+                    if doc_name in metadata:
+                        print(f"Document {doc_name} already processed, skipping.")
+                        continue
+
+                    # Resize and save image
+                    img_resized = resize_image(img)
+                    img_resized.save(corpuses_dir / f"{doc_name}.png")
+
+                    image_data.append((corpuses_dir / f"{doc_name}.png", doc_name))
+
+                corpus_counter += 1
+
+        # Step 2: Process all images in batches
+        batch_images = []
+        batch_ids = []
+        processed_count = 0
+        skipped_count = len(documents) - len(list(image_data))
+        total_batches = (
+            (len(image_data) + batch_size - 1) // batch_size if image_data else 0
+        )
+        current_batch = 0
+
+        for i, (image_path, doc_name) in enumerate(image_data):
+            # Load the saved image
+            img = Image.open(image_path)
+            batch_images.append(img)
+            batch_ids.append(doc_name)
+            processed_count += 1
+
+            # Process batch when full or at end
+            if (len(batch_images) >= batch_size or i == len(image_data) - 1) and batch_images:  # Only process if we have images
+                current_batch += 1
+                self._log_memory_usage(
+                    f"Processing batch {current_batch}/{total_batches}",
+                )
+
+                    # Generate descriptions with batching
                     descriptions = await self._extract_image_descriptions_batch(
                         batch_images,
                         batch_ids,
-                        batch_size=1,  # Process one image at a time
+                        batch_size=4,
                     )
 
                     # Update metadata
                     for j, description in enumerate(descriptions):
                         corpus_doc_id = batch_ids[j]
-                        corpus_id_str, doc_id_str = corpus_doc_id.split("_")
+
+                        id_split = corpus_doc_id.split("_")
+                        if len(id_split) < 2:
+                            corpus_id_str = str(corpus_doc_id)
+                            doc_id_str = ""
+                        else:
+                            corpus_id_str, doc_id_str = id_split
 
                         metadata[corpus_doc_id] = {
                             "corpus-id": corpus_id_str,
@@ -312,86 +334,24 @@ class MultiModalRAG(BaseRAG):
                             "embedded": False,
                         }
 
-                    # Save metadata
+                    # Save metadata after each batch
                     with self.metadata_path.open("w") as f:
                         json.dump(metadata, f, indent=2)
+
+                    print(
+                        f"✅ Batch {current_batch}/{total_batches} saved. Progress: {processed_count} processed, {skipped_count} skipped",
+                    )
 
                     # Clear batch and cleanup memory
                     batch_images = []
                     batch_ids = []
                     self._cleanup_memory()
-                    await asyncio.sleep(1.0)  # Increased delay from 0.1 to 1.0 seconds
+                    await asyncio.sleep(0.1)
 
-            return
-
-        # Process documents in smaller batches to manage memory and prevent crashes
-        document_batch_size = 3  # Reduced from 5 to 3
-        image_description_batch_size = 1  # Process one at a time for maximum stability
-
-        for batch_start in range(0, len(documents), document_batch_size):
-            batch_docs = documents[batch_start : batch_start + document_batch_size]
-            batch_corpus_ids = []
-            batch_images = []
-
-            self._log_memory_usage(
-                f"Document batch {batch_start // document_batch_size + 1} start",
-            )
-
-            for corpus_id, doc_path in enumerate(
-                batch_docs,
-                start=max_corpus_id + 1 + batch_start,
-            ):
-                # Check type of document
-                if doc_path.suffix.lower() == ".pdf":
-                    images = await pdf_to_images(doc_path)
-                elif doc_path.suffix.lower() in [".jpg", ".jpeg", ".png"]:
-                    images = [Image.open(doc_path)]
-                else:
-                    print(f"Unsupported file type: {doc_path.suffix}. Skipping.")
-                    continue
-
-                for doc_id, img in enumerate(images, start=1):  # Pages start from 1
-                    # Resize image to cap at 1200px max dimension
-                    img_resized = self._resize_image(img)
-                    img_resized.save(corpuses_dir / f"{corpus_id}_{doc_id}.png")
-
-                    # Store for batch description processing
-                    batch_images.append(img_resized)
-                    batch_corpus_ids.append(f"{corpus_id}_{doc_id}")
-
-            # Generate descriptions one at a time for maximum stability
-            if batch_images:
-                descriptions = await self._extract_image_descriptions_batch(
-                    batch_images,
-                    batch_corpus_ids,
-                    batch_size=image_description_batch_size,
-                )
-
-                # Update metadata with descriptions
-                for i, description in enumerate(descriptions):
-                    corpus_doc_id = batch_corpus_ids[i]
-                    corpus_id, doc_id = corpus_doc_id.split("_")
-
-                    metadata[corpus_doc_id] = {
-                        "corpus-id": int(corpus_id),
-                        "doc-id": int(doc_id),
-                        "name": f"{corpus_doc_id}.png",
-                        "description": description,
-                        "embedded": False,
-                    }
-
-                # Save metadata after each batch
-                with self.metadata_path.open("w") as f:
-                    json.dump(metadata, f, indent=2)
-
-            # Clean up memory after each batch
-            self._cleanup_memory()
-            self._log_memory_usage(
-                f"Document batch {batch_start // document_batch_size + 1} end",
-            )
-
-            # Longer delay to let memory settle and prevent server overload
-            await asyncio.sleep(1.5)  # Increased from 0.2 to 1.5 seconds
+        # Final summary
+        print(
+            f"🏁 Processing complete! {processed_count} documents processed, {skipped_count} skipped",
+        )
 
     async def index(self) -> None:
         """
@@ -434,7 +394,7 @@ class MultiModalRAG(BaseRAG):
             )
 
             # Safe tensor conversion and dtype handling
-            embeddings_processed = self._safe_tensor_convert(
+            embeddings_processed = safe_tensor_convert(
                 embeddings,
                 self.device_config.dtype,
             )

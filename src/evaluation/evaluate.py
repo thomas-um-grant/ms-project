@@ -98,7 +98,7 @@ async def _evaluate(rag_configs: dict):
         dataset_name = rag_configs["configs"]["knowledge_base"]
         dataset_json_path = (
             Path(__file__).parent.parent
-            / f"data/evaluation/{dataset_name}/dataset.json"
+            / f"data/evaluation/datasets/{dataset_name}/dataset.json"
         )
         if not dataset_json_path.exists():
             raise FileNotFoundError(

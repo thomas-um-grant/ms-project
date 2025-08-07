@@ -67,21 +67,30 @@ class BaseRAG(ABC):
         self.batch_size = configs.get("batch_size", 8)
 
     @abstractmethod
-    async def extract(self) -> None:
+    async def extract(
+        self,
+        documents: list[Path],
+        preprocessed: bool = False,
+        batch_size: int = 3,
+    ) -> None:
         """Extract relevant corpuses for retrieval."""
 
     @abstractmethod
-    async def index(self, corpuses: list) -> None:
+    async def index(self) -> None:
         """Index corpuses for retrieval."""
 
     @abstractmethod
     async def retrieve(
         self,
-        queries: list,
-        top_k: int | None = None,
+        queries: str | list[str],
+        top_k: int = 5,
     ) -> list[list[tuple[dict, float]]]:
         """Retrieve the most relevant corpuses for the given queries."""
 
     @abstractmethod
-    async def answer(self, queries: list) -> tuple[str, list[tuple[dict, float]]]:
+    async def answer(
+        self,
+        query: str,
+        top_k: int = 5,
+    ) -> tuple[str, list[tuple[dict, float]]]:
         """Generate answers based on the retrieved corpuses."""

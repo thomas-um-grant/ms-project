@@ -56,7 +56,9 @@ async def main():
     logging.basicConfig(filename="app.log", level=logging.INFO)
 
     # Params validation
-    dataset_path = Path(__file__).parent.parent / "data/evaluation" / args.dataset_name
+    dataset_path = (
+        Path(__file__).parent.parent / "data/evaluation/datasets" / args.dataset_name
+    )
     dataset_path.mkdir(parents=True, exist_ok=True)
     verify_dataset(dataset_path)
 
@@ -70,7 +72,7 @@ async def main():
     evaluation_dir = os.getenv("EVALS_DATA_DIR")
     if evaluation_dir is None:
         # Fallback to default if environment variable is not set
-        evaluation_dir = str(src_path / "data/evaluation")
+        evaluation_dir = str(src_path / "data/evaluation/datasets")
         print(f"EVALS_DATA_DIR not set, using default: {evaluation_dir}")
 
     evaluation_dir = Path(evaluation_dir)
@@ -99,7 +101,7 @@ async def main():
     )
 
     print("Starting extraction...")
-    await evaluation_rag.extract(documents, preprocessed=True)
+    await evaluation_rag.extract(documents, preprocessed=True, batch_size=8)
     print("Extraction completed!")
 
     # Index all corpuses

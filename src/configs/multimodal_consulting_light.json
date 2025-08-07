@@ -1,10 +1,10 @@
 {
   "type": "multimodal",
-  "name": "multimodal_page",
-  "embedding_model": "colqwen2_embed",
-  "generation_model": "colqwen2_ollama_gen",
+  "name": "multimodal",
   "configs": {
-    "preferred_device": "cpu",
+    "embedding_model": "colqwen2_embed",
+    "generation_model": "colqwen2_ollama_gen",
+    "preferred_device": "cuda",
     "batch_size": 8,
     "chunking_strategy": "page",
     "knowledge_base": "sherpa/consulting_light"
