@@ -1,0 +1,42 @@
+{
+  "processing": {
+    "extraction": {
+      "batch_size": 3,
+      "description_batch_size": 4,
+      "max_retries": 3,
+      "retry_delay_seconds": 1,
+      "sleep_between_images": 0.1,
+      "sleep_between_batches": 0.05,
+      "cleanup_every_n_batches": 3
+    },
+    "indexing": {
+      "batch_size": 8,
+      "expected_batch_embedding_dims": 3
+    },
+    "retrieval": {
+      "top_k": 5,
+      "pruning_threshold": 0.0
+    }
+  },
+  "data_structure": {
+    "metadata": {
+      "json_indent": 2,
+      "fallback_corpus_id": -1
+    },
+    "file_names": {
+      "metadata_file": "metadata.json",
+      "embeddings_ids_file": "embeddings_ids.jsonl",
+      "embeddings_file": "embeddings.pt",
+      "corpuses_dir": "corpuses",
+      "store_dir": "store"
+    }
+  },
+  "prompts": {
+    "image_description": "Describe this image in great details, it will be used as the description metadata for retrieval. Return the description only in plain text.",
+    "fallback_description": "Image description unavailable"
+  },
+  "logging": {
+    "batch_completion_template": "✓ Batch {batch_num}/{total_batches}: {successful}/{total} successful",
+    "processing_summary_template": "🏁 Processing complete! {processed} documents processed, {skipped} skipped"
+  }
+}

@@ -1,7 +1,10 @@
+import gc
 import logging
+import os
 from dataclasses import dataclass
 from enum import Enum
 
+import psutil
 import torch
 
 
@@ -130,3 +133,31 @@ class DeviceConfig:
         supported_devices = ", ".join([dt.value for dt in DeviceType])
         msg = f"Unsupported device: {device}. Supported devices: {supported_devices}"
         raise ValueError(msg)
+
+
+def cleanup_memory() -> None:
+    """Force garbage collection and clear GPU/MPS cache."""
+    gc.collect()
+
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
+    if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+        torch.mps.empty_cache()
+
+
+def log_memory_usage(stage: str = "") -> None:
+    """Log current memory usage for debugging."""
+    try:
+        process = psutil.Process(os.getpid())
+        memory_mb = process.memory_info().rss / 1024 / 1024
+
+        if torch.cuda.is_available():
+            gpu_mb = torch.cuda.memory_allocated() / 1024 / 1024
+            print(f"[{stage}] RAM: {memory_mb:.1f}MB, GPU: {gpu_mb:.1f}MB")
+        elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+            print(f"[{stage}] RAM: {memory_mb:.1f}MB, MPS: active")
+        else:
+            print(f"[{stage}] RAM: {memory_mb:.1f}MB")
+    except ImportError:
+        print(f"[{stage}] Memory monitoring unavailable (psutil not installed)")

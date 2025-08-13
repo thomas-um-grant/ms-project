@@ -3,8 +3,8 @@
 import logging
 
 import pytrec_eval
-from mteb.retrieval_evaluation.evaluators.RetrievalEvaluator import RetrievalEvaluator
-from mteb.retrieval_evaluation.evaluators.utils import (
+from mteb.evaluation.evaluators.RetrievalEvaluator import RetrievalEvaluator
+from mteb.evaluation.evaluators.utils import (
     hole,
     mrr,
     recall_cap,

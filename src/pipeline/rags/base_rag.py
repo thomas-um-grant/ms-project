@@ -1,3 +1,4 @@
+import json
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -17,26 +18,43 @@ from utils.device import DeviceConfig
 
 
 class BaseRAG(ABC):
+    @classmethod
+    def _load_defaults(cls) -> dict:
+        """Load default configuration values."""
+        defaults_path = (
+            Path(__file__).parent.parent.parent / "configs" / "defaults.json"
+        )
+        with defaults_path.open() as f:
+            return json.load(f)
+
     def __init__(
         self,
         name: str,
         data_dir: Path,
         configs: dict,
     ):
+        # Load defaults for fallback values
+        defaults = self._load_defaults()
+        processing_defaults = defaults["processing"]
+
         self.name = name
         knowledge_base = configs.get("knowledge_base", "default")
         for prefix in ["vidore/", "sherpa/"]:
             knowledge_base = knowledge_base.removeprefix(prefix)
         self.knowledge_base = knowledge_base
 
-        self.data_dir = data_dir / name
+        self.data_dir = data_dir / self.name / self.knowledge_base
         self.device_config = DeviceConfig.auto_detect(configs.get("preferred_device"))
 
         # Prepare store structure
         self.data_dir.mkdir(parents=True, exist_ok=True)
-        self.store_dir = self.data_dir / self.knowledge_base / "store"
+        self.metadata_path = self.data_dir / "metadata.json"
+
+        self.corpuses_dir = self.data_dir / "corpuses"
+        self.corpuses_dir.mkdir(parents=True, exist_ok=True)
+
+        self.store_dir = self.data_dir / "store"
         self.store_dir.mkdir(parents=True, exist_ok=True)
-        self.metadata_path = self.data_dir / self.knowledge_base / "metadata.json"
         self.embeddings_ids_path = self.store_dir / "embeddings_ids.jsonl"
         self.embeddings_path = self.store_dir / "embeddings.pt"
 
@@ -59,19 +77,27 @@ class BaseRAG(ABC):
         self.retrieval_strategy: RetrievalStrategy = configs.get("retrieval_strategy")
         self.similarity_metric: SimilarityMetric = configs.get("similarity_metric")
         self.routing_strategy: RoutingStrategy = configs.get("routing_strategy")
-        self.top_k = configs.get("top_k", 5)  # Number of top results to retrieve
+
+        # Use configuration defaults with user overrides
+        self.top_k = configs.get("top_k", processing_defaults["retrieval"]["top_k"])
         self.pruning_threshold = configs.get(
             "pruning_threshold",
-            0.0,
-        )  # % of results to prune
-        self.batch_size = configs.get("batch_size", 8)
+            processing_defaults["retrieval"]["pruning_threshold"],
+        )
+        self.batch_size = configs.get(
+            "batch_size", processing_defaults["indexing"]["batch_size"]
+        )
+
+        # Store full configuration for passing to helper classes
+        self.config = configs
 
     @abstractmethod
     async def extract(
         self,
         documents: list[Path],
+        *,
         preprocessed: bool = False,
-        batch_size: int = 3,
+        batch_size: int | None = None,
     ) -> None:
         """Extract relevant corpuses for retrieval."""
 
@@ -83,7 +109,7 @@ class BaseRAG(ABC):
     async def retrieve(
         self,
         queries: str | list[str],
-        top_k: int = 5,
+        top_k: int | None = None,
     ) -> list[list[tuple[dict, float]]]:
         """Retrieve the most relevant corpuses for the given queries."""
 
@@ -91,6 +117,6 @@ class BaseRAG(ABC):
     async def answer(
         self,
         query: str,
-        top_k: int = 5,
+        top_k: int | None = None,
     ) -> tuple[str, list[tuple[dict, float]]]:
         """Generate answers based on the retrieved corpuses."""

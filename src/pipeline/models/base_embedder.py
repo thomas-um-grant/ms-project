@@ -1,11 +1,12 @@
 from abc import ABC, abstractmethod
 
+import torch
 from PIL import Image
 
 
 class BaseEmbeddingModel(ABC):
     @abstractmethod
-    async def embed_images(self, images: list[Image.Image]):
+    async def embed_images(self, images: list[Image.Image], dtype: torch.dtype = None):
         """Embed a list of images asynchronously and in parallel."""
 
     @abstractmethod

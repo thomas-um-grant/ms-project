@@ -4,8 +4,7 @@
   "configs": {
     "embedding_model": "colqwen2_embed",
     "generation_model": "colqwen2_ollama_gen",
-    "preferred_device": "cuda",
-    "batch_size": 8,
+    "preferred_device": "mps",
     "chunking_strategy": "page",
     "knowledge_base": "vidore/esg_reports_v2"
   }

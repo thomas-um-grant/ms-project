@@ -14,10 +14,20 @@ src_path = Path(__file__).parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
+load_dotenv()
+
 from evaluation.evaluator import Evaluator
 from pipeline.rags.factory_rag import RAGFactory
 
-load_dotenv()
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[
+        logging.FileHandler("evaluation.log"),
+        logging.StreamHandler(),  # Also log to console
+    ],
+)
+
 logger = logging.getLogger(__name__)
 
 
@@ -45,11 +55,13 @@ async def _run_evaluation(
         rag_configs = json.load(f)
 
     metrics_path = Path(__file__).parent / "results/metrics.json"
-    metrics_path.mkdir(parents=True, exist_ok=True)
-    metrics = {}
+
     if metrics_path.exists():
         with metrics_path.open("rb") as f:
             metrics = json.load(f)
+    else:
+        metrics_path.mkdir(parents=True, exist_ok=True)
+        metrics = {}
 
     try:
         logger.info(f"Running {evaluation_name} on {rag_configs['name']}...")
@@ -120,7 +132,11 @@ async def _evaluate(rag_configs: dict):
             col: [row[col] for row in dataset["queries"]] for col in queries_columns
         }
         qrels_data = {
-            col: [row[col] for row in dataset["qrels"]] for col in qrels_columns
+            col: [
+                int(row[col]) if col == "score" else row[col]
+                for row in dataset["qrels"]
+            ]
+            for col in qrels_columns
         }
 
         ds = DatasetDict(
@@ -153,7 +169,7 @@ async def main():
     Main function to evaluate a dataset with the retriever.
 
     Usage:
-    uv run evaluation/evaluate.py --rag-configs "multimodal_colqwen" --evaluation-name "default"
+    uv run python -m evaluation.evaluate --rag-configs "multimodal_arxiv" --evaluation-name "default_tester"
     """
     parser = argparse.ArgumentParser(description="Evaluate RAG pipeline")
 
@@ -169,8 +185,6 @@ async def main():
         type=str,
     )
     args = parser.parse_args()
-
-    logging.basicConfig(filename="app.log", level=logging.INFO)
 
     logger.info("Evaluation started...")
 

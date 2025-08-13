@@ -562,6 +562,7 @@ dependencies = [
     { name = "pypdf" },
     { name = "python-dotenv" },
     { name = "pytorch-lightning" },
+    { name = "pytrec-eval" },
     { name = "requests" },
     { name = "seaborn" },
     { name = "spacy" },
@@ -614,6 +615,7 @@ requires-dist = [
     { name = "pypdf", specifier = ">=5.6.0" },
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "pytorch-lightning", specifier = ">=2.5.2" },
+    { name = "pytrec-eval", specifier = ">=0.5" },
     { name = "requests", specifier = "==2.31.0" },
     { name = "seaborn", specifier = ">=0.13.2" },
     { name = "spacy", specifier = "==3.8.7" },
@@ -2779,6 +2781,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/01/3e/728fbdc671d07727a
 wheels = [
     { url = "https://files.pythonhosted.org/packages/e2/42/47c186c8f9e956e559c89e6c764d5d5d0d0af517c04ca0ad39bd0a357d3a/pytorch_lightning-2.5.2-py3-none-any.whl", hash = "sha256:17cfdf89bd98074e389101f097cdf34c486a1f5c6d3fdcefbaf4dea7f97ff0bf", size = 825366, upload-time = "2025-06-20T15:58:25.534Z" },
 ]
+
+[[package]]
+name = "pytrec-eval"
+version = "0.5"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2e/03/e6e84df6a7c1265579ab26bbe30ff7f8c22745aa77e0799bba471c0a3a19/pytrec_eval-0.5.tar.gz", hash = "sha256:d9eb4616e7d6b73bf1b5ba4c2c4916e88124e790b53fd61610c30158999e7bde", size = 15248, upload-time = "2020-09-07T18:31:57.186Z" }
 
 [[package]]
 name = "pytrec-eval-terrier"

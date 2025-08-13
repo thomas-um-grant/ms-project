@@ -13,9 +13,10 @@ src_path = Path(__file__).parent.parent
 if str(src_path) not in sys.path:
     sys.path.append(str(src_path))
 
+load_dotenv()
+
 from pipeline.rags.factory_rag import RAGFactory
 
-load_dotenv()
 logger = logging.getLogger(__name__)
 
 
@@ -38,7 +39,7 @@ async def main():
     Create a new RAG system and index an evaluation dataset.
 
     Usage:
-    uv run evaluation/prepare.py --dataset-name "sherpa/consulting_light_dataset" --rag-configs "multimodal_colqwen"
+    uv run python -m evaluation.prepare --dataset-name="vidore/arxivqa_test_subsampled_beir" --rag-configs="multimodal_arxiv"
     """
     parser = argparse.ArgumentParser(description="Index dataset into RAG system")
     parser.add_argument(
@@ -56,15 +57,11 @@ async def main():
     logging.basicConfig(filename="app.log", level=logging.INFO)
 
     # Params validation
-    dataset_path = (
-        Path(__file__).parent.parent / "data/evaluation/datasets" / args.dataset_name
-    )
+    dataset_path = src_path / "data/evaluation/datasets" / args.dataset_name
     dataset_path.mkdir(parents=True, exist_ok=True)
     verify_dataset(dataset_path)
 
-    rag_configs_path = (
-        Path(__file__).parent.parent / "configs" / f"{args.rag_configs}.json"
-    )
+    rag_configs_path = src_path / "configs" / f"{args.rag_configs}.json"
     verify_configs(rag_configs_path)
 
     # Create RAG system

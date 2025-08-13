@@ -140,13 +140,14 @@ class Evaluator:
 
             results = await self.rag.retrieve(
                 queries=batch_queries,
-                num_results=k,
+                top_k=k,
             )
 
-            # Process results and keep them grouped by query
+            # Process results and keep them grouped by query IDs
             for query_idx, response in enumerate(results):
                 global_query_idx = i + query_idx
-                all_results[str(global_query_idx)] = response
+                actual_query_id = query_ids[global_query_idx]  # query ID from dataset
+                all_results[actual_query_id] = response
 
             # Save checkpoint after each batch
             checkpoint_data = {
@@ -186,7 +187,7 @@ class Evaluator:
         scoring_results: dict[str, dict[str, float]] = {}
 
         for query_id in query_ids:
-            hits = all_results[int(query_id)]
+            hits = all_results[query_id]
             retrieved_corpus = []
             for hit in hits:
                 metadata, score = hit[0], hit[1]
