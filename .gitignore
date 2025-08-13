@@ -21,7 +21,7 @@ logs
 *.log
 background/obsidian_vault/journal
 
-# Report
+# Reports
 report/background-report/latex/*
 !report/background-report/latex/main.tex
 !report/background-report/latex/includes.tex
@@ -29,6 +29,15 @@ report/background-report/latex/*
 !report/background-report/latex/titlepage.tex
 !report/background-report/latex/References.bib
 !report/background-report/latex/figures
+
+report/final-report/latex/*
+!report/final-report/latex/main.tex
+!report/final-report/latex/includes.tex
+!report/final-report/latex/notation.tex
+!report/final-report/latex/titlepage.tex
+!report/final-report/latex/References.bib
+!report/background-report/latex/figures
+
 PROJECT_NOTES.md
 PROJECT_PLAN.md
 
