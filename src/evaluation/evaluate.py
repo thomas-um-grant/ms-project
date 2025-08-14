@@ -54,36 +54,31 @@ async def _run_evaluation(
     with rag_configs_path.open("r") as f:
         rag_configs = json.load(f)
 
-    metrics_path = Path(__file__).parent / "results/metrics.json"
-
-    if metrics_path.exists():
-        with metrics_path.open("rb") as f:
-            metrics = json.load(f)
+    metrics_file = Path(__file__).parent / "results" / "metrics.json"
+    metrics_file.parent.mkdir(parents=True, exist_ok=True)
+    if metrics_file.is_file():
+        try:
+            with metrics_file.open("r", encoding="utf-8") as f:
+                metrics = json.load(f)
+        except json.JSONDecodeError:
+            logger.warning("metrics.json was corrupt; starting fresh.")
+            metrics = {}
     else:
-        metrics_path.mkdir(parents=True, exist_ok=True)
         metrics = {}
 
     try:
         logger.info(f"Running {evaluation_name} on {rag_configs['name']}...")
-        if rag_configs["name"] not in metrics:
-            metrics[rag_configs["name"]] = {}
-        if evaluation_name not in metrics[rag_configs["name"]]:
-            metrics[rag_configs["name"]][evaluation_name] = {}
-
+        metrics.setdefault(rag_configs["name"], {}).setdefault(evaluation_name, {})
         metrics[rag_configs["name"]][evaluation_name] = await _evaluate(rag_configs)
-
-        # Save after each dataset computed
-        with metrics_path.open("w") as f:
+        with metrics_file.open("w", encoding="utf-8") as f:
             json.dump(metrics, f)
-
-    except Exception as e:
-        logger.info(
+    except Exception as e:  # pragma: no cover
+        logger.error(
             f"Error running {evaluation_name} on {rag_configs['name']}: {e}",
             exc_info=True,
         )
-        return
-
-    logger.info(f"Metrics saved to {metrics_path}")
+        raise
+    logger.info(f"Metrics saved to {metrics_file}")
 
 
 async def _evaluate(rag_configs: dict):

@@ -47,41 +47,44 @@ class NomicOllamaModel(BaseEmbeddingModel):
         msg = "NomicOllamaModel does not support image embedding."
         raise NotImplementedError(msg)
 
-    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:
-        """
-        Embed texts using Ollama API.
-
-        Args:
-            texts: List of text strings to embed
-
-        Returns:
-            List of embedding tensors, one per input text
-
-        """
+    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:  # type: ignore[override]
         if not texts:
             return []
 
+        async def _embed_one(session: aiohttp.ClientSession, text: str, idx: int):
+            payload = {"model": self.model_name, "prompt": text}
+            async with session.post(self.ollama_url, json=payload) as resp:
+                body = await resp.text()
+                if resp.status != 200:
+                    logger.exception(
+                        "Ollama embedding request failed (status=%s, idx=%d): %.200s",
+                        resp.status,
+                        idx,
+                        body,
+                    )
+                    op = "Text embedding via Ollama"
+                    details = f"status={resp.status} body={body[:200]}"
+                    raise EmbeddingError(op, details)
+                data = await resp.json()
+                if "embedding" not in data:
+                    op = "Text embedding via Ollama"
+                    details = "Missing 'embedding' key in response"
+                    raise EmbeddingError(op, details)
+                emb = torch.tensor(data["embedding"], dtype=torch.float32)
+                return idx, emb
+
         async with aiohttp.ClientSession() as session:
-            payload = {
-                "model": self.model_name,
-                "prompt": texts,
-            }
+            tasks = [
+                asyncio.create_task(_embed_one(session, t, i))
+                for i, t in enumerate(texts)
+            ]
+            gathered = await asyncio.gather(*tasks, return_exceptions=True)
 
-            try:
-                async with session.post(self.ollama_url, json=payload) as resp:
-                    resp.raise_for_status()
-                    data = await resp.json()
-
-                # Convert to tensor and split by text
-                embeddings_tensor = torch.tensor(
-                    data["embeddings"],
-                    dtype=torch.float32,
-                )
-                return [embeddings_tensor[i] for i in range(embeddings_tensor.shape[0])]
-
-            except Exception as e:
-                logger.exception("Failed to get embeddings from Ollama")
-                raise EmbeddingError("Text embedding via Ollama", str(e)) from e
+        first_error = next((g for g in gathered if isinstance(g, Exception)), None)
+        if first_error:
+            raise first_error
+        ordered = sorted(gathered, key=lambda x: x[0])  # type: ignore[arg-type]
+        return [emb for _i, emb in ordered]  # type: ignore[misc]
 
 
 class ColQwen2Model(BaseEmbeddingModel):
@@ -118,41 +121,36 @@ class ColQwen2Model(BaseEmbeddingModel):
         image: Image.Image,
         dtype: torch.dtype,
     ) -> torch.Tensor:
-        """Process a single image and return its multi-vector embedding tensor."""
+        assert self.processor is not None and self.model is not None, "Model not loaded"
         try:
             processed_image = self.processor.process_images([image])
             processed_image = self._move_to_device_with_dtype(processed_image, dtype)
-
             with torch.inference_mode():
                 embedding = self.model(**processed_image)
-
             return self._check_and_clean_tensor(embedding[0].to("cpu"), "image")
-
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.exception("Failed to process image")
+            op = "Image embedding"
             msg = f"Image embedding failed: {e}"
-            raise EmbeddingError("Image embedding", msg) from e
+            raise EmbeddingError(op, msg) from e
 
     def _process_single_text(self, text: str) -> torch.Tensor:
-        """Process a single text and return its multi-vector embedding tensor."""
+        assert self.processor is not None and self.model is not None, "Model not loaded"
         try:
             processed_query = self.processor.process_queries([text])
             processed_query = self._move_to_device_without_dtype(processed_query)
-
             with torch.inference_mode():
                 embedding = self.model(**processed_query)
-
-            # Return the single multi-vector embedding (shape: [seq_len, emb_dim])
             context = f"text: '{text[:50]}...'"
             return self._check_and_clean_tensor(embedding[0].to("cpu"), context)
-
-        except Exception as e:
+        except Exception as e:  # pragma: no cover
             logger.exception("Failed to process text '%s'", text[:50])
+            op = "Text embedding"
             msg = f"Text embedding failed: {e}"
-            raise EmbeddingError("Text embedding", msg) from e
+            raise EmbeddingError(op, msg) from e
 
     def _move_to_device_with_dtype(self, inputs: dict, dtype: torch.dtype) -> dict:
-        """Move input tensors to device with dtype conversion for float tensors."""
+        assert self.model is not None, "Model not loaded"
         try:
             return {
                 k: v.to(self.model.device).to(
@@ -172,16 +170,7 @@ class ColQwen2Model(BaseEmbeddingModel):
             }
 
     def _move_to_device_without_dtype(self, inputs: dict) -> dict:
-        """
-        Move input tensors to device without dtype conversion.
-
-        Args:
-            inputs: Dictionary of input tensors
-
-        Returns:
-            Dictionary with tensors moved to device
-
-        """
+        assert self.model is not None, "Model not loaded"
         try:
             return {k: v.to(self.model.device) for k, v in inputs.items()}
         except (RuntimeError, ValueError) as e:

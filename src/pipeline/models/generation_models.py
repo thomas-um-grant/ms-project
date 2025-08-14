@@ -12,6 +12,44 @@ from pipeline.models.base_generator import BaseGenerationModel
 from utils.device import DeviceConfig
 
 
+class LlamaOllamaTextModel(BaseGenerationModel):
+    """Simple text-only generation via Ollama llama3.2:3b model."""
+
+    def __init__(self, device_config: DeviceConfig):
+        self.model_name = "llama3.2:3b"
+        self.device_config = device_config
+
+    @property
+    def device(self) -> str:  # pragma: no cover - simple property
+        return self.device_config.device_str
+
+    @property
+    def dtype(self) -> torch.dtype:  # pragma: no cover
+        return self.device_config.dtype
+
+    async def generate(self, query: str, context: list[Any] | None = None) -> str:
+        prompt = "You are a helpful assistant. Use the provided context to answer the question.\n\n"
+        if context:
+            for item in context:
+                if item.get("type") == "text":
+                    prompt += f"Context: {item['text']}\n"
+        prompt += f"Question: {query}\nAnswer:"
+
+        loop = asyncio.get_event_loop()
+
+        def _gen():
+            return ollama.generate(
+                model=self.model_name,
+                prompt=prompt,
+                options={"temperature": 0.7, "num_predict": 512},
+            )
+
+        result = await loop.run_in_executor(None, _gen)
+        if isinstance(result, dict) and "response" in result:
+            return result["response"].strip()
+        return str(result)
+
+
 class ColQwen2Model(BaseGenerationModel):
     _model_cache: ClassVar[
         dict[str, tuple[Qwen2VLForConditionalGeneration, AutoProcessor]]
@@ -271,6 +309,8 @@ def setup_generation_model(
         return ColQwen2Model(device_config)
     if model_name == "colqwen2_ollama_gen":
         return ColQwen2OllamaModel(device_config)
+    if model_name == "llama_text_gen":
+        return LlamaOllamaTextModel(device_config)
 
     error_msg = f"Unsupported generation model: {model_name}"
     raise ValueError(error_msg)

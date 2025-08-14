@@ -3,15 +3,15 @@ from typing import ClassVar
 
 from pipeline.rags.base_rag import BaseRAG
 from pipeline.rags.multimodal import MultiModalRAG
+from pipeline.rags.traditional import TraditionalRAG
 
 
 class RAGFactory:
     """Factory for creating RAG instances based on configuration."""
 
     _rag_types: ClassVar[dict[str, type[BaseRAG]]] = {
-        # "text": TextRAG,
+        "traditional": TraditionalRAG,
         "multimodal": MultiModalRAG,
-        # "graph": GraphRAG,
     }
 
     @classmethod

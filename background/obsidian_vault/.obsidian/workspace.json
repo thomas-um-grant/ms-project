@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "background-research/other contents/Transformer Embeddings -  MultiModal and advanced Positional.md",
+                "file": "background-research/papers/more-relevant/RAGs/ColPali.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Transformer Embeddings -  MultiModal and advanced Positional"
+              "title": "ColPali"
             }
           }
         ]
@@ -188,6 +188,7 @@
   },
   "active": "dbcf9d5c708644a9",
   "lastOpenFiles": [
+    "background-research/papers/more-relevant/Evals/DocVQA.md",
     "background-research/other contents/Transformer Embeddings -  MultiModal and advanced Positional.md",
     "background-research/papers/more-relevant/RAGs/HybridRAG.md",
     "background-research/papers/more-relevant/RAGs/Knowledge Graph-Guided RAG.md",
@@ -202,7 +203,6 @@
     "background-research/papers/more-relevant/Models/BERT.md",
     "background-research/papers/more-relevant/Models/CLIP.md",
     "background-research/papers/more-relevant/RAGs/Graph RAG.md",
-    "background-research/papers/more-relevant/Evals/DocVQA.md",
     "background-research/papers/more-relevant/RAGs/VDocRAG.md",
     "background-research/papers/more-relevant/RAGs/ViDoRAG.md",
     "background-research/papers/more-relevant/RAGs/VisRAG.md",

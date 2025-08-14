@@ -56,7 +56,6 @@ async def main():
 
     logging.basicConfig(filename="app.log", level=logging.INFO)
 
-    # Params validation
     dataset_path = src_path / "data/evaluation/datasets" / args.dataset_name
     dataset_path.mkdir(parents=True, exist_ok=True)
     verify_dataset(dataset_path)
@@ -64,48 +63,52 @@ async def main():
     rag_configs_path = src_path / "configs" / f"{args.rag_configs}.json"
     verify_configs(rag_configs_path)
 
-    # Create RAG system
-    # Configuration
     evaluation_dir = os.getenv("EVALS_DATA_DIR")
     if evaluation_dir is None:
-        # Fallback to default if environment variable is not set
         evaluation_dir = str(src_path / "data/evaluation/datasets")
         print(f"EVALS_DATA_DIR not set, using default: {evaluation_dir}")
-
     evaluation_dir = Path(evaluation_dir)
 
     data_dir = os.getenv("RAGS_DATA_DIR")
     if data_dir is None:
-        # Fallback to default if environment variable is not set
         data_dir = str(src_path / "data/rags")
         print(f"RAGS_DATA_DIR not set, using default: {data_dir}")
-
     data_dir = Path(data_dir)
 
-    # Load RAG configs
-    rag_configs = {}
     with rag_configs_path.open("r") as f:
         rag_configs = json.load(f)
 
-    # Initialize the RAG using the factory
     evaluation_rag = RAGFactory.create_rag(rag_configs, data_dir)
 
-    # Extract metadata from corpuses
-    documents = list(
-        (evaluation_dir / rag_configs["configs"]["knowledge_base"] / "corpuses").glob(
-            "*.jpg",
-        ),
-    )
+    kb = rag_configs["configs"]["knowledge_base"]
+    corpus_dir = evaluation_dir / kb / "corpuses"
 
-    print("Starting extraction...")
-    await evaluation_rag.extract(documents, preprocessed=True, batch_size=8)
+    if rag_configs["type"] == "multimodal":
+        documents = list(corpus_dir.glob("*.jpg")) + list(corpus_dir.glob("*.png"))
+        print("Starting extraction (multimodal, preprocessed images)...")
+        await evaluation_rag.extract(documents, preprocessed=True, batch_size=8)
+    elif rag_configs["type"] == "traditional":
+        documents = (
+            list(corpus_dir.glob("*.jpg"))
+            + list(corpus_dir.glob("*.png"))
+            + list(corpus_dir.glob("*.pdf"))
+            + list(corpus_dir.glob("*.txt"))
+            + list(corpus_dir.glob("*.md"))
+        )
+        if not documents:
+            print(f"No corpuses found in {corpus_dir}")
+            return
+        print("Starting extraction (traditional OCR / text parsing)...")
+        await evaluation_rag.extract(documents, preprocessed=True, batch_size=16)
+    else:
+        msg = f"Unsupported RAG type {rag_configs['type']} for prepare"
+        raise ValueError(msg)
+
     print("Extraction completed!")
 
-    # Index all corpuses
     print("Starting indexing...")
     await evaluation_rag.index()
     print("Indexing completed!")
-
     print(f"Dataset ready for evaluation in '{rag_configs['name']}'.")
 
 
