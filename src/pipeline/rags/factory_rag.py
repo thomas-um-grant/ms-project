@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import ClassVar
 
 from pipeline.rags.base_rag import BaseRAG
+from pipeline.rags.graph import GraphRAG
 from pipeline.rags.multimodal import MultiModalRAG
 from pipeline.rags.traditional import TraditionalRAG
 
@@ -12,6 +13,7 @@ class RAGFactory:
     _rag_types: ClassVar[dict[str, type[BaseRAG]]] = {
         "traditional": TraditionalRAG,
         "multimodal": MultiModalRAG,
+        "graph": GraphRAG,
     }
 
     @classmethod
@@ -101,6 +103,8 @@ class RAGFactory:
         rag_type = config["type"]
         if rag_type == "multimodal":
             cls._validate_multimodal_config(config.get("configs", {}))
+        elif rag_type == "graph":
+            cls._validate_graph_config(config.get("configs", {}))
 
     @classmethod
     def _validate_multimodal_config(cls, configs: dict) -> None:
@@ -116,3 +120,23 @@ class RAGFactory:
                     f"Invalid chunking_strategy for multimodal RAG: {configs['chunking_strategy']}. "
                     f"Valid options: {valid_strategies}",
                 )
+
+    @classmethod
+    def _validate_graph_config(cls, configs: dict) -> None:
+        """Validate graph RAG-specific configuration."""
+        if "query_mode" in configs:
+            valid_modes = ["local", "global", "hybrid", "naive", "mix"]
+            if configs["query_mode"] not in valid_modes:
+                raise ValueError(
+                    f"Invalid query_mode for graph RAG: {configs['query_mode']}. "
+                    f"Valid options: {valid_modes}",
+                )
+
+        # Validate model names if provided
+        if "embedding_model_name" in configs:
+            if not isinstance(configs["embedding_model_name"], str):
+                raise ValueError("embedding_model_name must be a string")
+
+        if "reranker_model_name" in configs:
+            if not isinstance(configs["reranker_model_name"], str):
+                raise ValueError("reranker_model_name must be a string")

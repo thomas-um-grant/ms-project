@@ -1,6 +1,6 @@
 # Report
 
-## Title - "Dive into complex RAG pipelines - Combining strength for relevant gains"
+## Title - "MultiRAG - Does combining strengths yield relevant gains?"
 
 ## Abstract
 
@@ -9,6 +9,8 @@
 #### Information Knowledge and Retrieval
 
 #### Diversification of approaches for specific use cases
+
+#### Introduce the problem (Not a best retriever for all cases)
 
 ### Project coverage
 
@@ -22,7 +24,7 @@
 
 ### Supervisor Nihir, and Chiraag
 
-### Sherpa team
+### Sherpa team (Check if I can say it)
 
 ## Contents pages
 
@@ -55,21 +57,24 @@
 - Enables up-to-date and domain-specific knowledge access
 - Supports multi-hop, complex, and multimodal queries
 - Can use text, images, graphs, or hybrid retrieval
+- Reranking strategies
+
+#### Challenges
 
 ### Research project purpose
 
-#### Introducing a new benchmark generation framework for domain specific knowledge (Consulting)
-
-- Address lack of robust, real-world, and multimodal evaluation datasets
-- Propose new methods for dataset creation and benchmarking on specific domain
-
-#### Introducing a new RAG framework from combined best practices
+#### Introducing a new enhancement approach to retrieval combining multiple retrievers
 
 - Introduce latest RAG approaches (Multimodal and Graph)
 - Combine best practices from traditional, graph-based, and multimodal RAG
 - Modular pipeline for easy experimentation and benchmarking
 
-## Literature review and related work
+#### Introducing a new benchmark generation for domain specific knowledge (Consulting)
+
+- Address lack of robust, real-world, and multimodal evaluation datasets
+- Propose new methods for dataset creation and benchmarking on specific domain
+
+## Literature review and related work (Shouldn't be too technical here, detail the only specific work used in the body)
 
 ### Attention with Transformers
 
@@ -186,22 +191,20 @@ mmGraphRAG:
 
 - Muvera
 
-### Evaluation benchmark
+### Reranking strategies
 
-#### Exisiting work
+- Current reranking strats that exist
+- Why are they useful, and why are they different from our approach
+- Give some context to our approach if needed
 
-- ViDoRe benchmark v1 and v2
-- MTEB benchmarks
-- BEIR format
+## Body of report (8 - 10 pages)
 
-#### Challenges
+### Combining an enhanced RAG framework
 
-- Lack of standardized, multimodal, and challenging benchmarks
-- Difficulty in evaluating multi-hop and cross-modal reasoning
-- Dataset bias, annotation quality, and coverage
-- No noise, limited size to assess at scale
-
-## Body of report
+- Integrate best practices from literature
+- Experiment with hybrid approaches
+- Explain how to assess whether combining different approaches is relevant
+- Explain why it is rational to assemble such methods and why it should work
 
 ### Generating an evaluation dataset
 
@@ -212,13 +215,6 @@ mmGraphRAG:
 - Corpus selection for answering
 - Answer generation
 - LLM Peer review
-
-### Combining an enhanced RAG framework
-
-- Integrate best practices from literature
-- Experiment with hybrid approaches
-- Explain how to assess whether combining different approaches is relevant
-- Explain why it is rational to assemble such methods and why it should work
 
 ### Use case
 
@@ -233,6 +229,21 @@ mmGraphRAG:
 - What / why is evaluation important
 - Need for robust, real-world, and multimodal evaluation
 - Assess retrieval, generation, and reasoning quality
+
+### Evaluation benchmark
+
+#### Exisiting work
+
+- ViDoRe benchmark v1 and v2
+- MTEB benchmarks
+- BEIR format
+
+#### Challenges
+
+- Lack of standardized, multimodal, and challenging benchmarks
+- Difficulty in evaluating multi-hop and cross-modal reasoning
+- Dataset bias, annotation quality, and coverage
+- No noise, limited size to assess at scale
 
 #### Metrics
 

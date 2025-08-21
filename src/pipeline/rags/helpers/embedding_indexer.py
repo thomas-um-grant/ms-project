@@ -96,15 +96,25 @@ class EmbeddingIndexer:
         embeddings = []
         indexed_ids = []
 
-        # Load existing embeddings if they exist
-        existing_embeddings = []
-        if self.embeddings_path.exists():
+        # Load existing embeddings + ids if they exist
+        existing_embeddings: list[torch.Tensor] = []
+        existing_ids: list[str] = []
+        if self.embeddings_path.exists() and self.embeddings_ids_path.exists():
             print("Loading existing embeddings...")
             existing_embeddings = torch.load(
                 self.embeddings_path,
                 map_location="cpu",
                 weights_only=True,
             )
+            with self.embeddings_ids_path.open("r") as f:
+                existing_ids = [json.loads(line) for line in f]
+
+            if len(existing_embeddings) != len(existing_ids):
+                print(
+                    f"[WARNING] Embedding / ID count mismatch (embeddings={len(existing_embeddings)} ids={len(existing_ids)}). Discarding existing index.",
+                )
+                existing_embeddings = []
+                existing_ids = []
 
         # Process images in batches
         for i in tqdm(range(0, len(image_paths), self.batch_size)):
@@ -131,16 +141,15 @@ class EmbeddingIndexer:
                 # Skip this batch and continue
                 continue
 
-        # Combine with existing embeddings
+        # Combine with existing embeddings / ids
         all_embeddings = existing_embeddings + embeddings
+        all_ids = existing_ids + indexed_ids
 
-        # Save embeddings to disk
-        if embeddings:  # Only save if we have new embeddings
+        # Save embeddings + ids atomically when new embeddings added
+        if embeddings:
             torch.save(all_embeddings, self.embeddings_path)
-
-            # Save embedding IDs
             with self.embeddings_ids_path.open("w") as f:
-                for corp_id in indexed_ids:
+                for corp_id in all_ids:
                     f.write(json.dumps(corp_id) + "\n")
 
         return indexed_ids

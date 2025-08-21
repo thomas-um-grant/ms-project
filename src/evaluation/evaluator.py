@@ -61,6 +61,75 @@ class Evaluator:
             k_values=[1, 3, 5, 10, 20, 50, 100],
         )
 
+    # --- helpers added ---
+    def _build_qrels(self, ds_qrels, complexity: str) -> dict[str, dict[str, int]]:
+        """
+        Build qrels dict respecting complexity.
+        v1: collapse all pages of a corpus; relevance becomes max(score).
+        v2: use corpus-id_doc-id composite keys with original score.
+        """
+        qrels: dict[str, dict[str, int]] = defaultdict(dict)
+        if complexity == "v1":
+            # temp structure {query_id: {corpus_id: max_score}}
+            temp: dict[str, dict[str, int]] = defaultdict(dict)
+            for qrel in ds_qrels:
+                try:
+                    qid = str(qrel[self.query_id_column])
+                    cid = str(qrel[self.corpus_id_column])
+                    rel = int(qrel[self.score_column])
+                except Exception:  # pragma: no cover
+                    continue
+                prev = temp[qid].get(cid, 0)
+                if rel > prev:
+                    temp[qid][cid] = rel
+            qrels.update(temp)
+        elif complexity == "v2":
+            for qrel in ds_qrels:
+                try:
+                    qid = str(qrel[self.query_id_column])
+                    cid = str(qrel[self.corpus_id_column])
+                    did = str(qrel[self.doc_id_column])
+                    rel = int(qrel[self.score_column])
+                except Exception:  # pragma: no cover
+                    continue
+                qrels[qid][f"{cid}_{did}"] = rel
+        else:
+            raise ValueError(f"Unknown complexity level: {complexity}")
+        return qrels
+
+    def _process_retrieval_results(
+        self,
+        all_results: dict[str, list[tuple[dict, float]]],
+        query_ids: list[str],
+        complexity: str,
+    ) -> dict[str, dict[str, float]]:
+        """
+        Convert raw retrieval outputs into scoring dict expected by pytrec_eval.
+        v1: keep best score per corpus-id.
+        v2: use composite corpus-id_doc-id keys with their scores.
+        """
+        scoring_results: dict[str, dict[str, float]] = {}
+        complexity_error = f"Unknown complexity level: {complexity}"
+        for qid in query_ids:
+            hits = all_results.get(qid, [])
+            per_query: dict[str, float] = {}
+            for hit in hits:
+                try:
+                    metadata, score = hit[0], float(hit[1])
+                except Exception:  # pragma: no cover
+                    continue
+                if complexity == "v1":
+                    key = metadata["corpus-id"]
+                elif complexity == "v2":
+                    key = f"{metadata['corpus-id']}_{metadata['doc-id']}"
+                else:
+                    raise ValueError(complexity_error)
+                # keep max score for stability
+                if score > per_query.get(key, float("-inf")):
+                    per_query[key] = score
+            scoring_results[qid] = per_query
+        return scoring_results
+
     async def evaluate_dataset(
         self,
         ds: dict,
@@ -83,32 +152,16 @@ class Evaluator:
         # Cast IDs to string to ensure compatibility with MTEB
         query_ids: list[str] = [str(elt) for elt in ds_queries[self.query_id_column]]
 
-        # If we score a v2 dataset, we need to adjust the qrels to take into account the doc-id
-        complexity_error = f"Unknown complexity level: {complexity}"
-        qrels: dict[str, dict[str, int]] = defaultdict(dict)
-        for qrel in ds_qrels:
-            query_id = str(qrel[self.query_id_column])
-            corpus_id = str(qrel[self.corpus_id_column])
+        # Build qrels respecting complexity
+        qrels = self._build_qrels(ds_qrels, complexity)
 
-            if complexity == "v1":
-                qrels[query_id][corpus_id] = qrel[self.score_column]
-
-            elif complexity == "v2":
-                doc_id = str(qrel[self.doc_id_column])
-                qrels[query_id][f"{corpus_id}_{doc_id}"] = qrel[self.score_column]
-
-            else:
-                raise ValueError(complexity_error)
-
-        # Retrieve documents from Vespa using search_many
         logger.info(
-            f"Retrieving documents for {len(query_ids)} queries with k={k}...",
+            f"Retrieving documents for {len(query_ids)} queries with k={k} (complexity={complexity})...",
         )
 
         # Batch queries to avoid overloading
         queries = list(ds_queries[self.query_column])
-        all_results = {}  # Store results grouped by query index
-
+        all_results: dict[str, list[tuple[dict, float]]] = {}
         # Create checkpoint filename with dataset name and timestamp
         checkpoint_file = (
             Path(__file__).parent / f"checkpoint_rag_{len(queries)}_queries.json"
@@ -126,7 +179,7 @@ class Evaluator:
                     all_results = checkpoint_data.get("results", {})
                     start_index = checkpoint_data.get("last_processed_index", 0)
                     logger.info(f"Resuming from checkpoint at index {start_index}")
-            except (json.JSONDecodeError, KeyError) as e:
+            except (json.JSONDecodeError, KeyError) as e:  # pragma: no cover
                 logger.warning(
                     f"Could not load checkpoint: {e}. Starting from beginning.",
                 )
@@ -137,83 +190,42 @@ class Evaluator:
             batch_queries = queries[i : i + batch_size]
             if not batch_queries:
                 continue
-
             results = await self.rag.retrieve(
                 queries=batch_queries,
                 top_k=k,
             )
-
-            # Process results and keep them grouped by query IDs
             for query_idx, response in enumerate(results):
                 global_query_idx = i + query_idx
-                actual_query_id = query_ids[global_query_idx]  # query ID from dataset
+                actual_query_id = query_ids[global_query_idx]
                 all_results[actual_query_id] = response
-
-            # Save checkpoint after each batch
             checkpoint_data = {
                 "results": all_results,
                 "last_processed_index": i + batch_size,
                 "total_queries": len(queries),
                 "batch_size": batch_size,
             }
-
             with checkpoint_file.open("w") as f:
-                json.dump(
-                    checkpoint_data,
-                    f,
-                    default=str,
-                )  # default=str handles non-serializable objects
-
+                json.dump(checkpoint_data, f, default=str)
             logger.info(
                 f"Processed batch {(i // batch_size) + 1}/{(len(queries) + batch_size - 1) // batch_size}, saved checkpoint",
             )
 
-        # Clean up checkpoint file on successful completion
         if checkpoint_file.exists():
             checkpoint_file.unlink()
             logger.info("Evaluation completed successfully, checkpoint file removed")
 
-        # Get the retrieved doc ids and their scores
         logger.info(
-            f"Retrieved {len(all_results)} results. Computing metrics...",
+            f"Retrieved {len(all_results)} query result sets. Computing metrics...",
         )
 
-        # Need something like that for computing MTEB metrics:
-        # results =
-        # {
-        # "query_0": {"doc_i": 19.125, "doc_1": 18.75, ...},
-        # "query_1": {"doc_j": 17.25, "doc_1": 16.75, ...},
-        # }
-        scoring_results: dict[str, dict[str, float]] = {}
+        scoring_results = self._process_retrieval_results(
+            all_results,
+            query_ids,
+            complexity,
+        )
 
-        for query_id in query_ids:
-            hits = all_results[query_id]
-            retrieved_corpus = []
-            for hit in hits:
-                metadata, score = hit[0], hit[1]
-
-                if complexity == "v1":
-                    scoring_id = metadata["corpus-id"]
-                elif complexity == "v2":
-                    scoring_id = f"{metadata['corpus-id']}_{metadata['doc-id']}"
-                else:
-                    raise ValueError(complexity_error)
-
-                retrieved_corpus.append(
-                    {
-                        "id": scoring_id,
-                        "score": float(score),
-                    },
-                )
-
-            scoring_results[query_id] = {
-                corpus["id"]: corpus["score"] for corpus in retrieved_corpus
-            }
-
-        # Compute the MTEB metrics
         metrics = self.custom_evaluator.compute_retrieval_scores(
             qrels=qrels,
             results=scoring_results,
         )
-
         return metrics

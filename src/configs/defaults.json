@@ -1,7 +1,7 @@
 {
   "processing": {
     "extraction": {
-      "batch_size": 3,
+      "batch_size": 8,
       "description_batch_size": 4,
       "max_retries": 3,
       "retry_delay_seconds": 1,

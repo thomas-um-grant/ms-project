@@ -84,27 +84,37 @@ async def main():
     corpus_dir = evaluation_dir / kb / "corpuses"
 
     if rag_configs["type"] == "multimodal":
-        documents = list(corpus_dir.glob("*.jpg")) + list(corpus_dir.glob("*.png"))
-        print("Starting extraction (multimodal, preprocessed images)...")
-        await evaluation_rag.extract(documents, preprocessed=True, batch_size=8)
+        documents = (
+            list(corpus_dir.glob("*.png"))
+            + list(corpus_dir.glob("*.jpg"))
+            + list(corpus_dir.glob("*.jpeg"))
+        )
+        if not documents:
+            print(f"No preprocessed images found in {corpus_dir}")
+        else:
+            print(
+                f"Starting extraction (multimodal, preprocessed images) on {len(documents)} images...",
+            )
+            await evaluation_rag.extract(documents, preprocessed=True, batch_size=8)
+            print("Extraction completed.")
     elif rag_configs["type"] == "traditional":
         documents = (
-            list(corpus_dir.glob("*.jpg"))
-            + list(corpus_dir.glob("*.png"))
+            list(corpus_dir.glob("*.png"))
+            + list(corpus_dir.glob("*.jpg"))
+            + list(corpus_dir.glob("*.jpeg"))
             + list(corpus_dir.glob("*.pdf"))
             + list(corpus_dir.glob("*.txt"))
             + list(corpus_dir.glob("*.md"))
         )
-        if not documents:
-            print(f"No corpuses found in {corpus_dir}")
-            return
-        print("Starting extraction (traditional OCR / text parsing)...")
-        await evaluation_rag.extract(documents, preprocessed=True, batch_size=16)
+        if documents:
+            print(f"Starting extraction (traditional) on {len(documents)} documents...")
+            await evaluation_rag.extract(documents, batch_size=16)
+            print("Extraction completed.")
+        else:
+            print(f"No documents found in {corpus_dir}")
     else:
         msg = f"Unsupported RAG type {rag_configs['type']} for prepare"
         raise ValueError(msg)
-
-    print("Extraction completed!")
 
     print("Starting indexing...")
     await evaluation_rag.index()

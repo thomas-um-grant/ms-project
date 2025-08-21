@@ -1,4 +1,5 @@
 import json
+import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -15,6 +16,8 @@ if TYPE_CHECKING:
 from pipeline.models.embedding_models import setup_embedding_model
 from pipeline.models.generation_models import setup_generation_model
 from utils.device import DeviceConfig
+
+logger = logging.getLogger(__name__)
 
 
 class BaseRAG(ABC):
@@ -85,7 +88,8 @@ class BaseRAG(ABC):
             processing_defaults["retrieval"]["pruning_threshold"],
         )
         self.batch_size = configs.get(
-            "batch_size", processing_defaults["indexing"]["batch_size"]
+            "batch_size",
+            processing_defaults["indexing"]["batch_size"],
         )
 
         # Store full configuration for passing to helper classes
@@ -120,3 +124,56 @@ class BaseRAG(ABC):
         top_k: int | None = None,
     ) -> tuple[str, list[tuple[dict, float]]]:
         """Generate answers based on the retrieved corpuses."""
+
+    async def rerank(
+        self,
+        queries: str | list[str],
+        retrieved_corpuses: list[list[tuple[dict, float]]],
+        method: str = "llm",  # llm or jina
+    ) -> list[list[tuple[dict, float]]]:
+        """Rerank the retrieved corpuses based on the queries."""
+        if method == "jina":
+            return await self._rerank_with_jina(queries, retrieved_corpuses)
+        if method == "llm":
+            return await self._rerank_with_llm(queries, retrieved_corpuses)
+        return retrieved_corpuses
+
+    async def _rerank_with_jina(
+        self,
+        queries: str | list[str],
+        retrieved_corpuses: list[list[tuple[dict, float]]],
+    ) -> list[list[tuple[dict, float]]]:
+        """Rerank using Jina embeddings."""
+        try:
+            from pipeline.rerankers import JinaRerankerFactory
+
+            # Create reranker if not exists
+            if not hasattr(self, "_jina_reranker"):
+                self._jina_reranker = JinaRerankerFactory.create_reranker(
+                    rag_type=self.name.split("_")[0],  # Extract RAG type from name
+                    corpus_dir=self.corpuses_dir,
+                    device_config=self.device_config,
+                )
+
+                # Pre-compute corpus embeddings if needed
+                metadata = self.metadata_manager.load_metadata()
+                await self._jina_reranker.precompute_corpus_embeddings(metadata)
+
+            return await self._jina_reranker.rerank(queries, retrieved_corpuses)
+
+        except ImportError:
+            logger.warning("Jina reranker not available, returning original ranking")
+            return retrieved_corpuses
+        except Exception as e:
+            logger.error(f"Error in Jina reranking: {e}")
+            return retrieved_corpuses
+
+    async def _rerank_with_llm(
+        self,
+        queries: str | list[str],
+        retrieved_corpuses: list[list[tuple[dict, float]]],
+    ) -> list[list[tuple[dict, float]]]:
+        """Rerank using LLM-based scoring."""
+        # TODO: Implement LLM-based reranking
+        logger.info("LLM reranking not yet implemented, returning original ranking")
+        return retrieved_corpuses

@@ -5,6 +5,7 @@
     "embedding_model": "nomic_embed",
     "generation_model": "llama_text_gen",
     "preferred_device": "mps",
-    "knowledge_base": "vidore/arxivqa_test_subsampled_beir"
+    "knowledge_base": "vidore/arxivqa_test_subsampled_beir",
+    "retrieval_method": "hybrid"
   }
 }

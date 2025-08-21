@@ -5,6 +5,7 @@
     "embedding_model": "nomic_embed",
     "generation_model": "llama_text_gen",
     "preferred_device": "mps",
-    "knowledge_base": "sherpa/consulting"
+    "knowledge_base": "sherpa/consulting",
+    "retrieval_method": "bm25"
   }
 }

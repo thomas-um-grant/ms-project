@@ -132,10 +132,46 @@ class CustomRetrievalEvaluator:
             **{k: v.copy() for k, v in all_precisions.items()},
         }
 
-        naucs = RetrievalEvaluator.evaluate_abstention(
-            results,
-            abstention_data,
-        )
+        # Guard: filter out queries with empty result sets for abstention or skip entirely
+        try:
+            if any(len(r) == 0 for r in results.values()):
+                # If all are empty, skip abstention entirely
+                if all(len(r) == 0 for r in results.values()):
+                    logger.warning(
+                        "All queries returned empty retrieval sets; skipping nAUC abstention metrics.",
+                    )
+                    naucs: dict[str, float] = {}
+                else:
+                    # Filter results & correspondingly filter metric per-query lists
+                    non_empty_qids = [qid for qid, r in results.items() if len(r) > 0]
+                    if not non_empty_qids:
+                        naucs = {}
+                    else:
+                        qid_order = list(scores.keys())  # type: ignore[name-defined]
+                        keep_idx = [
+                            i
+                            for i, qid in enumerate(qid_order)
+                            if qid in non_empty_qids
+                        ]
+                        filtered_abstention = {
+                            k: [vals[i] for i in keep_idx]
+                            for k, vals in abstention_data.items()
+                        }
+                        filtered_results = {qid: results[qid] for qid in non_empty_qids}
+                        naucs = RetrievalEvaluator.evaluate_abstention(
+                            filtered_results,
+                            filtered_abstention,
+                        )
+            else:
+                naucs = RetrievalEvaluator.evaluate_abstention(
+                    results,
+                    abstention_data,
+                )
+        except IndexError:
+            logger.warning(
+                "Abstention evaluation failed due to empty similarity scores; omitting nAUC metrics.",
+            )
+            naucs = {}
 
         return ndcg, _map, recall, precision, naucs
 
@@ -165,7 +201,42 @@ class CustomRetrievalEvaluator:
         ]:
             metric_scores = top_k_accuracy(qrels, results, k_values, output_type)
 
-        naucs = RetrievalEvaluator.evaluate_abstention(results, metric_scores)
-        metric_scores_avg = {k: sum(v) / len(v) for k, v in metric_scores.items()}
-
+        # Guard against empty results causing IndexError
+        try:
+            if any(len(r) == 0 for r in results.values()):
+                non_empty_qids = [qid for qid, r in results.items() if len(r) > 0]
+                if not non_empty_qids:
+                    naucs: dict[str, float] = {}
+                else:
+                    filtered_results = {qid: results[qid] for qid in non_empty_qids}
+                    reference_key = next(iter(metric_scores))  # type: ignore[name-defined]
+                    length = len(metric_scores[reference_key])  # type: ignore[name-defined]
+                    if length != len(results):
+                        naucs = {}
+                    else:
+                        qid_order = list(results.keys())
+                        keep_idx = [
+                            i
+                            for i, qid in enumerate(qid_order)
+                            if qid in non_empty_qids
+                        ]
+                        filtered_metric_scores = {
+                            k: [vals[i] for i in keep_idx]
+                            for k, vals in metric_scores.items()  # type: ignore[name-defined]
+                        }
+                        naucs = RetrievalEvaluator.evaluate_abstention(
+                            filtered_results,
+                            filtered_metric_scores,
+                        )
+            else:
+                naucs = RetrievalEvaluator.evaluate_abstention(
+                    results,
+                    metric_scores,  # type: ignore[name-defined]
+                )
+        except (IndexError, KeyError, ValueError):
+            logger.warning(
+                "Abstention evaluation failed for custom metric; omitting nAUC metrics.",
+            )
+            naucs = {}
+        metric_scores_avg = {k: sum(v) / len(v) for k, v in metric_scores.items()}  # type: ignore[name-defined]
         return metric_scores_avg, naucs

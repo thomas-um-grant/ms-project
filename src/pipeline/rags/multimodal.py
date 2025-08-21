@@ -1,5 +1,4 @@
 import asyncio
-import json
 from pathlib import Path
 from typing import Any
 
@@ -27,17 +26,17 @@ class MultiModalRAG(BaseRAG):
 
         super().__init__(name, data_dir, configs)
 
-        # Load defaults for fallback values
-        defaults_path = (
-            Path(__file__).parent.parent.parent / "configs" / "defaults.json"
-        )
-        with defaults_path.open() as f:
-            defaults = json.load(f)
+        # Load defaults
+        defaults = self._load_defaults()
 
-        # Store configuration settings
+        # Configuration
         self.extraction_batch_size = configs.get(
             "extraction_batch_size",
             defaults["processing"]["extraction"]["batch_size"],
+        )
+        self.extraction_config = configs.get(
+            "extraction_config",
+            defaults["processing"]["extraction"],
         )
         self.processing_summary_template = configs.get(
             "processing_summary_template",
@@ -290,6 +289,12 @@ class MultiModalRAG(BaseRAG):
 
         embeddings, embedding_ids, metadata = self.embedding_indexer.load_index()
 
+        if len(embeddings) != len(embedding_ids):
+            msg = f"Corrupt index: {len(embeddings)} embeddings vs {len(embedding_ids)} ids"
+            raise RuntimeError(msg)
+        if not embeddings:
+            return [[] for _ in query_texts]
+
         # Get query embeddings (already cleaned by embedding model)
         q_emb_tensors = await self.embedding_model.embed_texts(query_texts)
 
@@ -316,8 +321,7 @@ class MultiModalRAG(BaseRAG):
         all_results = []
         for i in tqdm(range(len(query_texts))):
             scores = self.embedding_model.processor.score(
-                [query_vectors[i]],
-                doc_vectors,
+                [query_vectors[i]], doc_vectors
             )
 
             if isinstance(scores, torch.Tensor):
