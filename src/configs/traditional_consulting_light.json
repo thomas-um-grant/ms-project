@@ -2,7 +2,7 @@
   "type": "traditional",
   "name": "traditional",
   "configs": {
-    "embedding_model": "nomic_embed",
+    "embedding_model": "jina_embed",
     "generation_model": "llama_text_gen",
     "preferred_device": "mps",
     "knowledge_base": "sherpa/consulting_light",

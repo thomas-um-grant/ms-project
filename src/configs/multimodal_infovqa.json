@@ -6,6 +6,6 @@
     "generation_model": "colqwen2_ollama_gen",
     "preferred_device": "mps",
     "chunking_strategy": "page",
-    "knowledge_base": "sherpa/consulting"
+    "knowledge_base": "vidore/infovqa_test_subsampled_beir"
   }
 }

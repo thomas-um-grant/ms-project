@@ -1,8 +1,9 @@
 """
 Jina-based reranker implementation for RAG pipelines.
 
-This module provides a specialized reranker that uses Jina embeddings (jinaai/jina-embeddings-v4)
-to rerank retrieved candidates based on semantic similarity between query and corpus embeddings.
+Only reranking logic lives here. The embedding model is implemented in
+`pipeline.models.embedding_models.JinaEmbeddingModel` so it can be shared
+across all RAG systems.
 """
 
 import asyncio
@@ -12,145 +13,12 @@ from pathlib import Path
 from typing import Any
 
 import torch
-from transformers import AutoModel, AutoTokenizer
+from PIL import Image
 
+from pipeline.models.embedding_models import JinaEmbeddingModel
 from utils.device import DeviceConfig
 
 logger = logging.getLogger(__name__)
-
-
-class JinaEmbeddingModel:
-    """
-    Jina embedding model wrapper for jinaai/jina-embeddings-v4.
-
-    This model provides high-quality embeddings specifically optimized for
-    retrieval and reranking tasks.
-    """
-
-    def __init__(
-        self,
-        model_name: str = "jinaai/jina-embeddings-v4",
-        device_config: DeviceConfig | None = None,
-        trust_remote_code: bool = True,
-    ):
-        """
-        Initialize the Jina embedding model.
-
-        Args:
-            model_name: HuggingFace model identifier for Jina embeddings
-            device_config: Device configuration for model placement
-            trust_remote_code: Whether to trust remote code (required for Jina models)
-
-        """
-        self.model_name = model_name
-        self.device_config = device_config
-        self.trust_remote_code = trust_remote_code
-
-        self.tokenizer = None
-        self.model = None
-        self._device = None
-
-        if device_config:
-            self._device = device_config.device.value
-        # Auto-detect best device
-        elif torch.cuda.is_available():
-            self._device = "cuda"
-        elif torch.backends.mps.is_available():
-            self._device = "mps"
-        else:
-            self._device = "cpu"
-
-        logger.info(f"Initializing Jina model {model_name} on {self._device}")
-
-    def _lazy_load(self):
-        """Lazy load the model and tokenizer to avoid initialization costs."""
-        if self.model is None or self.tokenizer is None:
-            try:
-                self.tokenizer = AutoTokenizer.from_pretrained(
-                    self.model_name,
-                    trust_remote_code=self.trust_remote_code,
-                )
-                self.model = AutoModel.from_pretrained(
-                    self.model_name,
-                    trust_remote_code=self.trust_remote_code,
-                    torch_dtype=self.device_config.dtype
-                    if self.device_config
-                    else torch.float32,
-                ).to(self._device)
-                self.model.eval()
-                logger.info(f"Successfully loaded Jina model on {self._device}")
-            except Exception as e:
-                logger.error(f"Failed to load Jina model: {e}")
-                raise
-
-    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:
-        """
-        Embed a list of texts asynchronously.
-
-        Args:
-            texts: List of text strings to embed
-
-        Returns:
-            List of embedding tensors, one per input text
-
-        """
-        if not texts:
-            return []
-
-        self._lazy_load()
-
-        try:
-            # Run in thread pool to avoid blocking
-            loop = asyncio.get_event_loop()
-            embeddings = await loop.run_in_executor(None, self._embed_texts_sync, texts)
-            return embeddings
-        except Exception as e:
-            logger.error(f"Failed to embed texts: {e}")
-            raise
-
-    def _embed_texts_sync(self, texts: list[str]) -> list[torch.Tensor]:
-        """Synchronous text embedding implementation."""
-        try:
-            # Tokenize texts
-            inputs = self.tokenizer(
-                texts,
-                padding=True,
-                truncation=True,
-                return_tensors="pt",
-                max_length=512,  # Jina models typically work well with 512 tokens
-            ).to(self._device)
-
-            # Generate embeddings
-            with torch.no_grad():
-                outputs = self.model(**inputs)
-                # Use mean pooling over token embeddings
-                embeddings = self._mean_pooling(
-                    outputs.last_hidden_state,
-                    inputs["attention_mask"],
-                )
-                # Normalize embeddings for cosine similarity
-                embeddings = torch.nn.functional.normalize(embeddings, p=2, dim=1)
-
-            # Split into list of individual tensors
-            return [embeddings[i] for i in range(embeddings.size(0))]
-
-        except Exception as e:
-            logger.error(f"Error in synchronous embedding: {e}")
-            raise
-
-    def _mean_pooling(
-        self,
-        token_embeddings: torch.Tensor,
-        attention_mask: torch.Tensor,
-    ) -> torch.Tensor:
-        """Apply mean pooling to token embeddings."""
-        input_mask_expanded = (
-            attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-        )
-        return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(
-            input_mask_expanded.sum(1),
-            min=1e-9,
-        )
 
 
 class JinaReranker:
@@ -169,6 +37,7 @@ class JinaReranker:
         embedding_model: JinaEmbeddingModel | None = None,
         embeddings_cache_file: str = "jina_corpus_embeddings.pt",
         embeddings_ids_cache_file: str = "jina_corpus_ids.json",
+        cache_dir: Path | None = None,
     ):
         """
         Initialize the Jina reranker.
@@ -190,11 +59,13 @@ class JinaReranker:
         else:
             self.embedding_model = embedding_model
 
-        # Cache file paths
-        self.embeddings_cache_path = self.corpus_dir.parent / embeddings_cache_file
-        self.embeddings_ids_cache_path = (
-            self.corpus_dir.parent / embeddings_ids_cache_file
-        )
+        # Cache directory (default: <dataset_root>/reranker/jina)
+        if cache_dir is None:
+            cache_dir = self.corpus_dir.parent / "reranker" / "jina"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir = cache_dir
+        self.embeddings_cache_path = cache_dir / embeddings_cache_file
+        self.embeddings_ids_cache_path = cache_dir / embeddings_ids_cache_file
 
         # Cached embeddings and metadata
         self._corpus_embeddings: list[torch.Tensor] | None = None
@@ -207,7 +78,7 @@ class JinaReranker:
         self,
         corpus_metadata: dict[str, dict[str, Any]],
         force_recompute: bool = False,
-        batch_size: int = 32,
+        batch_size: int = 4,
     ) -> None:
         """
         Pre-compute embeddings for the entire corpus.
@@ -226,63 +97,148 @@ class JinaReranker:
             ):
                 logger.info("Using cached corpus embeddings")
                 self._corpus_metadata = corpus_metadata
+                logger.info("Loaded cached Jina corpus embeddings")
                 return
             logger.info("Cached embeddings don't match current corpus, recomputing")
 
         logger.info("Pre-computing Jina embeddings for corpus...")
 
-        # Extract text content from all corpus documents
-        corpus_texts = []
-        corpus_ids = []
+        # Collect corpus entries preserving original order for final alignment
+        original_order: list[str] = []
+        image_entries: list[tuple[str, Path]] = []  # (corpus_id, image_path)
+        text_entries: list[tuple[str, str]] = []  # (corpus_id, text_content)
 
         for corpus_id, metadata in corpus_metadata.items():
+            original_order.append(corpus_id)
             try:
                 corpus_path = self.corpus_dir / metadata["name"]
-
-                # Handle different file types
-                if corpus_path.suffix.lower() == ".txt":
-                    content = corpus_path.read_text(encoding="utf-8")
+                suffix = corpus_path.suffix.lower()
+                if suffix == ".txt":
+                    # Text file -> read content
+                    try:
+                        content = corpus_path.read_text(encoding="utf-8")
+                    except Exception as e:  # pragma: no cover
+                        logger.warning(
+                            "Failed reading text for %s (%s); falling back to description.",
+                            corpus_id,
+                            e,
+                        )
+                        content = metadata.get(
+                            "description",
+                            f"Document: {metadata['name']}",
+                        )
+                    text_entries.append((corpus_id, content))
+                elif suffix in {".png", ".jpg", ".jpeg"}:
+                    # Image file -> embed image directly
+                    if corpus_path.exists():
+                        image_entries.append((corpus_id, corpus_path))
+                    else:  # fallback to description if path missing
+                        desc = metadata.get(
+                            "description",
+                            f"Image Document: {metadata['name']}",
+                        )
+                        text_entries.append((corpus_id, desc))
                 else:
-                    # For other file types, use the description from metadata if available
-                    content = metadata.get(
+                    # Other types -> fallback to description
+                    desc = metadata.get(
                         "description",
                         f"Document: {metadata['name']}",
                     )
-
-                corpus_texts.append(content)
-                corpus_ids.append(corpus_id)
-
-            except Exception as e:
-                logger.warning(f"Failed to load corpus {corpus_id}: {e}")
+                    text_entries.append((corpus_id, desc))
+            except Exception as e:  # pragma: no cover
+                logger.warning("Failed to prepare corpus %s: %s", corpus_id, e)
                 continue
 
-        if not corpus_texts:
-            logger.warning("No corpus texts found for embedding")
+        if not image_entries and not text_entries:
+            logger.warning("No corpus items found for embedding")
             return
 
-        # Compute embeddings in batches
-        all_embeddings = []
-        for i in range(0, len(corpus_texts), batch_size):
-            batch_texts = corpus_texts[i : i + batch_size]
+        embedding_map: dict[str, torch.Tensor] = {}
+
+        # --- Embed images in batches ---
+        if image_entries:
             logger.info(
-                f"Computing embeddings for batch {i // batch_size + 1}/{(len(corpus_texts) + batch_size - 1) // batch_size}",
+                "Embedding %d images with Jina (batch_size=%d)",
+                len(image_entries),
+                batch_size,
             )
+            for i in range(0, len(image_entries), batch_size):
+                batch = image_entries[i : i + batch_size]
+                batch_ids = [cid for cid, _ in batch]
+                batch_paths = [p for _, p in batch]
+                try:
+                    batch_images = [Image.open(p) for p in batch_paths]
+                except Exception as e:  # pragma: no cover
+                    logger.warning(
+                        "Failed opening some images in batch starting %d: %s",
+                        i,
+                        e,
+                    )
+                    # Fallback: skip this batch
+                    continue
+                try:
+                    img_embs = await self.embedding_model.embed_images(batch_images)
+                except Exception as e:  # pragma: no cover
+                    logger.warning(
+                        "Image embedding batch failed (%d images): %s",
+                        len(batch_images),
+                        e,
+                    )
+                    continue
+                for cid, emb in zip(batch_ids, img_embs, strict=False):
+                    embedding_map[cid] = emb
+                await asyncio.sleep(0.05)
 
-            batch_embeddings = await self.embedding_model.embed_texts(batch_texts)
-            all_embeddings.extend(batch_embeddings)
+        # --- Embed texts in batches ---
+        if text_entries:
+            logger.info(
+                "Embedding %d text items with Jina (batch_size=%d)",
+                len(text_entries),
+                batch_size,
+            )
+            for i in range(0, len(text_entries), batch_size):
+                batch = text_entries[i : i + batch_size]
+                batch_ids = [cid for cid, _ in batch]
+                batch_texts = [txt for _, txt in batch]
+                try:
+                    txt_embs = await self.embedding_model.embed_texts(batch_texts)
+                except Exception as e:  # pragma: no cover
+                    logger.warning(
+                        "Text embedding batch failed (%d items): %s",
+                        len(batch_texts),
+                        e,
+                    )
+                    continue
+                for cid, emb in zip(batch_ids, txt_embs, strict=False):
+                    embedding_map[cid] = emb
+                await asyncio.sleep(0.05)
 
-            # Small delay to prevent overwhelming the system
-            await asyncio.sleep(0.1)
+        # Align embeddings to original order
+        ordered_embeddings: list[torch.Tensor] = []
+        missing = 0
+        for cid in original_order:
+            emb = embedding_map.get(cid)
+            if emb is None:
+                missing += 1
+                continue
+            ordered_embeddings.append(emb)
+        if missing:
+            logger.warning("%d corpus items missing embeddings (skipped).", missing)
 
-        # Store embeddings and metadata
-        self._corpus_embeddings = all_embeddings
-        self._corpus_ids = corpus_ids
+        self._corpus_embeddings = ordered_embeddings
+        self._corpus_ids = [cid for cid in original_order if cid in embedding_map]
         self._corpus_metadata = corpus_metadata
 
         # Cache the embeddings for future use
         self._save_cached_embeddings()
 
-        logger.info(f"Pre-computed {len(all_embeddings)} corpus embeddings")
+        logger.info(
+            "Pre-computed %d corpus embeddings (images=%d, texts=%d, missing=%d)",
+            len(self._corpus_embeddings) if self._corpus_embeddings else 0,
+            len(image_entries),
+            len(text_entries),
+            missing,
+        )
 
     def _load_cached_embeddings(self) -> bool:
         """Load cached embeddings from disk."""
@@ -349,7 +305,7 @@ class JinaReranker:
         """
         if not self._corpus_embeddings or not self._corpus_ids:
             logger.warning(
-                "Corpus embeddings not available, returning original ranking",
+                "JinaReranker: embeddings not computed yet – skipping rerank",
             )
             return retrieved_candidates
 
@@ -362,7 +318,10 @@ class JinaReranker:
 
         # Embed all queries
         logger.info("Computing query embeddings for reranking")
-        query_embeddings = await self.embedding_model.embed_texts(query_list)
+        if hasattr(self.embedding_model, "embed_queries"):
+            query_embeddings = await self.embedding_model.embed_queries(query_list)  # type: ignore[attr-defined]
+        else:  # fallback
+            query_embeddings = await self.embedding_model.embed_texts(query_list)
 
         # Rerank each query's candidates
         reranked_results: list[list[tuple[dict[str, Any], float]]] = []
@@ -379,30 +338,18 @@ class JinaReranker:
                 corpus_id = metadata.get("corpus-id", "")
 
                 # Find this document's embedding
-                try:
+                if corpus_id in self._corpus_ids:
                     idx = self._corpus_ids.index(corpus_id)
                     corpus_emb = self._corpus_embeddings[idx]
-
-                    # Compute cosine similarity
-                    if self.device_config:
-                        query_device = query_emb.to(self.device_config.device.value)
-                        corpus_device = corpus_emb.to(self.device_config.device.value)
-                    else:
-                        query_device = query_emb
-                        corpus_device = corpus_emb
-
-                    similarity = torch.cosine_similarity(
-                        query_device.unsqueeze(0),
-                        corpus_device.unsqueeze(0),
-                    ).item()
-
+                    q = query_emb / (query_emb.norm(p=2) + 1e-9)
+                    d = corpus_emb / (corpus_emb.norm(p=2) + 1e-9)
+                    similarity = float(torch.dot(q, d).item())
                     candidate_scores.append((metadata, similarity))
-
-                except ValueError:
-                    logger.warning(
-                        f"Corpus ID {corpus_id} not found in pre-computed embeddings",
+                else:
+                    logger.debug(
+                        "JinaReranker: corpus id %s missing in embedding cache",
+                        corpus_id,
                     )
-                    # Use original score as fallback
                     candidate_scores.append((metadata, _original_score))
 
             # Sort by similarity score (descending)
@@ -433,8 +380,8 @@ class JinaReranker:
             "num_embeddings": len(self._corpus_embeddings),
             "embedding_dimension": embedding_dim,
             "cache_path": str(self.embeddings_cache_path),
-            "device": self.embedding_model._device
-            if self.embedding_model
+            "device": getattr(self.embedding_model, "device_config", None).device_str
+            if getattr(self.embedding_model, "device_config", None)
             else "unknown",
         }
 

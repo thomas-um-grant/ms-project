@@ -74,6 +74,14 @@ class TraditionalRAG(BaseRAG):
             ),
         )
 
+        # Log embedding file selection (BaseRAG already decided paths)
+        logger.info(
+            "TraditionalRAG embedding storage -> %s / %s (legacy=%s)",
+            self.embeddings_path.name,
+            self.embeddings_ids_path.name,
+            getattr(self, "using_legacy_embedding_files", False),
+        )
+
     def _setup_bm25_resources(self) -> None:
         """Download and setup NLTK resources for BM25."""
         try:

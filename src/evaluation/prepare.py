@@ -6,6 +6,7 @@ import os
 import sys
 from pathlib import Path
 
+import torch
 from dotenv import load_dotenv
 
 # Add src path for imports
@@ -118,9 +119,20 @@ async def main():
 
     print("Starting indexing...")
     await evaluation_rag.index()
+    # If configuration specifies Jina reranker, precompute embeddings now
+    try:
+        reranker_method = rag_configs.get("configs", {}).get("reranker")
+        if reranker_method == "jina":
+            print("Preparing Jina reranker embeddings (if not cached)...")
+            await evaluation_rag.ensure_jina_reranker_embeddings()
+            print("Jina reranker embeddings ready.")
+    except AttributeError:
+        pass
     print("Indexing completed!")
     print(f"Dataset ready for evaluation in '{rag_configs['name']}'.")
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()

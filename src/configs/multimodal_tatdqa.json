@@ -4,8 +4,8 @@
   "configs": {
     "embedding_model": "colpali_embed",
     "generation_model": "colqwen2_ollama_gen",
-    "preferred_device": "mps",
+    "preferred_device": "cuda",
     "chunking_strategy": "page",
-    "knowledge_base": "sherpa/consulting"
+    "knowledge_base": "vidore/tatdqa_test_beir"
   }
 }

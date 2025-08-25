@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -58,8 +59,51 @@ class BaseRAG(ABC):
 
         self.store_dir = self.data_dir / "store"
         self.store_dir.mkdir(parents=True, exist_ok=True)
-        self.embeddings_ids_path = self.store_dir / "embeddings_ids.jsonl"
-        self.embeddings_path = self.store_dir / "embeddings.pt"
+
+        # Determine embedding model tag (used for file suffixing so multiple
+        # embedding variants can coexist for the same dataset).
+        embedding_model_config_name = configs.get("embedding_model", "unknown")
+        # Sanitize to filesystem-friendly token.
+        self.embedding_model_tag = re.sub(
+            r"[^A-Za-z0-9_.-]+",
+            "_",
+            embedding_model_config_name,
+        )
+
+        # New suffixed file names
+        suffixed_embeddings_file = f"embeddings_{self.embedding_model_tag}.pt"
+        suffixed_ids_file = f"embeddings_ids_{self.embedding_model_tag}.jsonl"
+
+        new_embeddings_path = self.store_dir / suffixed_embeddings_file
+        new_embeddings_ids_path = self.store_dir / suffixed_ids_file
+
+        legacy_embeddings_path = self.store_dir / "embeddings.pt"
+        legacy_ids_path = self.store_dir / "embeddings_ids.jsonl"
+
+        # Backward compatibility: if legacy files exist and no suffixed files yet,
+        # reuse legacy paths so we don't duplicate or orphan existing data.
+        if (
+            legacy_embeddings_path.exists()
+            and legacy_ids_path.exists()
+            and not new_embeddings_path.exists()
+            and not new_embeddings_ids_path.exists()
+        ):
+            self.embeddings_path = legacy_embeddings_path
+            self.embeddings_ids_path = legacy_ids_path
+            self.using_legacy_embedding_files = True  # diagnostic flag
+            logger.info(
+                "Using legacy embedding files (no suffixed files present) for model tag '%s'",
+                self.embedding_model_tag,
+            )
+        else:
+            self.embeddings_path = new_embeddings_path
+            self.embeddings_ids_path = new_embeddings_ids_path
+            self.using_legacy_embedding_files = False
+            logger.info(
+                "Embedding files set to suffixed variants: %s / %s",
+                self.embeddings_path.name,
+                self.embeddings_ids_path.name,
+            )
 
         # Setup models
         self.embedding_model = setup_embedding_model(
@@ -154,10 +198,12 @@ class BaseRAG(ABC):
                     corpus_dir=self.corpuses_dir,
                     device_config=self.device_config,
                 )
-
-                # Pre-compute corpus embeddings if needed
-                metadata = self.metadata_manager.load_metadata()
-                await self._jina_reranker.precompute_corpus_embeddings(metadata)
+                # Only auto-precompute inside retrieve/answer if cache already exists; else skip.
+                if not self._jina_reranker._load_cached_embeddings():  # noqa: SLF001
+                    logger.warning(
+                        "Jina reranker cache missing; skipping rerank (run prepare to precompute).",
+                    )
+                    return retrieved_corpuses
 
             return await self._jina_reranker.rerank(queries, retrieved_corpuses)
 
@@ -177,3 +223,25 @@ class BaseRAG(ABC):
         # TODO: Implement LLM-based reranking
         logger.info("LLM reranking not yet implemented, returning original ranking")
         return retrieved_corpuses
+
+    async def ensure_jina_reranker_embeddings(self) -> None:
+        """
+        Precompute Jina reranker embeddings if configured and not present.
+
+        Called by preparation scripts to guarantee embeddings exist before evaluation.
+        """
+        try:
+            from pipeline.rerankers import JinaRerankerFactory
+        except ImportError:  # pragma: no cover
+            logger.warning("Jina reranker factory not available")
+            return
+
+        if not hasattr(self, "_jina_reranker"):
+            self._jina_reranker = JinaRerankerFactory.create_reranker(
+                rag_type=self.name.split("_")[0],
+                corpus_dir=self.corpuses_dir,
+                device_config=self.device_config,
+            )
+        # If load fails or IDs mismatch -> recompute
+        metadata = self.metadata_manager.load_metadata()
+        await self._jina_reranker.precompute_corpus_embeddings(metadata)

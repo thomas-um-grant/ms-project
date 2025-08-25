@@ -1,11 +1,13 @@
 import asyncio
 import logging
-from typing import ClassVar
+import os
+from typing import Any, ClassVar
 
 import aiohttp
 import torch
 from colpali_engine.models import ColPali, ColPaliProcessor, ColQwen2, ColQwen2Processor
 from PIL import Image
+from transformers import AutoModel
 
 from pipeline.models.base_embedder import BaseEmbeddingModel
 from utils.device import DeviceConfig
@@ -85,6 +87,316 @@ class NomicOllamaModel(BaseEmbeddingModel):
             raise first_error
         ordered = sorted(gathered, key=lambda x: x[0])  # type: ignore[arg-type]
         return [emb for _i, emb in ordered]  # type: ignore[misc]
+
+
+class JinaEmbeddingModel(BaseEmbeddingModel):
+    """
+    Jina v4 embedding model (text + images) using official encode_* API.
+
+    Provides:
+      - embed_texts (prompt_name='passage')
+      - embed_queries (prompt_name='query')
+      - embed_images
+
+        Features:
+            - Batching for both text & images
+            - Optional truncation of embedding dim
+            - Mean-pools multi-vector outputs
+            - Safe image resize (max side configurable) to avoid huge allocations
+            - Graceful fallback disabling image support after first fatal failure
+            - Optional float32 upcast retry for image encoding (force_image_float32)
+    """
+
+    def __init__(
+        self,
+        model_name: str = "jinaai/jina-embeddings-v4",
+        *,
+        device_config: DeviceConfig | None = None,
+        inference_batch_size: int = 32,
+        task_label: str = "retrieval",
+        truncate_dim: int | None = None,
+        image_max_side: int = 1200,
+        trust_remote_code: bool = True,
+        force_image_float32: bool = True,
+    ) -> None:
+        self.model_name = model_name
+        self.device_config = device_config or DeviceConfig.auto_detect()
+        # Jina image encoder currently unstable in fp16 on MPS/CPU -> force float32 unless CUDA
+        if self.device_config.device_str != "cuda" and self.device_config.dtype in (
+            torch.float16,
+            torch.bfloat16,
+        ):
+            # Override local dtype usage for model load (don't mutate external DeviceConfig dataclass)
+            self._override_dtype = torch.float32
+        else:
+            self._override_dtype = self.device_config.dtype
+
+        self.inference_batch_size = max(1, inference_batch_size)
+        self.task_label = task_label
+        self.truncate_dim = truncate_dim
+        self.image_max_side = image_max_side
+        self.trust_remote_code = trust_remote_code
+        self.force_image_float32 = force_image_float32
+        self._model: Any | None = None
+        self._supports_images = True
+        self._image_dtype_adjusted = False
+        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+        self._load()
+        logger.info(
+            "Initialized JinaEmbeddingModel (%s) on %s batch=%d (dtype=%s)",
+            self.model_name,
+            self.device_config.device_str,
+            self.inference_batch_size,
+            str(self._override_dtype),
+        )
+
+    # ---------------- Internal helpers ----------------
+    def _load(self) -> None:
+        if self._model is not None:
+            return
+        load_dtype = getattr(self, "_override_dtype", self.device_config.dtype)
+        self._model = (
+            AutoModel.from_pretrained(
+                self.model_name,
+                trust_remote_code=self.trust_remote_code,
+                torch_dtype=load_dtype,
+            )
+            .to(self.device_config.device_str)
+            .eval()
+        )
+
+    def _maybe_truncate(self, emb: torch.Tensor) -> torch.Tensor:
+        if self.truncate_dim and self.truncate_dim < emb.shape[-1]:
+            return emb[..., : self.truncate_dim]
+        return emb
+
+    def _post(self, emb: torch.Tensor) -> torch.Tensor:
+        emb = torch.nn.functional.normalize(emb, p=2, dim=-1)
+        return self._maybe_truncate(emb).to("cpu", copy=True).float()
+
+    def _coerce(self, output: Any) -> list[torch.Tensor]:
+        # Accept tensor or list/tuple of tensors; mean pool 2D multivectors
+        if isinstance(output, torch.Tensor):
+            if output.ndim == 1:
+                return [output]
+            if output.ndim == 2:
+                return list(output)
+        if (
+            isinstance(output, (list, tuple))
+            and output
+            and all(isinstance(x, torch.Tensor) for x in output)
+        ):
+            first = output[0]
+            if first.ndim == 1:
+                return list(output)
+            pooled: list[torch.Tensor] = []
+            for t in output:
+                if t.ndim == 2:
+                    pooled.append(t.mean(0))
+                elif t.ndim == 1:
+                    pooled.append(t)
+            return pooled
+        raise EmbeddingError("Jina encode", "Unexpected output shape/type")
+
+    async def _encode_texts(
+        self,
+        texts: list[str],
+        *,
+        prompt_name: str,
+    ) -> list[torch.Tensor]:
+        if not texts:
+            return []
+        if self._model is None:
+            raise RuntimeError("Jina model not loaded")
+        cleaned = [t if (t and t.strip()) else " " for t in texts]
+        loop = asyncio.get_event_loop()
+
+        def _run():
+            with torch.inference_mode():
+                # Disable autocast explicitly (problematic on MPS / mixed dtypes)
+                dev = (
+                    self.device_config.device_str
+                    if self.device_config.device_str in {"cuda", "cpu"}
+                    else "cpu"
+                )
+                ac = torch.autocast(device_type=dev, enabled=False)
+                with ac:  # type: ignore[arg-type]
+                    return self._model.encode_text(  # type: ignore[attr-defined]
+                        texts=cleaned,
+                        task=self.task_label,
+                        prompt_name=prompt_name,
+                        batch_size=self.inference_batch_size,
+                    )
+
+        raw = await loop.run_in_executor(None, _run)
+        return [self._post(v) for v in self._coerce(raw)]
+
+    # ---------------- Public API ----------------
+    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:  # type: ignore[override]
+        return await self._encode_texts(texts, prompt_name="passage")
+
+    async def embed_queries(self, queries: list[str]) -> list[torch.Tensor]:
+        return await self._encode_texts(queries, prompt_name="query")
+
+    async def embed_images(
+        self,
+        images: list[Image.Image | str],
+        dtype: torch.dtype | None = None,
+    ) -> list[torch.Tensor]:  # type: ignore[override]
+        if not images:
+            return []
+        if self._model is None:
+            raise RuntimeError("Jina model not loaded")
+        if not self._supports_images:
+            # fallback to simple placeholders hashed via text encoder
+            return await self.embed_texts(["image"] * len(images))
+
+        def _prepare(img_in: Image.Image | str) -> Image.Image:
+            im = Image.open(img_in) if isinstance(img_in, str) else img_in
+            if im.mode != "RGB":
+                im = im.convert("RGB")
+            w, h = im.size
+            ms = max(w, h)
+            if ms > self.image_max_side:
+                scale = self.image_max_side / ms
+                im = im.resize((max(1, int(w * scale)), max(1, int(h * scale))))
+            return im
+
+        processed: list[Image.Image] = []
+        for img in images:
+            try:
+                processed.append(_prepare(img))
+            except Exception as e:  # pragma: no cover
+                logger.warning("Failed to load/prepare image (%s); using blank", e)
+                processed.append(Image.new("RGB", (64, 64), color="white"))
+
+        loop = asyncio.get_event_loop()
+        outputs: list[torch.Tensor] = []
+        for i in range(0, len(processed), self.inference_batch_size):
+            batch_imgs = processed[i : i + self.inference_batch_size]
+
+            def _encode_batch():
+                with torch.inference_mode():
+                    dev = (
+                        self.device_config.device_str
+                        if self.device_config.device_str in {"cuda", "cpu"}
+                        else "cpu"
+                    )
+                    ac = torch.autocast(device_type=dev, enabled=False)
+                    with ac:  # type: ignore[arg-type]
+                        return self._model.encode_image(  # type: ignore[attr-defined]
+                            images=batch_imgs,
+                            task=self.task_label,
+                            batch_size=min(
+                                len(batch_imgs),
+                                self.inference_batch_size,
+                            ),
+                        )
+
+            try:
+                raw = await loop.run_in_executor(None, _encode_batch)
+                vecs = [self._post(v) for v in self._coerce(raw)]
+                if len(vecs) != len(batch_imgs):
+                    logger.warning(
+                        "Jina image batch mismatch (%d vectors for %d imgs)",
+                        len(vecs),
+                        len(batch_imgs),
+                    )
+                outputs.extend(vecs[: len(batch_imgs)])
+            except Exception as e:  # pragma: no cover
+                # Autocast / dtype issues are common when model was loaded in fp16 on MPS/CPU.
+                if (
+                    self.force_image_float32
+                    and not self._image_dtype_adjusted
+                    and ("autocast" in str(e).lower() or "ScalarType" in str(e))
+                ):
+                    try:
+                        logger.warning(
+                            "Image batch failed due to dtype (%s); upcasting model to float32 and retrying once",
+                            e,
+                        )
+                        # Upcast model weights to float32 and retry the same batch once.
+                        self._model.float()  # type: ignore[call-arg]
+                        self._image_dtype_adjusted = True
+
+                        def _encode_batch_retry():
+                            with torch.inference_mode():
+                                dev_r = (
+                                    self.device_config.device_str
+                                    if self.device_config.device_str in {"cuda", "cpu"}
+                                    else "cpu"
+                                )
+                                ac_r = torch.autocast(device_type=dev_r, enabled=False)
+                                with ac_r:  # type: ignore[arg-type]
+                                    return self._model.encode_image(  # type: ignore[attr-defined]
+                                        images=batch_imgs,
+                                        task=self.task_label,
+                                        batch_size=min(
+                                            len(batch_imgs),
+                                            self.inference_batch_size,
+                                        ),
+                                    )
+
+                        raw_retry = await loop.run_in_executor(
+                            None,
+                            _encode_batch_retry,
+                        )
+                        vecs_retry = [self._post(v) for v in self._coerce(raw_retry)]
+                        outputs.extend(vecs_retry[: len(batch_imgs)])
+                        continue  # proceed to next batch
+                    except Exception as up_e:  # pragma: no cover
+                        logger.warning(
+                            "Retry after upcasting failed: %s; will fall back to per-image",
+                            up_e,
+                        )
+                logger.warning(
+                    "Image batch (%d) failed (%s); retrying individually",
+                    len(batch_imgs),
+                    e,
+                )
+                for single in batch_imgs:
+                    try:
+
+                        def _encode_single():
+                            with torch.inference_mode():
+                                dev_s = (
+                                    self.device_config.device_str
+                                    if self.device_config.device_str in {"cuda", "cpu"}
+                                    else "cpu"
+                                )
+                                ac_s = torch.autocast(device_type=dev_s, enabled=False)
+                                with ac_s:  # type: ignore[arg-type]
+                                    return self._model.encode_image(  # type: ignore[attr-defined]
+                                        images=[single],
+                                        task=self.task_label,
+                                        batch_size=1,
+                                    )
+
+                        raw_one = await loop.run_in_executor(None, _encode_single)
+                        one_vecs = [self._post(v) for v in self._coerce(raw_one)]
+                        if one_vecs:
+                            outputs.append(one_vecs[0])
+                    except Exception as se:  # pragma: no cover
+                        logger.warning(
+                            "Single image failed (%s); using placeholder",
+                            se,
+                        )
+                        placeholder = (await self.embed_texts(["image"]))[0]
+                        outputs.append(placeholder)
+
+        if not outputs:  # disable future attempts
+            self._supports_images = False
+            return await self.embed_texts(["image"] * len(images))
+        return outputs
+
+    @property
+    def embedding_dim(self) -> int:
+        if self.truncate_dim:
+            return self.truncate_dim
+        cfg = getattr(self._model, "config", None)
+        if cfg is not None:
+            return getattr(cfg, "hidden_size", 0)
+        return 0
 
 
 class ColQwen2Model(BaseEmbeddingModel):
@@ -591,6 +903,9 @@ def setup_embedding_model(
     if model_name == "colpali_embed":
         return ColPaliModel(device_config=device_config)
 
-    supported_models = ["nomic_embed", "colqwen2_embed", "colpali_embed"]
+    if model_name == "jina_embed":
+        return JinaEmbeddingModel(device_config=device_config)
+
+    supported_models = ["nomic_embed", "colqwen2_embed", "colpali_embed", "jina_embed"]
     msg = f"Unsupported model name: {model_name}. Supported models: {supported_models}"
     raise ValueError(msg)

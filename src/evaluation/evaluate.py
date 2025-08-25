@@ -7,6 +7,7 @@ import sys
 from datetime import UTC, datetime
 from pathlib import Path
 
+import torch
 from datasets import Dataset, DatasetDict
 from dotenv import load_dotenv
 
@@ -30,9 +31,11 @@ logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(log_file_path, mode="w", encoding="utf-8"),  # Overwrite file each run
+        logging.FileHandler(
+            log_file_path, mode="w", encoding="utf-8"
+        ),  # Overwrite file each run
     ],
-    force=True
+    force=True,
 )
 
 # Set all loggers to DEBUG to capture everything
@@ -303,3 +306,5 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()

@@ -8,7 +8,12 @@ from tqdm import tqdm
 
 
 class EmbeddingIndexer:
-    """Handles embedding operations and index management."""
+    """
+    Handle embedding operations and index management.
+
+    Supports model-suffixed embedding files (selection handled upstream in
+    BaseRAG). Provides image and text indexing helpers.
+    """
 
     def __init__(
         self,
@@ -153,6 +158,73 @@ class EmbeddingIndexer:
                     f.write(json.dumps(corp_id) + "\n")
 
         return indexed_ids
+
+    async def index_texts(
+        self,
+        texts: list[str],
+        corpus_ids: list[str],
+    ) -> list[str]:
+        """
+        Index textual documents by generating embeddings.
+
+        Args:
+            texts: Text content list
+            corpus_ids: Matching corpus IDs
+
+        Returns:
+            List of successfully indexed corpus IDs
+
+        """
+        if not texts:
+            return []
+
+        existing_embeddings: list[torch.Tensor] = []
+        existing_ids: list[str] = []
+        if self.embeddings_path.exists() and self.embeddings_ids_path.exists():
+            try:
+                existing_embeddings = torch.load(
+                    self.embeddings_path,
+                    map_location="cpu",
+                    weights_only=True,
+                )
+                with self.embeddings_ids_path.open("r") as f:
+                    existing_ids = [json.loads(line) for line in f]
+            except (
+                OSError,
+                RuntimeError,
+                ValueError,
+                json.JSONDecodeError,
+            ):  # pragma: no cover
+                existing_embeddings = []  # fallback rebuild
+                existing_ids = []
+
+        new_embeddings: list[torch.Tensor] = []
+        new_ids: list[str] = []
+        for i in tqdm(range(0, len(texts), self.batch_size)):
+            batch_texts = texts[i : i + self.batch_size]
+            batch_ids = corpus_ids[i : i + self.batch_size]
+            try:
+                batch_embs = await self.embedding_model.embed_texts(batch_texts)
+            except (RuntimeError, ValueError) as e:  # pragma: no cover
+                print(f"Failed to process text batch starting at index {i}: {e}")
+                continue
+            for j, emb in enumerate(batch_embs):
+                if isinstance(emb, torch.Tensor) and emb.numel() > 0:
+                    new_embeddings.append(emb)
+                    new_ids.append(batch_ids[j])
+
+        if not new_embeddings:
+            return []
+
+        all_embeddings = existing_embeddings + new_embeddings
+        all_ids = existing_ids + new_ids
+
+        torch.save(all_embeddings, self.embeddings_path)
+        with self.embeddings_ids_path.open("w") as f:
+            for cid in all_ids:
+                f.write(json.dumps(cid) + "\n")
+
+        return new_ids
 
     def get_existing_embedding_ids(self) -> list[str]:
         """
