@@ -1,6 +1,6 @@
-# Device-Agnostic ColPali Indexer
+# Device-Agnostic models
 
-This refactored ColPali implementation provides a device-agnostic system that automatically detects and configures the optimal hardware setup for your machine (CUDA, MPS, or CPU).
+These models provide a device-agnostic system that automatically detects and configures the optimal hardware setup for the machine (CUDA, MPS, or CPU), unless the device has been specified in the configurations.
 
 ## Key Features
 
@@ -10,34 +10,6 @@ This refactored ColPali implementation provides a device-agnostic system that au
 - **Cross-Platform**: Works on NVIDIA GPUs, Apple Silicon, and CPU-only systems
 
 ## Usage
-
-### Basic Usage (Auto-detect)
-
-```python
-from test_colpali import MultiModalRAG, DeviceConfig
-from pathlib import Path
-from PIL import Image
-
-# Auto-detect the best device configuration
-indexer = MultiModalRAG(
-    data_dir=Path("./rag_store"),
-    batch_size=8,
-)
-
-# Index your images
-images = [Image.open("image1.png"), Image.open("image2.png")]
-metadata = [
-    {"doc_id": "doc1", "page": 0, "text": "Content of page 1"},
-    {"doc_id": "doc1", "page": 1, "text": "Content of page 2"},
-]
-
-indexer.index_image_pages(images, metadata)
-
-# Perform retrieval
-results = indexer.retrieve("your query here", top_k=5)
-for metadata, score in results:
-    print(f"Document: {metadata['doc_id']}, Score: {score}")
-```
 
 ### Force Specific Device
 
@@ -51,7 +23,8 @@ device_config = DeviceConfig.auto_detect(preferred_device="mps")
 # Force CUDA usage (NVIDIA GPUs)
 device_config = DeviceConfig.auto_detect(preferred_device="cuda")
 
-indexer = MultiModalRAG(
+# Example with multimodal RAG
+embedder = MultiModalRAG(
     data_dir=Path("./rag_store"),
     device_config=device_config,
 )
@@ -101,7 +74,7 @@ Reduce batch size if you encounter out-of-memory errors:
 ```python
 indexer = MultiModalRAG(
     data_dir=Path("./rag_store"),
-    batch_size=4,  # Reduced from default 8
+    batch_size=4,  # Reduced from default
 )
 ```
 
@@ -119,12 +92,6 @@ indexer = MultiModalRAG(
 - `device`: Target device ("cuda", "mps", "cpu")
 - `dtype`: Tensor data type (torch.float16/torch.float32)
 - `device_map`: Device mapping strategy
-
-### MultiModalRAG
-
-- `__init__(data_dir, model_name, batch_size, device_config)`: Initialize indexer
-- `index_image_pages(image_paths, metadata_list)`: Index images with metadata
-- `retrieve(query_text, top_k)`: Retrieve similar documents
 
 ## Error Handling
 

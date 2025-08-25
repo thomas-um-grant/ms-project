@@ -2,7 +2,7 @@
 Jina-based reranker implementation for RAG pipelines.
 
 Only reranking logic lives here. The embedding model is implemented in
-`pipeline.models.embedding_models.JinaEmbeddingModel` so it can be shared
+`pipeline.models.embedding_models.JinaV4Model` so it can be shared
 across all RAG systems.
 """
 
@@ -15,7 +15,7 @@ from typing import Any
 import torch
 from PIL import Image
 
-from pipeline.models.embedding_models import JinaEmbeddingModel
+from pipeline.models.embedding_models import JinaV4Model
 from utils.device import DeviceConfig
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class JinaReranker:
         self,
         corpus_dir: Path,
         device_config: DeviceConfig | None = None,
-        embedding_model: JinaEmbeddingModel | None = None,
+        embedding_model: JinaV4Model | None = None,
         embeddings_cache_file: str = "jina_corpus_embeddings.pt",
         embeddings_ids_cache_file: str = "jina_corpus_ids.json",
         cache_dir: Path | None = None,
@@ -55,7 +55,7 @@ class JinaReranker:
 
         # Initialize embedding model
         if embedding_model is None:
-            self.embedding_model = JinaEmbeddingModel(device_config=device_config)
+            self.embedding_model = JinaV4Model(device_config=device_config)
         else:
             self.embedding_model = embedding_model
 

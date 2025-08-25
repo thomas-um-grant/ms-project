@@ -35,21 +35,27 @@ class NomicOllamaModel(BaseEmbeddingModel):
         self,
         ollama_url: str = "http://localhost:11434/api/embeddings",
         model_name: str = "nomic-embed-text",
+        device_config: DeviceConfig | None = None,
     ):
         self.ollama_url = ollama_url
         self.model_name = model_name
+        self.device_config = device_config or DeviceConfig.auto_detect()
+        self._load_model()
         logger.info(f"Initialized NomicOllamaModel with {model_name} at {ollama_url}")
+
+    def _load_model(self) -> None:
+        """No-op for Ollama models as they are accessed via API."""
 
     async def embed_images(
         self,
         images: list[Image.Image],
-        dtype: torch.dtype | None = None,
+        dtype: torch.dtype | None,
     ) -> list[torch.Tensor]:
         """Not supported by Nomic text-only model."""
         msg = "NomicOllamaModel does not support image embedding."
         raise NotImplementedError(msg)
 
-    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:  # type: ignore[override]
+    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:
         if not texts:
             return []
 
@@ -89,7 +95,7 @@ class NomicOllamaModel(BaseEmbeddingModel):
         return [emb for _i, emb in ordered]  # type: ignore[misc]
 
 
-class JinaEmbeddingModel(BaseEmbeddingModel):
+class JinaV4Model(BaseEmbeddingModel):
     """
     Jina v4 embedding model (text + images) using official encode_* API.
 
@@ -143,7 +149,7 @@ class JinaEmbeddingModel(BaseEmbeddingModel):
         os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
         self._load()
         logger.info(
-            "Initialized JinaEmbeddingModel (%s) on %s batch=%d (dtype=%s)",
+            "Initialized JinaV4Model (%s) on %s batch=%d (dtype=%s)",
             self.model_name,
             self.device_config.device_str,
             self.inference_batch_size,
@@ -904,7 +910,7 @@ def setup_embedding_model(
         return ColPaliModel(device_config=device_config)
 
     if model_name == "jina_embed":
-        return JinaEmbeddingModel(device_config=device_config)
+        return JinaV4Model(device_config=device_config)
 
     supported_models = ["nomic_embed", "colqwen2_embed", "colpali_embed", "jina_embed"]
     msg = f"Unsupported model name: {model_name}. Supported models: {supported_models}"

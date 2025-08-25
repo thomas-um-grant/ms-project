@@ -3,6 +3,8 @@
 .vscode
 .venv
 .env
+.clinerules
+memory-bank
 
 # Cache
 __pycache__
@@ -37,9 +39,6 @@ report/final-report/latex/*
 !report/final-report/latex/titlepage.tex
 !report/final-report/latex/References.bib
 !report/background-report/latex/figures
-
-PROJECT_NOTES.md
-PROJECT_PLAN.md
 
 # Outputs
 outputs
