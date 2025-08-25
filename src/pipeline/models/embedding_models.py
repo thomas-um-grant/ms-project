@@ -118,11 +118,12 @@ class JinaV4Model(BaseEmbeddingModel):
         model_name: str = "jinaai/jina-embeddings-v4",
         *,
         device_config: DeviceConfig | None = None,
-        inference_batch_size: int = 32,
+        text_batch_size: int | None = None,
+        image_batch_size: int | None = None,
         task_label: str = "retrieval",
         truncate_dim: int | None = None,
         image_max_side: int = 1200,
-        trust_remote_code: bool = True,
+        trust_remote_code: bool = False,
         force_image_float32: bool = True,
     ) -> None:
         self.model_name = model_name
@@ -137,7 +138,8 @@ class JinaV4Model(BaseEmbeddingModel):
         else:
             self._override_dtype = self.device_config.dtype
 
-        self.inference_batch_size = max(1, inference_batch_size)
+        self.text_batch_size = max(1, text_batch_size or 64)
+        self.image_batch_size = max(1, image_batch_size or 8)
         self.task_label = task_label
         self.truncate_dim = truncate_dim
         self.image_max_side = image_max_side
@@ -149,10 +151,9 @@ class JinaV4Model(BaseEmbeddingModel):
         os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
         self._load()
         logger.info(
-            "Initialized JinaV4Model (%s) on %s batch=%d (dtype=%s)",
+            "Initialized JinaV4Model (%s) on %s (dtype=%s)",
             self.model_name,
             self.device_config.device_str,
-            self.inference_batch_size,
             str(self._override_dtype),
         )
 
@@ -231,7 +232,7 @@ class JinaV4Model(BaseEmbeddingModel):
                         texts=cleaned,
                         task=self.task_label,
                         prompt_name=prompt_name,
-                        batch_size=self.inference_batch_size,
+                        batch_size=self.text_batch_size,
                     )
 
         raw = await loop.run_in_executor(None, _run)
@@ -278,8 +279,8 @@ class JinaV4Model(BaseEmbeddingModel):
 
         loop = asyncio.get_event_loop()
         outputs: list[torch.Tensor] = []
-        for i in range(0, len(processed), self.inference_batch_size):
-            batch_imgs = processed[i : i + self.inference_batch_size]
+        for i in range(0, len(processed), self.image_batch_size):
+            batch_imgs = processed[i : i + self.image_batch_size]
 
             def _encode_batch():
                 with torch.inference_mode():
@@ -290,14 +291,18 @@ class JinaV4Model(BaseEmbeddingModel):
                     )
                     ac = torch.autocast(device_type=dev, enabled=False)
                     with ac:  # type: ignore[arg-type]
-                        return self._model.encode_image(  # type: ignore[attr-defined]
+                        result = self._model.encode_image(  # type: ignore[attr-defined]
                             images=batch_imgs,
                             task=self.task_label,
                             batch_size=min(
                                 len(batch_imgs),
-                                self.inference_batch_size,
+                                self.image_batch_size,
                             ),
                         )
+                        # Clear intermediate tensors from GPU memory
+                        if torch.cuda.is_available():
+                            torch.cuda.empty_cache()
+                        return result
 
             try:
                 raw = await loop.run_in_executor(None, _encode_batch)
@@ -339,7 +344,7 @@ class JinaV4Model(BaseEmbeddingModel):
                                         task=self.task_label,
                                         batch_size=min(
                                             len(batch_imgs),
-                                            self.inference_batch_size,
+                                            self.image_batch_size,
                                         ),
                                     )
 

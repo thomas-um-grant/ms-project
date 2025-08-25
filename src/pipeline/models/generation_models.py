@@ -26,6 +26,9 @@ class LlamaOllamaTextModel(BaseGenerationModel):
     def dtype(self) -> torch.dtype:  # pragma: no cover
         return self.device_config.dtype
 
+    def _load_model(self) -> None:
+        """Load model via Ollama. No explicit loading needed as Ollama handles this."""
+
     async def generate(self, query: str, context: list[Any] | None = None) -> str:
         prompt = "You are a helpful assistant. Use the provided context to answer the question.\n\n"
         if context:
@@ -65,6 +68,9 @@ class ColQwen2OllamaModel(BaseGenerationModel):
     def dtype(self) -> torch.dtype:
         """Get the dtype from device config."""
         return self.device_config.dtype
+
+    def _load_model(self) -> None:
+        """Load model via Ollama. No explicit loading needed as Ollama handles this."""
 
     def _image_to_base64(self, image: Image.Image) -> str:
         """Convert PIL Image to base64 string."""

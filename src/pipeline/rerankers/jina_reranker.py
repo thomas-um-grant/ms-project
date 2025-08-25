@@ -284,6 +284,66 @@ class JinaReranker:
         except Exception as e:
             logger.error(f"Failed to save cached embeddings: {e}")
 
+    async def _embed_queries_batched(
+        self,
+        queries: list[str],
+        batch_size: int = 8,
+    ) -> list[torch.Tensor]:
+        """
+        Embed queries in batches for better performance.
+
+        Args:
+            queries: List of query strings to embed
+            batch_size: Batch size for processing queries
+
+        Returns:
+            List of query embeddings
+
+        """
+        if not queries:
+            return []
+
+        all_embeddings: list[torch.Tensor] = []
+
+        for i in range(0, len(queries), batch_size):
+            batch_queries = queries[i : i + batch_size]
+
+            try:
+                if hasattr(self.embedding_model, "embed_queries"):
+                    batch_embeddings = await self.embedding_model.embed_queries(
+                        batch_queries,
+                    )  # type: ignore[attr-defined]
+                else:  # fallback
+                    batch_embeddings = await self.embedding_model.embed_texts(
+                        batch_queries,
+                    )
+
+                all_embeddings.extend(batch_embeddings)
+
+            except Exception as e:
+                logger.warning(
+                    f"Failed to embed query batch {i // batch_size + 1}: {e}",
+                )
+                # Fallback: try individual queries
+                for query in batch_queries:
+                    try:
+                        if hasattr(self.embedding_model, "embed_queries"):
+                            single_emb = await self.embedding_model.embed_queries(
+                                [query],
+                            )  # type: ignore[attr-defined]
+                        else:
+                            single_emb = await self.embedding_model.embed_texts([query])
+                        all_embeddings.extend(single_emb)
+                    except Exception as se:
+                        logger.error(f"Failed to embed single query: {se}")
+                        # Create zero embedding as fallback
+                        if self._corpus_embeddings:
+                            dim = self._corpus_embeddings[0].shape[0]
+                            zero_emb = torch.zeros(dim, dtype=torch.float32)
+                            all_embeddings.append(zero_emb)
+
+        return all_embeddings
+
     async def rerank(
         self,
         queries: str | list[str],
@@ -316,12 +376,9 @@ class JinaReranker:
             msg = f"Number of queries ({len(query_list)}) must match number of candidate lists ({len(retrieved_candidates)})"
             raise ValueError(msg)
 
-        # Embed all queries
+        # Embed all queries using batched approach
         logger.info("Computing query embeddings for reranking")
-        if hasattr(self.embedding_model, "embed_queries"):
-            query_embeddings = await self.embedding_model.embed_queries(query_list)  # type: ignore[attr-defined]
-        else:  # fallback
-            query_embeddings = await self.embedding_model.embed_texts(query_list)
+        query_embeddings = await self._embed_queries_batched(query_list)
 
         # Rerank each query's candidates
         reranked_results: list[list[tuple[dict[str, Any], float]]] = []
