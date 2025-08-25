@@ -6,6 +6,7 @@
     "generation_model": "colqwen2_ollama_gen",
     "preferred_device": "cuda",
     "chunking_strategy": "page",
-    "knowledge_base": "vidore/biomedical_lectures_v2"
+    "knowledge_base": "vidore/biomedical_lectures_v2",
+    "reranker": "jina"
   }
 }

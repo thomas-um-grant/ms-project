@@ -22,13 +22,6 @@
     "metadata": {
       "json_indent": 2,
       "fallback_corpus_id": -1
-    },
-    "file_names": {
-      "metadata_file": "metadata.json",
-      "embeddings_ids_file": "embeddings_ids.jsonl",
-      "embeddings_file": "embeddings.pt",
-      "corpuses_dir": "corpuses",
-      "store_dir": "store"
     }
   },
   "prompts": {
