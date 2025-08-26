@@ -1,6 +1,5 @@
 import json
 import logging
-import re
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -62,15 +61,8 @@ class BaseRAG(ABC):
         self.store_dir = self.data_dir / "store"
         self.store_dir.mkdir(parents=True, exist_ok=True)
 
-        # Determine embedding model tag (used for file suffixing so multiple
-        # embedding variants can coexist for the same dataset).
-        embedding_model_config_name = configs.get("embedding_model", "unknown")
-        # Sanitize to filesystem-friendly token.
-        self.embedding_model_tag = re.sub(
-            r"[^A-Za-z0-9_.-]+",
-            "_",
-            embedding_model_config_name,
-        )
+        # Determine embedding model tag
+        self.embedding_model_tag = configs.get("embedding_model", "unknown")
 
         # New suffixed file names
         suffixed_embeddings_file = f"embeddings_{self.embedding_model_tag}.pt"

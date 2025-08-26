@@ -11,7 +11,7 @@ import aiohttp
 import torch
 from colpali_engine.models import ColPali, ColPaliProcessor, ColQwen2, ColQwen2Processor
 from PIL import Image
-from transformers import AutoModel
+from transformers import AutoModel, AutoTokenizer
 
 from pipeline.models.base_embedder import BaseEmbeddingModel
 from utils.device import DeviceConfig
@@ -102,6 +102,177 @@ class NomicOllamaModel(BaseEmbeddingModel):
         pairs = [g for g in gathered if isinstance(g, tuple) and len(g) == 2]
         ordered = sorted(pairs, key=lambda x: x[0])
         return [emb for _i, emb in ordered]
+
+
+# ---------------------------------------------------------------------------
+# Nomic HF (nomic-ai/nomic-embed-text-v1) text-only embedding model
+# ---------------------------------------------------------------------------
+class NomicHFModel(BaseEmbeddingModel):
+    """
+    Nomic Embed v1 model loaded from Hugging Face via transformers (text only).
+
+    Falls back gracefully across pooling strategies. Normalizes and returns CPU float32 tensors.
+    """
+
+    _model_cache: ClassVar[dict[str, tuple[Any, Any]]] = {}
+
+    def __init__(
+        self,
+        model_name: str = "nomic-ai/nomic-embed-text-v1",
+        *,
+        device_config: DeviceConfig | None = None,
+        batch_size: int | None = None,
+        normalize: bool = True,
+    ) -> None:
+        self.model_name = model_name
+        self.device_config = device_config or DeviceConfig.auto_detect()
+        self.batch_size = max(1, batch_size or 64)
+        self.normalize = normalize
+        self.model: Any | None = None
+        self.tokenizer: Any | None = None
+        self._load_model()
+        logger.info(
+            "Initialized NomicHFModel (%s) on %s (dtype=%s)",
+            self.model_name,
+            self.device_config.device_str,
+            self.device_config.dtype,
+        )
+
+    # Properties for parity with other models
+    @property
+    def device(self) -> str:  # pragma: no cover - trivial
+        return self.device_config.device_str
+
+    @property
+    def dtype(self) -> torch.dtype:  # pragma: no cover - trivial
+        return self.device_config.dtype
+
+    def _load_model(self) -> None:
+        if self.model is not None and self.tokenizer is not None:
+            return
+        cache_key = f"{self.model_name}_{self.device_config.device_str}_{self.device_config.dtype}"
+        if cache_key in self._model_cache:
+            self.model, self.tokenizer = self._model_cache[cache_key]
+            logger.info("Using cached Nomic HF model for %s", cache_key)
+            return
+        try:
+            logger.info(
+                "Loading Nomic HF model %s (dtype=%s, device=%s)",
+                self.model_name,
+                self.device_config.dtype,
+                self.device_config.device_str,
+            )
+            # trust_remote_code since repo may define custom model class
+            model = AutoModel.from_pretrained(
+                self.model_name,
+                torch_dtype=self.device_config.dtype,
+                trust_remote_code=True,
+            ).eval()
+            tokenizer = AutoTokenizer.from_pretrained(
+                self.model_name,
+                trust_remote_code=True,
+            )
+            try:
+                model = model.to(self.device_config.device_str)
+            except Exception as e:  # pragma: no cover
+                logger.warning(
+                    "Could not move Nomic model to %s (%s); using CPU",
+                    self.device_config.device_str,
+                    e,
+                )
+            self.model, self.tokenizer = model, tokenizer
+            self._model_cache[cache_key] = (self.model, self.tokenizer)
+        except Exception as e:  # pragma: no cover
+            logger.exception("Failed to load Nomic HF model")
+            raise EmbeddingError("Nomic HF load", str(e)) from e
+
+    # Image embedding not supported
+    async def embed_images(
+        self,
+        images: list[Image.Image],
+        dtype: torch.dtype | None,
+    ) -> list[torch.Tensor]:  # pragma: no cover - interface only
+        raise NotImplementedError("NomicHFModel does not support image embeddings")
+
+    def _pool(self, outputs: Any, attention_mask: torch.Tensor | None) -> torch.Tensor:
+        # Prefer attribute-based pooling if provided by remote code
+        if hasattr(outputs, "embeddings"):
+            pooled = outputs.embeddings  # type: ignore[assignment]
+            if isinstance(pooled, torch.Tensor):
+                return pooled
+        hidden = getattr(outputs, "last_hidden_state", None)
+        if isinstance(hidden, torch.Tensor):
+            if attention_mask is not None and attention_mask.ndim == 2:
+                mask = attention_mask.unsqueeze(-1).to(hidden.device)
+                # avoid div by zero
+                summed = (hidden * mask).sum(1)
+                counts = mask.sum(1).clamp_min(1)
+                return summed / counts
+            # fallback mean over sequence
+            return hidden.mean(1)
+        # Final fallback: try pooler_output
+        po = getattr(outputs, "pooler_output", None)
+        if isinstance(po, torch.Tensor):
+            return po
+        raise EmbeddingError("Nomic HF encode", "Could not pool model outputs")
+
+    async def embed_texts(self, texts: list[str]) -> list[torch.Tensor]:
+        if not texts:
+            return []
+        if self.model is None or self.tokenizer is None:
+            raise RuntimeError("Nomic HF model not loaded")
+        cleaned = [t if (t and t.strip()) else " " for t in texts]
+        loop = asyncio.get_event_loop()
+
+        def _run_batch(batch: list[str]) -> list[torch.Tensor]:
+            with torch.inference_mode():
+                enc = self.tokenizer(
+                    batch,
+                    padding=True,
+                    truncation=True,
+                    return_tensors="pt",
+                    max_length=8192,
+                )
+                # Move to device (keep integer types as-is)
+                for k, v in enc.items():
+                    enc[k] = v.to(self.model.device)
+                outputs = self.model(**enc)
+                pooled = self._pool(outputs, enc.get("attention_mask"))
+                if pooled.ndim == 1:
+                    pooled = pooled.unsqueeze(0)
+                out_list: list[torch.Tensor] = []
+                for row in pooled:
+                    vec = row.to("cpu", copy=True).float()
+                    if self.normalize:
+                        vec = torch.nn.functional.normalize(vec, p=2, dim=-1)
+                    out_list.append(vec)
+                return out_list
+
+        tasks: list[asyncio.Future[list[torch.Tensor]]] = []
+        for i in range(0, len(cleaned), self.batch_size):
+            batch = cleaned[i : i + self.batch_size]
+            tasks.append(loop.run_in_executor(None, _run_batch, batch))
+        results_nested = await asyncio.gather(*tasks)
+        # Flatten preserving order
+        flat: list[torch.Tensor] = [v for sub in results_nested for v in sub]
+        if len(flat) != len(texts):  # pragma: no cover
+            logger.warning(
+                "Nomic HF embedding count mismatch (%d vs %d)",
+                len(flat),
+                len(texts),
+            )
+        return flat
+
+    @property
+    def embedding_dim(self) -> int:  # pragma: no cover - optional convenience
+        if self.model is None:
+            return 0
+        cfg = getattr(self.model, "config", None)
+        if cfg is not None:
+            for attr in ("hidden_size", "d_model", "dim", "embed_dim"):
+                if hasattr(cfg, attr):
+                    return int(getattr(cfg, attr))
+        return 0
 
 
 # ---------------------------------------------------------------------------
@@ -760,18 +931,26 @@ def setup_embedding_model(
     model_name: str,
     device_config: DeviceConfig,
 ) -> BaseEmbeddingModel:
-    if model_name == "nomic_embed":
+    if model_name == "nomic_ollama_embed":
         return NomicOllamaModel(
             ollama_url="http://localhost:11434/api/embeddings",
             model_name="nomic-embed-text",
         )
+    if model_name == "nomic_hf_embed":
+        return NomicHFModel(device_config=device_config)
     if model_name == "colqwen2_embed":
         return ColQwen2Model(device_config=device_config)
     if model_name == "colpali_embed":
         return ColPaliModel(device_config=device_config)
     if model_name == "jina_embed":
         return JinaV4Model(device_config=device_config)
-    supported = ["nomic_embed", "colqwen2_embed", "colpali_embed", "jina_embed"]
+    supported = [
+        "nomic_ollama_embed",
+        "nomic_hf_embed",
+        "colqwen2_embed",
+        "colpali_embed",
+        "jina_embed",
+    ]
     raise ValueError(
         f"Unsupported model name: {model_name}. Supported models: {supported}",
     )

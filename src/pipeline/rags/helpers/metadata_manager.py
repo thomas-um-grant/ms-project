@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -204,11 +205,21 @@ class MetadataManager:
 
         """
         self._ensure_cache_loaded()
+        updated = 0
         for doc_id in doc_ids:
             if doc_id in self._metadata_cache:
                 entry = self._metadata_cache[doc_id]
                 if "embedded_models" not in entry:
                     entry["embedded_models"] = {}
-                entry["embedded_models"][model_tag] = True
-
-        self._cache_dirty = True
+                if not entry["embedded_models"].get(model_tag, False):
+                    entry["embedded_models"][model_tag] = True
+                    updated += 1
+        if updated:
+            self._cache_dirty = True
+            # Flush immediately so subsequent processes see the update (avoids race conditions)
+            self.flush()
+            logging.getLogger(__name__).debug(
+                "Metadata marked %d docs embedded for model_tag=%s",
+                updated,
+                model_tag,
+            )
