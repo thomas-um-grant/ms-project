@@ -32,7 +32,9 @@ logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler(
-            log_file_path, mode="w", encoding="utf-8"
+            log_file_path,
+            mode="w",
+            encoding="utf-8",
         ),  # Overwrite file each run
     ],
     force=True,
@@ -84,6 +86,8 @@ async def _run_evaluation(
     rag_configs_file: str,
     evaluation_name: str,
     complexity_mode: str = "auto",
+    *,
+    disable_generation: bool = False,
 ):
     """
     Run evaluations on a list of datasets.
@@ -130,12 +134,30 @@ async def _run_evaluation(
                 evaluation_name,
             )
         metrics.setdefault(rag_configs["name"], {}).setdefault(evaluation_name, {})
-        metrics[rag_configs["name"]][evaluation_name] = await _evaluate(
+        # Inject disable_generation into configs dict (non-destructive to persisted file)
+        if disable_generation:
+            rag_configs.setdefault("configs", {})["disable_generation"] = True
+        result = await _evaluate(
             rag_configs,
             complexity_mode=complexity_mode,
         )
+
+        # Reload in case metrics.json was modified
+        if metrics_file.is_file():
+            try:
+                with metrics_file.open("r", encoding="utf-8") as f:
+                    metrics = json.load(f)
+            except json.JSONDecodeError:
+                logger.warning("metrics.json was corrupt; starting fresh.")
+                metrics = {}
+        else:
+            metrics = {}
+
+        metrics[rag_configs["name"]][evaluation_name] = result
+
         with metrics_file.open("w", encoding="utf-8") as f:
             json.dump(metrics, f)
+
     except (OSError, ValueError, RuntimeError) as e:  # narrow common runtime issues
         logger.exception(
             "Error running %s on %s: %s",
@@ -257,7 +279,15 @@ async def _evaluate(rag_configs: dict, complexity_mode: str = "auto"):
 
     # Setup retriever and evaluator
     logger.info("Setting up RAGFactory and Evaluator...")
-    evaluation_rag = RAGFactory.create_rag(rag_configs, data_dir)
+    # Propagate disable_generation flag if present in rag_configs["configs"] (set via CLI or config)
+    disable_generation_flag = bool(
+        rag_configs.get("configs", {}).get("disable_generation", False),
+    )
+    evaluation_rag = RAGFactory.create_rag(
+        rag_configs,
+        data_dir,
+        disable_generation=disable_generation_flag,
+    )
     evaluator = Evaluator(evaluation_rag)
     logger.info("RAGFactory and Evaluator set up successfully.")
 
@@ -295,11 +325,21 @@ async def main():
         default="auto",
         help="Evaluation complexity: auto infers, or force v1/v2.",
     )
+    parser.add_argument(
+        "--disable-generation",
+        action="store_true",
+        help="Disable loading generation model (retrieval-only evaluation).",
+    )
     args = parser.parse_args()
 
     logger.info("Evaluation started...")
 
-    await _run_evaluation(args.rag_configs, args.evaluation_name, args.complexity)
+    await _run_evaluation(
+        args.rag_configs,
+        args.evaluation_name,
+        args.complexity,
+        disable_generation=args.disable_generation,
+    )
 
     logger.info("Evaluation completed.")
 

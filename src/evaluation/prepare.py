@@ -53,6 +53,11 @@ async def main():
         default="multimodal_colqwen_page",
         help="RAG system configuration file name to use",
     )
+    parser.add_argument(
+        "--disable-generation",
+        action="store_true",
+        help="Disable loading the generation model (retrieval-only).",
+    )
     args = parser.parse_args()
 
     logging.basicConfig(filename="app.log", level=logging.INFO)
@@ -79,7 +84,11 @@ async def main():
     with rag_configs_path.open("r") as f:
         rag_configs = json.load(f)
 
-    evaluation_rag = RAGFactory.create_rag(rag_configs, data_dir)
+    evaluation_rag = RAGFactory.create_rag(
+        rag_configs,
+        data_dir,
+        disable_generation=args.disable_generation,
+    )
 
     kb = rag_configs["configs"]["knowledge_base"]
     corpus_dir = evaluation_dir / kb / "corpuses"

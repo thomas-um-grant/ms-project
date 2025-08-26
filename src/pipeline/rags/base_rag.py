@@ -36,6 +36,8 @@ class BaseRAG(ABC):
         name: str,
         data_dir: Path,
         configs: dict,
+        *,
+        disable_generation: bool = False,
     ):
         # Load defaults for fallback values
         defaults = self._load_defaults()
@@ -105,15 +107,30 @@ class BaseRAG(ABC):
                 self.embeddings_ids_path.name,
             )
 
-        # Setup models
+        # Setup models (optionally disable generation model to save memory during pure retrieval workflows)
         self.embedding_model = setup_embedding_model(
             configs.get("embedding_model"),
             device_config=self.device_config,
         )
-        self.generation_model = setup_generation_model(
-            configs.get("generation_model"),
-            device_config=self.device_config,
+        self.generation_model = None
+        self.generation_disabled = disable_generation or configs.get(
+            "disable_generation",
+            False,
         )
+        if not self.generation_disabled:
+            try:
+                self.generation_model = setup_generation_model(
+                    configs.get("generation_model"),
+                    device_config=self.device_config,
+                )
+            except Exception as exc:  # pragma: no cover - defensive
+                logger.error(
+                    "Failed to initialize generation model (%s); continuing without it.",
+                    exc,
+                )
+                self.generation_disabled = True
+        else:
+            logger.info("Generation model loading disabled (disable_generation=True)")
 
         # Prepare configurations
         if not configs:  # If no configs provided, use defaults
@@ -124,6 +141,24 @@ class BaseRAG(ABC):
         self.retrieval_strategy: RetrievalStrategy = configs.get("retrieval_strategy")
         self.similarity_metric: SimilarityMetric = configs.get("similarity_metric")
         self.routing_strategy: RoutingStrategy = configs.get("routing_strategy")
+
+        # Reranker configuration (e.g. 'jina'). If provided, we enable auto-rerank by default
+        self.reranker_method: str | None = configs.get("reranker")
+        # Allow user override; default True when a reranker is defined
+        self.auto_rerank: bool = configs.get(
+            "auto_rerank",
+            bool(self.reranker_method),
+        )
+        if self.reranker_method and self.auto_rerank:
+            logger.info(
+                "Auto-reranking enabled using method '%s'",
+                self.reranker_method,
+            )
+        elif self.reranker_method:
+            logger.info(
+                "Reranker '%s' configured but auto_rerank disabled (manual rerank required)",
+                self.reranker_method,
+            )
 
         # Use configuration defaults with user overrides
         self.top_k = configs.get("top_k", processing_defaults["retrieval"]["top_k"])

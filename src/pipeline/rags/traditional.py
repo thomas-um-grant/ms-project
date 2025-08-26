@@ -35,9 +35,16 @@ class RetrievalMethod(Enum):
 class TraditionalRAG(BaseRAG):
     """Traditional text-only RAG implementation with vector, BM25, and hybrid retrieval."""
 
-    def __init__(self, name: str, data_dir: Path, configs: dict | None = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        data_dir: Path,
+        configs: dict | None = None,
+        *,
+        disable_generation: bool = False,
+    ) -> None:
         configs = configs or {}
-        super().__init__(name, data_dir, configs)
+        super().__init__(name, data_dir, configs, disable_generation=disable_generation)
 
         # Load defaults
         defaults = self._load_defaults()
@@ -250,14 +257,12 @@ class TraditionalRAG(BaseRAG):
     async def _index_vectors(self) -> None:
         """Create vector embeddings for all documents."""
         print("Building vector index...")
-
-        # Get unembedded documents
+        # Get unembedded documents for this embedding model
+        unembedded = self.metadata_manager.get_unembedded_documents(
+            self.embedding_model_tag,
+        )
+        # (metadata still needed later for reading corpus files)
         metadata = self.metadata_manager.load_metadata()
-        unembedded = [
-            (doc_id, meta)
-            for doc_id, meta in metadata.items()
-            if not meta.get("embedded", False)
-        ]
 
         if not unembedded:
             print("No documents to index.")
@@ -306,7 +311,7 @@ class TraditionalRAG(BaseRAG):
                 for doc_id in all_ids:
                     f.write(json.dumps(doc_id) + "\n")
 
-            self.metadata_manager.mark_as_embedded(new_ids)
+            self.metadata_manager.mark_as_embedded(new_ids, self.embedding_model_tag)
             print(f"Indexed {len(new_embeddings)} documents (total: {len(all_ids)})")
 
     def _load_embeddings(self) -> tuple[list[torch.Tensor], list[str]]:
@@ -396,15 +401,31 @@ class TraditionalRAG(BaseRAG):
         if not query_list:
             return []
 
+        # Perform raw retrieval based on selected method
         if method == RetrievalMethod.VECTOR:
-            return await self._retrieve_vectors(query_list, top_k)
-        if method == RetrievalMethod.BM25:
-            return await self._retrieve_bm25(query_list, top_k)
-        if method == RetrievalMethod.HYBRID:
-            return await self._retrieve_hybrid(query_list, top_k)
+            raw_results = await self._retrieve_vectors(query_list, top_k)
+        elif method == RetrievalMethod.BM25:
+            raw_results = await self._retrieve_bm25(query_list, top_k)
+        elif method == RetrievalMethod.HYBRID:
+            raw_results = await self._retrieve_hybrid(query_list, top_k)
+        else:
+            msg = f"Unknown retrieval method: {method}"
+            raise ValueError(msg)
 
-        msg = f"Unknown retrieval method: {method}"
-        raise ValueError(msg)
+        # If rerank is enabled, apply it to the results
+        if self.auto_rerank and self.reranker_method:
+            try:
+                return await self.rerank(
+                    queries=query_list,
+                    retrieved_corpuses=raw_results,
+                    method=self.reranker_method,
+                )
+            except Exception:  # pragma: no cover - fail open
+                logger.exception(
+                    "Automatic rerank failed; returning raw retrieval results",
+                )
+
+        return raw_results
 
     async def _retrieve_vectors(
         self,
@@ -574,10 +595,12 @@ class TraditionalRAG(BaseRAG):
         # Join context and truncate if too long
         joined_context = "\n\n".join(context_chunks)[:15000]
 
-        # Generate response
+        if self.generation_disabled or self.generation_model is None:
+            msg = "Generation disabled: only retrieval results returned. Enable generation to produce answers."
+            return msg, (retrieved[0] if retrieved else [])
+
         response = await self.generation_model.generate(
             query,
             context=[{"type": "text", "text": joined_context}],
         )
-
         return response, (retrieved[0] if retrieved else [])

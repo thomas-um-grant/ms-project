@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from pathlib import Path
 from typing import Any
 
@@ -12,6 +13,8 @@ from pipeline.rags.helpers import EmbeddingIndexer, ImageProcessor, MetadataMana
 from utils.device import cleanup_memory, log_memory_usage
 from utils.general import pdf_to_images, resize_image
 
+logger = logging.getLogger(__name__)
+
 
 class MultiModalRAG(BaseRAG):
     """Device-agnostic MultiModal RAG system."""
@@ -23,13 +26,11 @@ class MultiModalRAG(BaseRAG):
         configs: dict | None = None,
     ):
         self._validate_params(configs)
+        configs = configs or {}
 
         super().__init__(name, data_dir, configs)
 
-        # Load defaults
         defaults = self._load_defaults()
-
-        # Configuration
         self.extraction_batch_size = configs.get(
             "extraction_batch_size",
             defaults["processing"]["extraction"]["batch_size"],
@@ -43,7 +44,6 @@ class MultiModalRAG(BaseRAG):
             defaults["logging"]["processing_summary_template"],
         )
 
-        # Initialize helper classes with simple parameter passing
         self.image_processor = ImageProcessor(
             self.generation_model,
             image_description_prompt=configs.get(
@@ -113,7 +113,7 @@ class MultiModalRAG(BaseRAG):
         if batch_size is None:
             batch_size = self.extraction_config["batch_size"]
         # Extract individual pages from PDFs into images, and store them as pngs in corpuses directory
-        # Create metadata for each image with 'embedded' flag set to False
+        # Create metadata for each image with embedded status flag
         # Step 1: Prepare all image paths and names based on preprocessed flag
         image_data = []  # List of (image_path, doc_name) tuples
 
@@ -200,10 +200,21 @@ class MultiModalRAG(BaseRAG):
                 )
 
                 # Generate descriptions with batching (batch_size config handled by image_processor)
-                descriptions = await self.image_processor.extract_descriptions_batch(
-                    batch_images,
-                    batch_ids,
-                )
+                if (
+                    self.generation_disabled
+                    or self.image_processor.generation_model is None
+                ):
+                    # Provide fallback descriptions without model inference
+                    descriptions = [
+                        self.image_processor.fallback_description for _ in batch_images
+                    ]
+                else:
+                    descriptions = (
+                        await self.image_processor.extract_descriptions_batch(
+                            batch_images,
+                            batch_ids,
+                        )
+                    )
 
                 # Update metadata using metadata manager - batch update for efficiency
                 metadata_entries = [
@@ -236,7 +247,9 @@ class MultiModalRAG(BaseRAG):
     async def index(self) -> None:
         """Index image pages with device-agnostic processing using async embedding."""
         # Get unembedded documents from metadata manager
-        unembedded_docs = self.metadata_manager.get_unembedded_documents()
+        unembedded_docs = self.metadata_manager.get_unembedded_documents(
+            self.embedding_model_tag,
+        )
 
         if not unembedded_docs:
             print("No documents to index.")
@@ -257,7 +270,10 @@ class MultiModalRAG(BaseRAG):
 
         # Mark indexed documents as embedded
         if indexed_ids:
-            self.metadata_manager.mark_as_embedded(indexed_ids)
+            self.metadata_manager.mark_as_embedded(
+                indexed_ids,
+                self.embedding_model_tag,
+            )
             print(f"Indexed {len(indexed_ids)} images.")
         else:
             print("No images were successfully indexed.")
@@ -321,7 +337,8 @@ class MultiModalRAG(BaseRAG):
         all_results = []
         for i in tqdm(range(len(query_texts))):
             scores = self.embedding_model.processor.score(
-                [query_vectors[i]], doc_vectors
+                [query_vectors[i]],
+                doc_vectors,
             )
 
             if isinstance(scores, torch.Tensor):
@@ -335,6 +352,19 @@ class MultiModalRAG(BaseRAG):
                 (metadata[embedding_ids[j]], float(scores[j])) for j in ids
             ]
             all_results.append(query_results)
+
+        # If rerank is enabled, apply it to the results
+        if self.auto_rerank and self.reranker_method:
+            try:
+                return await self.rerank(
+                    queries=query_texts,
+                    retrieved_corpuses=all_results,
+                    method=self.reranker_method,
+                )
+            except Exception:  # pragma: no cover - fail open
+                logger.exception(
+                    "Automatic rerank failed; returning raw retrieval results",
+                )
 
         return all_results
 
@@ -363,9 +393,9 @@ class MultiModalRAG(BaseRAG):
                 },
             )
 
-        response = await self.generation_model.generate(
-            query,
-            context=context,
-        )
+        if self.generation_disabled or self.generation_model is None:
+            msg = "Generation disabled: only retrieval results returned. Enable generation to produce answers."
+            return msg, results[0]
 
+        response = await self.generation_model.generate(query, context=context)
         return response, results[0]

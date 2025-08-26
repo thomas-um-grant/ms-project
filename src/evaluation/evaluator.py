@@ -164,7 +164,8 @@ class Evaluator:
         all_results: dict[str, list[tuple[dict, float]]] = {}
         # Create checkpoint filename with dataset name and timestamp
         checkpoint_file = (
-            Path(__file__).parent / f"checkpoint_rag_{len(queries)}_queries.json"
+            Path(__file__).parent
+            / f"checkpoint_rag_{self.rag.name}_{len(queries)}_queries.json"
         )
 
         # Ensure the checkpoint directory exists

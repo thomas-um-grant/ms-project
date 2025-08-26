@@ -77,56 +77,24 @@ class MetadataManager:
         if self._cache_dirty:
             self.save_metadata()
 
-    def update_metadata_entry(
-        self,
-        doc_id: str,
-        doc_name: str,
-        description: str,
-        *,
-        embedded: bool = False,
-    ) -> None:
-        """
-        Update a single metadata entry.
-
-        Args:
-            doc_id: Document ID
-            doc_name: Document name
-            description: Document description
-            embedded: Whether the document has been embedded
-
-        """
-        self._ensure_cache_loaded()
-
-        # Parse doc_id to extract corpus and document parts
-        id_split = doc_id.split("_")
-        if len(id_split) < self.MIN_ID_PARTS:
-            corpus_id_str = str(doc_id)
-            doc_id_str = ""
-        elif len(id_split) == self.MIN_ID_PARTS:
-            corpus_id_str, doc_id_str = id_split
-        else:
-            corpus_id_str, doc_id_str = "_".join(id_split[:-1]), id_split[-1]
-
-        self._metadata_cache[doc_id] = {
-            "corpus-id": corpus_id_str,
-            "doc-id": doc_id_str,
-            "name": doc_name,
-            "description": description,
-            "embedded": embedded,
-        }
-        self._cache_dirty = True
-
-    def update_metadata_batch(self, entries: list[tuple[str, str, str, bool]]) -> None:
+    def update_metadata_batch(self, entries: list[tuple[Any, ...]]) -> None:
         """
         Update multiple metadata entries in a single operation.
 
         Args:
-            entries: List of (doc_id, doc_name, description, embedded) tuples
+            entries: Iterable of tuples. Supported formats (mixed allowed):
+                (doc_id, doc_name, description)
+                (doc_id, doc_name, description, embedded_flag)
 
         """
         self._ensure_cache_loaded()
 
-        for doc_id, doc_name, description, embedded in entries:
+        min_entry_fields = 3  # (doc_id, doc_name, description)
+        for entry in entries:
+            if len(entry) < min_entry_fields:
+                # Skip malformed entries silently (defensive)
+                continue
+            doc_id, doc_name, description = entry[:3]
             # Parse doc_id to extract corpus and document parts
             id_split = doc_id.split("_")
             if len(id_split) < self.MIN_ID_PARTS:
@@ -137,12 +105,20 @@ class MetadataManager:
             else:
                 corpus_id_str, doc_id_str = "_".join(id_split[:-1]), id_split[-1]
 
+            existing = (
+                self._metadata_cache.get(doc_id, {}) if self._metadata_cache else {}
+            )
+            prev_models = (
+                existing.get("embedded_models", {})
+                if isinstance(existing, dict)
+                else {}
+            )
             self._metadata_cache[doc_id] = {
                 "corpus-id": corpus_id_str,
                 "doc-id": doc_id_str,
                 "name": doc_name,
                 "description": description,
-                "embedded": embedded,
+                "embedded_models": prev_models,
             }
 
         self._cache_dirty = True
@@ -191,31 +167,48 @@ class MetadataManager:
             and self._metadata_cache[doc_name]["description"] != fallback_description
         )
 
-    def get_unembedded_documents(self) -> list[tuple[str, dict[str, Any]]]:
+    def get_unembedded_documents(self, model_tag: str) -> list[tuple[str, Any]]:
         """
-        Get list of documents that haven't been embedded yet.
+        Get list of documents not yet embedded for the given embedding model.
+
+        Args:
+            model_tag: Identifier of the embedding model variant (see BaseRAG.embedding_model_tag)
 
         Returns:
-            List of (doc_id, metadata) tuples for unembedded documents
+            List of (doc_id, metadata) tuples requiring embedding for the supplied model.
 
         """
         self._ensure_cache_loaded()
-        return [
-            (doc_id, doc_data)
-            for doc_id, doc_data in self._metadata_cache.items()
-            if not doc_data.get("embedded", False)
-        ]
 
-    def mark_as_embedded(self, doc_ids: list[str]) -> None:
+        for doc_id, doc_data in list(self._metadata_cache.items()):
+            if "embedded_models" not in doc_data:
+                doc_data["embedded_models"] = {}
+                self._metadata_cache[doc_id] = doc_data
+                self._cache_dirty = True
+
+        # Collect docs missing embedding for this model_tag
+        pending: list[tuple[str, dict[str, Any]]] = []
+        for doc_id, doc_data in self._metadata_cache.items():
+            embedded_models = doc_data.get("embedded_models", {})
+            if not embedded_models.get(model_tag, False):
+                pending.append((doc_id, doc_data))
+        return pending
+
+    def mark_as_embedded(self, doc_ids: list[str], model_tag: str) -> None:
         """
-        Mark documents as embedded.
+        Mark documents as embedded for a specific embedding model.
 
         Args:
-            doc_ids: List of document IDs to mark as embedded
+            doc_ids: List of document IDs to mark
+            model_tag: Embedding model identifier
 
         """
         self._ensure_cache_loaded()
         for doc_id in doc_ids:
             if doc_id in self._metadata_cache:
-                self._metadata_cache[doc_id]["embedded"] = True
+                entry = self._metadata_cache[doc_id]
+                if "embedded_models" not in entry:
+                    entry["embedded_models"] = {}
+                entry["embedded_models"][model_tag] = True
+
         self._cache_dirty = True

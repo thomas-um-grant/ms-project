@@ -21,6 +21,8 @@ class RAGFactory:
         cls,
         config: dict,
         data_dir: Path,
+        *,
+        disable_generation: bool = False,
     ) -> BaseRAG:
         """
         Create a RAG instance based on configuration.
@@ -55,11 +57,23 @@ class RAGFactory:
         rag_class = cls._rag_types[rag_type]
 
         # Create and return RAG instance
-        return rag_class(
-            name=name,
-            data_dir=data_dir,
-            configs=configs,
-        )
+        # Pass disable_generation through to RAG implementation constructors.
+        # Some existing RAG implementations may not accept the kwarg (e.g. experimental GraphRAG),
+        # so fall back gracefully if TypeError is raised.
+        try:
+            return rag_class(
+                name=name,
+                data_dir=data_dir,
+                configs=configs,
+                disable_generation=disable_generation,
+            )
+        except TypeError:
+            # Constructor does not support disable_generation; instantiate normally.
+            return rag_class(
+                name=name,
+                data_dir=data_dir,
+                configs=configs,
+            )
 
     @classmethod
     def register_rag_type(cls, type_name: str, rag_class: type[BaseRAG]) -> None:
