@@ -200,7 +200,7 @@ class BaseRAG(ABC):
         self,
         queries: str | list[str],
         retrieved_corpuses: list[list[tuple[dict, float]]],
-        method: str = "llm",  # llm or jina
+        method: str = "jina",  # jina or llm
     ) -> list[list[tuple[dict, float]]]:
         """Rerank the retrieved corpuses based on the queries."""
         if method == "jina":
@@ -263,10 +263,18 @@ class BaseRAG(ABC):
             logger.warning("Jina reranker factory not available")
             return
 
+        # If RAG type is MultiRAG, then always use Jina Multimodal Embeddings for reranking
+        if self.name.startswith("multi"):
+            rag_type = "multimodal"
+            corpus_dir = self.multimodal_rag.corpuses_dir
+        else:
+            rag_type = self.name.split("_")[0]
+            corpus_dir = self.corpuses_dir
+
         if not hasattr(self, "_jina_reranker"):
             self._jina_reranker = JinaRerankerFactory.create_reranker(
-                rag_type=self.name.split("_")[0],
-                corpus_dir=self.corpuses_dir,
+                rag_type=rag_type,
+                corpus_dir=corpus_dir,
                 device_config=self.device_config,
             )
         # If load fails or IDs mismatch -> recompute

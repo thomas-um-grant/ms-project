@@ -111,29 +111,12 @@ async def _run_evaluation(
 
     metrics_file = Path(__file__).parent / "results" / "metrics.json"
     metrics_file.parent.mkdir(parents=True, exist_ok=True)
-    if metrics_file.is_file():
-        try:
-            with metrics_file.open("r", encoding="utf-8") as f:
-                metrics = json.load(f)
-        except json.JSONDecodeError:
-            logger.warning("metrics.json was corrupt; starting fresh.")
-            metrics = {}
-    else:
-        metrics = {}
 
     try:
         logger.info(
             f"Running {evaluation_name} on {rag_configs['name']} (complexity_mode={complexity_mode})...",
         )
-        # Avoid overwrite: add timestamp if key exists
-        base_key = evaluation_name
-        if rag_configs["name"] in metrics and base_key in metrics[rag_configs["name"]]:
-            evaluation_name = f"{base_key}_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
-            logger.info(
-                "Evaluation name already existed. Using unique key '%s'",
-                evaluation_name,
-            )
-        metrics.setdefault(rag_configs["name"], {}).setdefault(evaluation_name, {})
+
         # Inject disable_generation into configs dict (non-destructive to persisted file)
         if disable_generation:
             rag_configs.setdefault("configs", {})["disable_generation"] = True
@@ -142,7 +125,7 @@ async def _run_evaluation(
             complexity_mode=complexity_mode,
         )
 
-        # Reload in case metrics.json was modified
+        # Reload metrics after evaluation completes
         if metrics_file.is_file():
             try:
                 with metrics_file.open("r", encoding="utf-8") as f:
@@ -153,17 +136,24 @@ async def _run_evaluation(
         else:
             metrics = {}
 
-        metrics[rag_configs["name"]][evaluation_name] = result
+        base_key = evaluation_name
+        metrics.setdefault(rag_configs["name"], {})
+        if base_key in metrics[rag_configs["name"]]:
+            evaluation_name = f"{base_key}_{datetime.now(UTC).strftime('%Y%m%d%H%M%S')}"
+            logger.info(
+                "Evaluation name already existed. Using unique key '%s'",
+                evaluation_name,
+            )
 
+        metrics[rag_configs["name"]][evaluation_name] = result
         with metrics_file.open("w", encoding="utf-8") as f:
             json.dump(metrics, f)
 
-    except (OSError, ValueError, RuntimeError) as e:  # narrow common runtime issues
+    except (OSError, ValueError, RuntimeError):  # narrow common runtime issues
         logger.exception(
-            "Error running %s on %s: %s",
+            "Error running %s on %s",
             evaluation_name,
             rag_configs.get("name"),
-            e,
         )
         raise
     logger.info(f"Metrics saved to {metrics_file}")

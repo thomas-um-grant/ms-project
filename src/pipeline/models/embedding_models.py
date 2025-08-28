@@ -588,6 +588,35 @@ class JinaV4Model(BaseEmbeddingModel):
             return getattr(cfg, "hidden_size", 0)
         return 0
 
+    @property
+    def processor(self):
+        # For compatibility with MultiModalRAG, return self as processor
+        return self
+
+    def score(
+        self,
+        query_vectors: list[torch.Tensor],
+        doc_vectors: list[torch.Tensor],
+    ) -> torch.Tensor:
+        """Calculates cosine similarity scores between a query and document vectors."""
+        if not query_vectors or not doc_vectors:
+            # Return an empty tensor if inputs are empty
+            return torch.tensor([])
+
+        # Ensure the query vector is on the same device as the document vectors
+        device = doc_vectors[0].device
+        q = query_vectors[0].to(device).float().unsqueeze(0)  # (1, D)
+        q = torch.nn.functional.normalize(q, p=2, dim=-1)
+
+        # Stack and normalize document vectors efficiently
+        docs = torch.stack([d.to(device).float() for d in doc_vectors])  # (N, D)
+        docs = torch.nn.functional.normalize(docs, p=2, dim=-1)
+
+        # Calculate scores using matrix multiplication (dot product for normalized vectors)
+        scores = torch.matmul(q, docs.T).squeeze(0)  # (N,)
+
+        return scores
+
 
 # ---------------------------------------------------------------------------
 # ColQwen2 multimodal model

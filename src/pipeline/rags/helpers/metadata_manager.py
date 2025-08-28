@@ -106,21 +106,20 @@ class MetadataManager:
             else:
                 corpus_id_str, doc_id_str = "_".join(id_split[:-1]), id_split[-1]
 
+            # Merge with existing metadata
             existing = (
                 self._metadata_cache.get(doc_id, {}) if self._metadata_cache else {}
             )
-            prev_models = (
-                existing.get("embedded_models", {})
-                if isinstance(existing, dict)
-                else {}
-            )
-            self._metadata_cache[doc_id] = {
-                "corpus-id": corpus_id_str,
-                "doc-id": doc_id_str,
-                "name": doc_name,
-                "description": description,
-                "embedded_models": prev_models,
-            }
+            # Update only the relevant fields, preserve others
+            updated = dict(existing) if isinstance(existing, dict) else {}
+            updated["corpus-id"] = corpus_id_str
+            updated["doc-id"] = doc_id_str
+            updated["name"] = doc_name
+            updated["description"] = description
+            # If embedded_models exists, preserve it
+            if "embedded_models" not in updated:
+                updated["embedded_models"] = {}
+            self._metadata_cache[doc_id] = updated
 
         self._cache_dirty = True
 

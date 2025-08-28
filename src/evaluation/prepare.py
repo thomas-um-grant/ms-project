@@ -128,6 +128,12 @@ async def main():
 
     print("Starting indexing...")
     await evaluation_rag.index()
+
+    # Offload the embedding model to leave space for the jina reranker to load
+    del evaluation_rag.embedding_model  # or the relevant attribute
+    if torch.cuda.is_available():
+        torch.cuda.empty_cache()
+
     # If configuration specifies Jina reranker, precompute embeddings now
     try:
         reranker_method = rag_configs.get("configs", {}).get("reranker")

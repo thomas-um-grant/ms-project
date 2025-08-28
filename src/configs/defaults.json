@@ -3,7 +3,7 @@
     "extraction": {
       "batch_size": 8,
       "description_batch_size": 4,
-      "max_retries": 3,
+      "max_retries": 5,
       "retry_delay_seconds": 1,
       "sleep_between_images": 0.1,
       "sleep_between_batches": 0.05,
