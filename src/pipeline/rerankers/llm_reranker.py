@@ -5,7 +5,9 @@ import base64
 import json
 import logging
 import os
+import random
 import re
+import time
 from pathlib import Path
 from typing import Any
 
@@ -16,18 +18,29 @@ logger = logging.getLogger(__name__)
 
 class LLMReranker:
     """
-    Gemini-based LLM reranker.
+    Gemini-based LLM reranker with optional full-document and image inlining.
 
     Args:
-        model_name: Gemini model to use (e.g. "gemini-2.0-flash" / "gemini-1.5-flash").
-        api_key: Explicit API key (falls back to env vars if None).
-        max_docs: Max number of top docs from initial retriever results to send.
-        temperature: Sampling temperature (0.0 for deterministic ranking).
-        request_timeout: Optional per-call timeout (seconds).
-        corpus_dir: Optional directory containing source documents (filenames should match metadata 'name').
-        include_full_documents: If True, attempt to inline full text/image content instead of short snippets.
-        max_chars_per_doc: Max characters of text to include per document when inlining.
-        inline_images: If True, inline small images (png/jpg) as base64; else fall back to description snippet.
+    model_name: str
+        Gemini model to use (e.g. "gemini-2.0-flash").
+    api_key: str | None
+        Explicit API key (falls back to GOOGLE_API_KEY / GEMINI_API_KEY env vars).
+    max_docs: int
+        Max number of top docs from initial retrieval to send to the LLM.
+    temperature: float
+        Sampling temperature (0.0 for deterministic ranking).
+    request_timeout: float | None
+        Per-call timeout (seconds) for the LLM request (async wait wrapper).
+    corpus_dir: str | Path | None
+        Optional directory containing source documents (filenames match metadata 'name').
+    max_chars_per_doc: int
+        Max characters of text to include per document when inlining.
+    max_retries: int
+        Number of retry attempts for Gemini API calls (default 3, 0 disables retries).
+    backoff_base: float
+        Base (seconds) for exponential backoff (actual wait is uniform[0, base * 2^n]).
+    backoff_max: float
+        Maximum cap (seconds) applied to the exponential backoff.
 
     """
 
@@ -37,11 +50,12 @@ class LLMReranker:
         api_key: str | None = None,
         max_docs: int = 20,
         temperature: float = 0.0,
-        request_timeout: float | None = 60.0,
+        request_timeout: float | None = 65.0,
         corpus_dir: str | Path | None = None,
-        include_full_documents: bool = True,
         max_chars_per_doc: int = 10000,
-        inline_images: bool = True,
+        max_retries: int = 3,
+        backoff_base: float = 1.0,
+        backoff_max: float = 8.0,
     ) -> None:
         self.model_name = model_name
         self.api_key = (
@@ -53,11 +67,11 @@ class LLMReranker:
         self.max_docs = max_docs
         self.temperature = temperature
         self.request_timeout = request_timeout
-        # Optional access to corpus files (for full content inclusion)
         self.corpus_dir = Path(corpus_dir) if corpus_dir else None
-        self.include_full_documents = include_full_documents
         self.max_chars_per_doc = max_chars_per_doc
-        self.inline_images = inline_images
+        self.max_retries = max(0, max_retries)
+        self.backoff_base = max(0.0, backoff_base)
+        self.backoff_max = max(backoff_base, backoff_max)
 
         # Schema for structured output (Gemini response_schema)
         self.response_schema = {
@@ -125,7 +139,6 @@ class LLMReranker:
         self,
         new_order: list[tuple[str, float]],
         slice_candidates: list[tuple[dict[str, Any], float]],
-        full_candidates: list[tuple[dict[str, Any], float]],
     ) -> list[tuple[dict[str, Any], float]]:
         id_to_meta = {
             m.get("corpus-id", m.get("name", "")): (m, s) for m, s in slice_candidates
@@ -154,29 +167,61 @@ class LLMReranker:
         loop = asyncio.get_event_loop()
 
         def _call_llm() -> str:
-            # Using generate_content (google-genai client)
-            response = self.client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config={
-                    "temperature": self.temperature,
-                    "response_mime_type": "application/json",
-                    "response_schema": self.response_schema,
-                },
-            )
-            # Response may contain .text or .candidates; handle generically
-            if hasattr(response, "text") and response.text:
-                return response.text
-            try:
-                # Fallback attempt: join parts
-                return "\n".join(
-                    p.text
-                    for c in getattr(response, "candidates", [])
-                    for p in getattr(c, "content", []).parts
-                    if getattr(p, "text", None)
-                )
-            except AttributeError:  # pragma: no cover - unexpected shape
-                return str(response)
+            last_exc: Exception | None = None
+            for attempt in range(self.max_retries + 1):
+                try:
+                    response = self.client.models.generate_content(
+                        model=self.model_name,
+                        contents=prompt,
+                        config={
+                            "temperature": self.temperature,
+                            "response_mime_type": "application/json",
+                            "response_schema": self.response_schema,
+                        },
+                    )
+                    # Response may contain .text or .candidates; handle generically
+                    if hasattr(response, "text") and response.text:
+                        return response.text
+                    try:
+                        # Fallback attempt: join parts
+                        return "\n".join(
+                            p.text
+                            for c in getattr(response, "candidates", [])
+                            for p in getattr(c, "content", []).parts
+                            if getattr(p, "text", None)
+                        )
+                    except AttributeError:  # pragma: no cover - unexpected shape
+                        return str(response)
+                except Exception as exc:  # pragma: no cover - network / API failures
+                    last_exc = exc
+                    if attempt >= self.max_retries:
+                        logger.error(
+                            "Gemini generate_content failed after %s attempts: %s",
+                            attempt + 1,
+                            exc,
+                        )
+                        raise
+                    # Exponential backoff with jitter
+                    delay = min(
+                        self.backoff_base * (2**attempt),
+                        self.backoff_max,
+                    )
+                    # Full jitter (AWS style)
+                    sleep_for = random.uniform(0, delay) if delay > 0 else 0
+                    logger.warning(
+                        "Gemini call failed (attempt %d/%d): %s. Retrying in %.2fs",
+                        attempt + 1,
+                        self.max_retries + 1,
+                        exc,
+                        sleep_for,
+                    )
+                    time.sleep(sleep_for)
+            # If loop exits without return (should not), raise last exception
+            if last_exc:  # pragma: no cover - defensive
+                raise last_exc
+            raise RuntimeError(
+                "Gemini call failed without exception but no response returned",
+            )  # pragma: no cover
 
         raw = await asyncio.wait_for(
             loop.run_in_executor(None, _call_llm),
@@ -192,47 +237,8 @@ class LLMReranker:
         """
         Construct instruction + documents.
 
-        Returns either a single string (simple mode) or a structured list of
-        Gemini content parts if full documents and/or images are inlined.
+        Returns either a structured list of Gemini content parts. (txt and imgs)
         """
-        if not self.include_full_documents:
-            # Snippet mode now uses actual document file content (if available) instead of metadata description.
-            doc_blocks: list[str] = []
-            for idx, (meta, score) in enumerate(candidates, start=1):
-                cid = meta.get("corpus-id") or meta.get("name") or f"doc_{idx}"
-                name = meta.get("name", "unknown")
-                header = (
-                    f"DOC {idx}\nID: {cid}\nORIGINAL_SCORE: {score:.4f}\nNAME: {name}"
-                )
-                snippet = ""
-                if self.corpus_dir and name:
-                    file_path = self.corpus_dir / name
-                    if file_path.is_file() and file_path.suffix.lower() in {
-                        ".txt",
-                        ".md",
-                    }:
-                        try:
-                            raw = file_path.read_text(encoding="utf-8", errors="ignore")
-                            snippet = raw[:1000].replace("\n", " ")
-                        except OSError:
-                            snippet = ""
-                if snippet:
-                    doc_blocks.append(f"{header}\nTEXT_SNIPPET: {snippet}\n")
-                else:
-                    doc_blocks.append(
-                        f"{header}\nTEXT_SNIPPET: (NO_CONTENT_AVAILABLE)\n",
-                    )
-            instruction = (
-                "Rank ALL documents for the query by relevance (score 0-1). Output JSON ONLY per schema: "
-                "{query: str, results: [{corpus_id, score, reason}]}. Use every document exactly once."
-            )
-            return (
-                f"Query:\n{query}\n\nDocuments (top {len(candidates)}):\n\n"
-                + "\n".join(doc_blocks)
-                + "\n"
-                + instruction
-            )
-
         # Full document inclusion (multimodal capable). We build a list of parts.
         parts: list[Any] = [
             {
@@ -261,7 +267,7 @@ class LLMReranker:
                             content_added = True
                         except OSError:
                             pass
-                    elif suffix in {".png", ".jpg", ".jpeg"} and self.inline_images:
+                    elif suffix in {".png", ".jpg", ".jpeg"}:
                         try:
                             with file_path.open("rb") as f:
                                 b64 = base64.b64encode(f.read()).decode()

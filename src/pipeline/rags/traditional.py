@@ -134,7 +134,7 @@ class TraditionalRAG(BaseRAG):
 
         corpus_entries: list[tuple[str, Path, str]] = []
 
-        for doc_path in documents:
+        for doc_path in tqdm(documents, desc="Scanning documents", unit=" file"):
             if not doc_path.exists():
                 continue
 
@@ -273,7 +273,7 @@ class TraditionalRAG(BaseRAG):
 
         # Process new documents
         corpus_ids, texts = [], []
-        for doc_id, meta in unembedded:
+        for doc_id, meta in tqdm(unembedded, desc="Loading texts", unit=" doc"):
             text_path = self.corpuses_dir / meta["name"]
             try:
                 content = text_path.read_text(encoding="utf-8").strip()
@@ -289,7 +289,9 @@ class TraditionalRAG(BaseRAG):
 
         # Create embeddings in batches
         new_embeddings, new_ids = [], []
-        for i in tqdm(range(0, len(texts), self.batch_size)):
+        batch_iter = range(0, len(texts), self.batch_size)
+        batch_iter = tqdm(batch_iter, desc="Embedding batches", unit=" batch")
+        for i in batch_iter:
             batch_texts = texts[i : i + self.batch_size]
             batch_ids = corpus_ids[i : i + self.batch_size]
             try:
@@ -340,7 +342,11 @@ class TraditionalRAG(BaseRAG):
             return
 
         documents, corpus_ids = [], []
-        for doc_id, meta in metadata.items():
+        for doc_id, meta in tqdm(
+            metadata.items(),
+            desc="Tokenizing for BM25",
+            unit=" doc",
+        ):
             text_path = self.corpuses_dir / meta["name"]
             try:
                 text = text_path.read_text(encoding="utf-8")
@@ -468,7 +474,11 @@ class TraditionalRAG(BaseRAG):
 
         # Compute similarities
         results = []
-        for query_emb in query_embeddings:
+        for query_emb in tqdm(
+            query_embeddings,
+            desc="Vector retrieval",
+            unit=" query",
+        ):
             similarities = []
             for i, doc_emb in enumerate(doc_embeddings):
                 similarity = torch.cosine_similarity(
@@ -505,7 +515,7 @@ class TraditionalRAG(BaseRAG):
         metadata = self.metadata_manager.load_metadata()
         results = []
 
-        for query in queries:
+        for query in tqdm(queries, desc="BM25 retrieval", unit=" query"):
             tokens = self._tokenize_text(query)
             if not tokens:
                 results.append([])
@@ -540,7 +550,11 @@ class TraditionalRAG(BaseRAG):
         metadata = self.metadata_manager.load_metadata()
         combined_results = []
 
-        for vec_res, bm25_res in zip(vector_results, bm25_results, strict=True):
+        for vec_res, bm25_res in tqdm(
+            zip(vector_results, bm25_results, strict=True),
+            desc="Hybrid fusion",
+            unit=" query",
+        ):
             # Apply Reciprocal Rank Fusion
             doc_scores = {}
 
