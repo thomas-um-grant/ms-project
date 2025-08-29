@@ -6,10 +6,11 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{Dive into complex RAG pipelines - Combine strengths for relevant gains}
+\newcommand{\reporttitle}{A Hybrid Retrieval Framework for RAG: Combining Textual, Graph, and Multimodal Information via Reranking}
 % \newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
+\newcommand{\secondmarker}{Chiraag Lala}
 \newcommand{\degreetype}{Computing}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -37,26 +38,39 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-Basis for the project
-- Information Knowledge and Retrieval
-- Diversification of approaches for specific use cases
+Context:
 
-Project coverage
-- Dataset generation
-- Evaluation pipeline
-- RAG systems
+Retrieval-Augmented Generation (RAG) is crucial for grounding LLMs, but no single retrieval method (traditional, graph, or multimodal) excels in all scenarios.
+
+Problem:
+
+This fragmentation necessitates a way to combine the strengths of these disparate retrievers to improve overall retrieval quality. Furthermore, evaluating such systems is hampered by a lack of robust, domain-specific benchmarks.
+
+Our Contribution:
+
+This project introduces "MultiRAG," a modular framework that merges outputs from traditional, graph-based, and multimodal RAG pipelines using a final reranking step. We also propose and implement a novel methodology for generating large-scale, high-quality evaluation datasets for specialised domains.
+
+Methodology \& Results:
+
+We implemented all three RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance (e.g., by X\% in nDCG@10) compared to any single RAG approach.
+
+Conclusion:
+
+Our findings validate that a hybrid, reranking-based approach is a potent strategy for RAG optimization, and our dataset generation technique provides a valuable tool for future research.
+
 \end{abstract}
 
-\cleardoublepage
+% \cleardoublepage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section*{Acknowledgments}
-- Supervisor Nihir, and Chiraag
-- Sherpa team
+I would like to express my most sincere gratitude to my supervisor, Dr. Nihir Vedd, for his invaluable guidance and support throughout this research project. His deep expertise in natural language processing and retrieval systems and his insightful feedback were instrumental in shaping the direction of this work. His rigorous approach and challenging questions pushed me to refine my ideas and improve the quality of my research. This project would not have been possible without his supervision.
+
+I would like to also extend my sincere gratitude to a London-based technology firm for their generous in-kind support. Their provision of access to significant computational resources to generate a large-scale evaluation dataset was a cornerstone of this project's experimental validation and demonstration of academic datasets limitations.
 
 \clearpage{\pagestyle{empty}\cleardoublepage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
---- table of contents
+
 \fancyhead[RE,LO]{\sffamily {Table of Contents}}
 \tableofcontents 
 
