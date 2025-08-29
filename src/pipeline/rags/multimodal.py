@@ -296,7 +296,11 @@ class MultiModalRAG(BaseRAG):
         """
         # Use configured top_k if not provided
         if top_k is None:
-            top_k = self.top_k
+            top_k = self.top_k if self.top_k else 100
+
+        # Cap at 100 anyways
+        top_k = min(top_k, 100)
+
         # Convert single query to list for uniform processing
         query_texts = [queries] if isinstance(queries, str) else queries
 

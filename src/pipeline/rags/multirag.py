@@ -13,34 +13,36 @@ logger = logging.getLogger(__name__)
 class MultiRAG(BaseRAG):
     """Device-agnostic Multi RAG system."""
 
+    _EPS = 1e-12
+
     def __init__(
         self,
         name: str,
         data_dir: Path,
         configs: dict | None = None,
+        *,
+        disable_generation: bool = False,
     ):
+        super().__init__(name, data_dir, configs)
         # Extract configuration for each RAG component
         self.configs = configs or {}
         traditional_config = self.configs.get("traditional", {})
         multimodal_config = self.configs.get("multimodal", {})
-        # graph_config = self.configs.get("graph", {})
 
         # Instanciate Traditional RAG
         self.traditional_rag = TraditionalRAG(
-            name,
-            data_dir,
-            configs=traditional_config,
+            name=traditional_config.get("name", "traditional"),
+            data_dir=data_dir,
+            configs=traditional_config.get("configs", {}),
+            disable_generation=disable_generation,
         )
 
         # Instanciate Multimodal RAG
         self.multimodal_rag = MultiModalRAG(
-            name,
-            data_dir,
-            configs=multimodal_config,
+            name=multimodal_config.get("name", "multimodal"),
+            data_dir=data_dir,
+            configs=multimodal_config.get("configs", {}),
         )
-
-        # Instanciate Graph RAG
-        # self.graph_rag = GraphRAG(name, data_dir, configs=graph_config)
 
     async def extract(
         self,
@@ -50,7 +52,7 @@ class MultiRAG(BaseRAG):
         batch_size: int | None = None,
     ) -> None:
         """Extract relevant corpuses for retrieval."""
-        # Run in parallel
+        # Run sub-RAG extracts in parallel
         await asyncio.gather(
             self.traditional_rag.extract(
                 documents,
@@ -76,43 +78,74 @@ class MultiRAG(BaseRAG):
         queries: str | list[str],
         top_k: int | None = None,
     ) -> list[list[tuple[dict, float]]]:
-        # Convert single query to list for uniform processing
         query_texts = [queries] if isinstance(queries, str) else queries
+        if not query_texts:
+            return []
+        buffer_k = min(top_k, 100) if top_k else 100
 
-        # Run in parallel
-        results = await asyncio.gather(
-            self.traditional_rag.retrieve(queries, top_k=top_k),
-            self.multimodal_rag.retrieve(queries, top_k=top_k),
+        trad_results, multi_results = await self._retrieve_subsystems(
+            query_texts,
+            buffer_k,
         )
 
-        # TODO: Routing -> Advantage a rag system based on the query type checked against templates
+        # Sub-RAGs perform their own reranking inside their retrieve() methods.
+        # So we can safely merge by scores here since the same embedding model is used in each sub-RAG.
+        merged = self._merge_results(query_texts, [trad_results, multi_results])
 
-        # TODO: Prune down irrelevant results (lower than 0.3 match)
-        # TODO: Remove duplicates across rags
-        all_results = []
-        existing_ids = set()
-        for sublist in results:
-            query_results = []
-            for metadata, score in sublist:
-                if score > 0.3 and metadata["name"] not in existing_ids:
-                    query_results.append((metadata, score))
-                    existing_ids.add(metadata["name"])
+        if top_k is not None:
+            return [res[:top_k] for res in merged]
+        return merged
 
-            all_results.append(query_results)
+    async def _retrieve_subsystems(
+        self,
+        query_texts: list[str],
+        buffer_k: int,
+    ) -> tuple[list[list[tuple[dict, float]]], list[list[tuple[dict, float]]]]:
+        """Retrieve from traditional & multimodal subsystems in parallel."""
+        trad, multi = await asyncio.gather(
+            self.traditional_rag.retrieve(query_texts, top_k=buffer_k),
+            self.multimodal_rag.retrieve(query_texts, top_k=buffer_k),
+        )
+        return trad, multi
 
-        # Rerank, use default if none found
-        try:
-            return await self.rerank(
-                queries=query_texts,
-                retrieved_corpuses=all_results,
-                method=self.reranker_method,
+    def _merge_results(
+        self,
+        query_texts: list[str],
+        systems_results: list[list[list[tuple[dict, float]]]],
+    ) -> list[list[tuple[dict, float]]]:
+        """Merge results keeping max score for duplicate corpus-ids and provenance."""
+        merged_all: list[list[tuple[dict, float]]] = []
+        num_queries = len(query_texts)
+        for qi in range(num_queries):
+            accumulator: dict[str, tuple[dict, float]] = {}
+            for sys_idx, sys_results in enumerate(systems_results):
+                source_label = "traditional" if sys_idx == 0 else "multimodal"
+                query_list = sys_results[qi] if qi < len(sys_results) else []
+                for metadata, score in query_list:
+                    corpus_id = metadata.get("corpus-id")
+                    doc_id = metadata.get("doc-id", "")
+                    cid = f"{corpus_id}{f'_{doc_id}' if doc_id else ''}"
+                    if not cid:
+                        continue
+
+                    metadata.setdefault("source_rag", source_label)
+                    if cid in accumulator:
+                        if score > accumulator[cid][1]:
+                            accumulator[cid] = (metadata, score)
+                    else:
+                        # Warning, should never get in here
+                        logger.warning("Unexpected document ID format: %s", metadata)
+                        if "corpus-id" not in metadata:
+                            metadata["corpus-id"] = metadata.get("name", "")
+                        accumulator[cid] = (metadata, score)
+
+            merged_sorted = sorted(
+                accumulator.values(),
+                key=lambda x: x[1],
+                reverse=True,
             )
-        except Exception:  # pragma: no cover - fail open
-            logger.exception(
-                "Automatic rerank failed; returning raw retrieval results",
-            )
-
-        return all_results[:top_k]
+            merged_all.append(merged_sorted)
+        return merged_all
 
     async def answer(
         self,
@@ -130,15 +163,23 @@ class MultiRAG(BaseRAG):
         # Generate answers from the retrieved results
         context: list[Any] = []
         for metadata, _ in results[0]:
-            if metadata.get("name", "").endswith((".txt", ".md")):
+            # Use 'corpus-id' for consistent file access
+            doc_id = metadata.get("corpus-id", metadata.get("name", ""))
+            if not doc_id:
+                logger.warning(
+                    "Document metadata missing 'corpus-id' and 'name'. Skipping context generation for this document.",
+                )
+                continue
+
+            if doc_id.endswith((".txt", ".md")):
                 item_type = "text"
-            elif metadata.get("name", "").endswith((".jpg", ".jpeg", ".png")):
+            elif doc_id.endswith((".jpg", ".jpeg", ".png")):
                 item_type = "image"
             else:
                 item_type = "unknown"
 
             if item_type == "text":
-                text_path = self.traditional_rag.corpuses_dir / metadata["name"]
+                text_path = self.traditional_rag.corpuses_dir / doc_id
                 try:
                     context_chunks = []
                     context_chunks.append(text_path.read_text(encoding="utf-8"))
@@ -159,7 +200,7 @@ class MultiRAG(BaseRAG):
                     {
                         "type": "image",
                         "image": str(
-                            self.multimodal_rag.corpuses_dir / metadata["name"],
+                            self.multimodal_rag.corpuses_dir / doc_id,
                         ),
                     },
                 )

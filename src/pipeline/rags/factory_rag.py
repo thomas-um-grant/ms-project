@@ -4,6 +4,7 @@ from typing import ClassVar
 from pipeline.rags.base_rag import BaseRAG
 from pipeline.rags.graph import GraphRAG
 from pipeline.rags.multimodal import MultiModalRAG
+from pipeline.rags.multirag import MultiRAG
 from pipeline.rags.traditional import TraditionalRAG
 
 
@@ -14,6 +15,7 @@ class RAGFactory:
         "traditional": TraditionalRAG,
         "multimodal": MultiModalRAG,
         "graph": GraphRAG,
+        "multi": MultiRAG,
     }
 
     @classmethod

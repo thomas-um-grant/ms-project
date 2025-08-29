@@ -43,21 +43,23 @@ class JinaReranker:
         Initialize the Jina reranker.
 
         Args:
-            corpus_dir: Directory containing the corpus documents
-            device_config: Device configuration
-            embedding_model: Pre-initialized Jina embedding model (optional)
-            embeddings_cache_file: Filename for cached corpus embeddings
-            embeddings_ids_cache_file: Filename for cached corpus IDs
+            corpus_dir: Directory containing the corpus documents.
+            device_config: Device configuration.
+            embedding_model: Pre-initialized Jina embedding model (optional).
+            embeddings_cache_file: Filename for cached corpus embeddings.
+            embeddings_ids_cache_file: Filename for cached corpus IDs.
+            cache_dir: Directory for embedding cache (default: <corpus_parent>/reranker/jina).
 
         """
         self.corpus_dir = Path(corpus_dir)
         self.device_config = device_config
 
         # Initialize embedding model
-        if embedding_model is None:
-            self.embedding_model = JinaV4Model(device_config=device_config)
-        else:
-            self.embedding_model = embedding_model
+        self.embedding_model = (
+            embedding_model
+            if embedding_model is not None
+            else JinaV4Model(device_config=device_config)
+        )
 
         # Cache directory (default: <dataset_root>/reranker/jina)
         if cache_dir is None:
@@ -393,10 +395,12 @@ class JinaReranker:
             candidate_scores = []
             for metadata, _original_score in candidates:
                 corpus_id = metadata.get("corpus-id", "")
+                doc_id = metadata.get("doc-id", "")
+                cid = f"{corpus_id}{f'_{doc_id}' if doc_id else ''}"
 
                 # Find this document's embedding
-                if corpus_id in self._corpus_ids:
-                    idx = self._corpus_ids.index(corpus_id)
+                if cid in self._corpus_ids:
+                    idx = self._corpus_ids.index(cid)
                     corpus_emb = self._corpus_embeddings[idx]
                     q = query_emb / (query_emb.norm(p=2) + 1e-9)
                     d = corpus_emb / (corpus_emb.norm(p=2) + 1e-9)
@@ -405,7 +409,7 @@ class JinaReranker:
                 else:
                     logger.debug(
                         "JinaReranker: corpus id %s missing in embedding cache",
-                        corpus_id,
+                        cid,
                     )
                     candidate_scores.append((metadata, _original_score))
 

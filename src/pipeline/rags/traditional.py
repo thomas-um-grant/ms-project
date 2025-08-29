@@ -393,7 +393,11 @@ class TraditionalRAG(BaseRAG):
     ) -> list[list[tuple[dict, float]]]:
         """Retrieve documents using the specified method."""
         if top_k is None:
-            top_k = self.top_k
+            top_k = self.top_k if self.top_k else 100
+
+        # Cap at 100 anyways
+        top_k = min(top_k, 100)
+
         if method is None:
             method = self.retrieval_method
 

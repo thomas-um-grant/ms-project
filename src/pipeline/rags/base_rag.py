@@ -38,11 +38,16 @@ class BaseRAG(ABC):
         *,
         disable_generation: bool = False,
     ):
+        self.name = name
+
+        # If multirag used, bypass the setup as sub rag systems are instanciated
+        if "multi" in configs.get("type", ""):
+            return
+
         # Load defaults for fallback values
         defaults = self._load_defaults()
         processing_defaults = defaults["processing"]
 
-        self.name = name
         knowledge_base = configs.get("knowledge_base", "default")
         for prefix in ["vidore/", "sherpa/"]:
             knowledge_base = knowledge_base.removeprefix(prefix)
@@ -246,10 +251,38 @@ class BaseRAG(ABC):
         queries: str | list[str],
         retrieved_corpuses: list[list[tuple[dict, float]]],
     ) -> list[list[tuple[dict, float]]]:
-        """Rerank using LLM-based scoring."""
-        # TODO: Implement LLM-based reranking
-        logger.info("LLM reranking not yet implemented, returning original ranking")
-        return retrieved_corpuses
+        """
+        Rerank using a Gemini LLM-based scoring model.
+
+        Uses `pipeline.rerankers.LLMReranker` which calls Gemini to obtain a
+        JSON ranking for up to the top 20 (default) items per query. Falls back
+        to original ordering on any error.
+        """
+        try:
+            from pipeline.rerankers import LLMReranker, LLMRerankerFactory
+        except ImportError:  # pragma: no cover
+            logger.warning("LLM reranker package not available")
+            return retrieved_corpuses
+
+        # Lazy init (single instance per BaseRAG)
+        if not hasattr(self, "_llm_reranker"):
+            # Allow future config injection via self.config.get('llm_reranker', {})
+            llm_conf = (
+                self.config.get("llm_reranker", {}) if hasattr(self, "config") else {}
+            )
+            try:
+                self._llm_reranker: LLMReranker = LLMRerankerFactory.create_reranker(
+                    **llm_conf,
+                )
+            except Exception as exc:  # pragma: no cover - fail open
+                logger.warning("Failed to initialize LLM reranker: %s", exc)
+                return retrieved_corpuses
+
+        try:
+            return await self._llm_reranker.rerank(queries, retrieved_corpuses)
+        except Exception:  # pragma: no cover - fail open
+            logger.exception("LLM reranking failed; returning original ranking")
+            return retrieved_corpuses
 
     async def ensure_jina_reranker_embeddings(self) -> None:
         """
