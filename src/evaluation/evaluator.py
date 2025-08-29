@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
+import os
 from collections import defaultdict
 from pathlib import Path
 
@@ -171,21 +173,48 @@ class Evaluator:
         # Ensure the checkpoint directory exists
         checkpoint_file.parent.mkdir(parents=True, exist_ok=True)
 
-        # Try to load existing checkpoint
+        # Try to load existing checkpoint with small backoff to tolerate GDrive races
         start_index = 0
         if checkpoint_file.exists():
-            try:
-                with checkpoint_file.open() as f:
-                    checkpoint_data = json.load(f)
+            retries = 3
+            for attempt in range(1, retries + 1):
+                try:
+                    with checkpoint_file.open("r", encoding="utf-8") as f:
+                        checkpoint_data = json.load(f)
                     all_results = checkpoint_data.get("results", {})
                     start_index = checkpoint_data.get("last_processed_index", 0)
-                    logger.info(f"Resuming from checkpoint at index {start_index}")
-            except (json.JSONDecodeError, KeyError) as e:  # pragma: no cover
-                logger.warning(
-                    f"Could not load checkpoint: {e}. Starting from beginning.",
-                )
-                all_results = {}
-                start_index = 0
+                    logger.info(
+                        "Resuming from checkpoint at index %d (attempt %d)",
+                        start_index,
+                        attempt,
+                    )
+                    break
+                except (PermissionError, OSError) as e:  # pragma: no cover
+                    if attempt == retries:
+                        logger.warning(
+                            "Permission/OSError reading checkpoint after %d attempts: %s. Starting fresh.",
+                            attempt,
+                            e,
+                        )
+                    else:
+                        sleep_s = 0.3 * attempt
+                        logger.debug(
+                            "Transient read issue (%s). Retrying in %.2fs (attempt %d/%d)",
+                            e,
+                            sleep_s,
+                            attempt,
+                            retries,
+                        )
+                        await asyncio.sleep(sleep_s)
+                        continue
+                except (json.JSONDecodeError, KeyError) as e:  # pragma: no cover
+                    logger.warning(
+                        "Corrupt checkpoint (%s). Starting from beginning.",
+                        e,
+                    )
+                    all_results = {}
+                    start_index = 0
+                    break
 
         for i in range(start_index, len(queries), batch_size):
             batch_queries = queries[i : i + batch_size]
@@ -205,8 +234,23 @@ class Evaluator:
                 "total_queries": len(queries),
                 "batch_size": batch_size,
             }
-            with checkpoint_file.open("w") as f:
-                json.dump(checkpoint_data, f, default=str)
+            # Atomic write: write to temp then replace
+            tmp_path = checkpoint_file.with_suffix(checkpoint_file.suffix + ".tmp")
+            try:
+                with tmp_path.open("w", encoding="utf-8") as f:
+                    json.dump(checkpoint_data, f, default=str)
+                # os.replace is atomic on POSIX; tolerates existing target
+                os.replace(tmp_path, checkpoint_file)
+            except (PermissionError, OSError) as e:  # pragma: no cover
+                logger.warning(
+                    "Could not atomically write checkpoint (%s). Will retry next batch.",
+                    e,
+                )
+                if tmp_path.exists():  # cleanup partial
+                    try:
+                        tmp_path.unlink()
+                    except OSError:
+                        pass
             logger.info(
                 f"Processed batch {(i // batch_size) + 1}/{(len(queries) + batch_size - 1) // batch_size}, saved checkpoint",
             )
