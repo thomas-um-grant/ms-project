@@ -1,6 +1,6 @@
 # Report
 
-## Title - "A Hybrid Retrieval Framework for RAG: Combining Textual, Graph, and Multimodal Information via Reranking"
+## Title - "A Hybrid Retrieval Framework for RAG: Combining Textual, and Multimodal Information via Reranking"
 
 ## Abstract
 
@@ -14,11 +14,11 @@ This fragmentation necessitates a way to combine the strengths of these disparat
 
 Our Contribution:
 
-This project introduces "MultiRAG," a modular framework that merges outputs from traditional, graph-based, and multimodal RAG pipelines using a final reranking step. We also propose and implement a novel methodology for generating large-scale, high-quality evaluation datasets for specialised domains.
+This project introduces "MultiRAG," a modular framework that merges outputs from traditional, and multimodal RAG pipelines using a final reranking step. We also propose and implement a novel methodology for generating large-scale, high-quality evaluation datasets for specialised domains.
 
 Methodology & Results:
 
-We implemented all three RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance (e.g., by X% in nDCG@10) compared to any single RAG approach.
+We implemented original RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance (e.g., by X% in nDCG@10) compared to any single RAG approach.
 
 Conclusion:
 
@@ -205,7 +205,7 @@ Explain the philosophy: leverage specialist retrievers and use a reranker as an 
 
 #### Traditional RAG Pipeline:
 
-Detail your choices. (e.g., "Text was extracted using PyMuPDF, chunked semantically using a sentence-transformer model, embedded with bge-large-en-v1.5, and indexed in a FAISS vector store.")
+Detail the choices. (e.g., "Text was extracted using PyMuPDF, chunked semantically using a sentence-transformer model, embedded with bge-large-en-v1.5, and indexed in a FAISS vector store.")
 
 #### In-Depth techniques -> Enhancement possible - TODO Nihir: Should this go in future work?
 
@@ -218,25 +218,25 @@ Detail your choices. (e.g., "Text was extracted using PyMuPDF, chunked semantica
 
 #### Graph RAG Pipeline:
 
-Explain how you constructed the graph. (e.g., "Entities and relationships were extracted using OpenAI's GPT-4 with a specific prompt structure. The graph was built using NetworkX and community detection was performed using the Leiden algorithm, similar to the original GraphRAG paper.")
+talk about graph. (e.g., "Entities and relationships were extracted using OpenAI's GPT-4 with a specific prompt structure. The graph was built using NetworkX and community detection was performed using the Leiden algorithm, similar to the original GraphRAG paper.")
 
 #### Multimodal RAG Pipeline:
 
-Detail your approach. (e.g., "We implemented a multimodal pipeline based on the ColPali principle, directly encoding document page images using PaliGemma-3b to create multi-vector embeddings...")
+Detail the approach. (e.g., "We implemented a multimodal pipeline based on the ColPali principle, directly encoding document page images using PaliGemma-3b to create multi-vector embeddings...")
 
 ### The Fusion Strategy: Multi-Retrieval Reranking:
 
-This is a core part of your novelty. Explain the algorithm precisely.
+This is a core part of the novelty. Explain the algorithm precisely.
 
-How do you gather the chunks from the 3 pipelines? (e.g., "We retrieve the top-k=20 chunks from each pipeline.")
+How did I gather the chunks from the 3 pipelines? (e.g., "We retrieve the top-k=20 chunks from each pipeline.")
 
-How do you handle duplicates?
+How do I handle duplicates?
 
 How are the candidates reranked? (e.g., "The combined set of up to 60 chunks is then passed to a bge-reranker-large cross-encoder, and the final top-k=5 chunks are selected.")
 
 ### Evaluation Dataset Generation Methodology:
 
-This is your second major contribution. Detail it like a scientific recipe.
+This is the second major contribution. Detail it like a scientific recipe.
 
 #### Corpus Selection:
 
@@ -260,20 +260,20 @@ The large-scale 'Consulting' dataset was generated following the methodology det
 
 ### Use Case: An Interactive Demonstration & Analysis Platform
 
-This title frames the app not just as a demo, but as a tool you used for your own analysis, which strengthens its academic relevance.
+This title frames the app not just as a demo, but as a tool used for the own analysis, which strengthens its academic relevance.
 
 How to Structure the Section
-Break down the description into four key parts: Purpose, Architecture, Features, and its Role in your Research.
+Break down the description into four key parts: Purpose, Architecture, Features, and its Role in the Research.
 
 #### Purpose and Objectives
 
-Start by explaining why you built the application. What was its goal in the context of your Master's project?
+Start by explaining why building the application. What was its goal in the context of the Master's project?
 
 To Provide a Tangible Demonstration: State that the primary objective was to create an interactive interface to demonstrate the end-to-end functionality of the implemented RAG systems.
 
 To Enable Comparative Analysis: A key goal was to allow for a direct, side-by-side comparison of the outputs from the Traditional, Graph, Multimodal, and the proposed MultiRAG systems for any given query. This visual comparison is much more powerful than looking at metrics tables alone.
 
-To Facilitate Qualitative Evaluation: The application served as a crucial tool for your own research, allowing you to perform qualitative error analysis and identify specific examples where one system excelled or failed, which you can then discuss in your "Results" section.
+To Facilitate Qualitative Evaluation: The application served as a crucial tool for the research, allowing to perform qualitative error analysis and identify specific examples where one system excelled or failed, which can then discuss in the "Results" section.
 
 Example Text:
 
@@ -281,7 +281,7 @@ Example Text:
 
 #### System Architecture
 
-This is where you detail the technical stack. A simple architecture diagram is highly recommended here and will score you a lot of points.
+This is where to detail the technical stack. A simple architecture diagram TODO.
 
 Diagram: Create a simple block diagram with three columns: Frontend, Backend (API Server), and RAG Services.
 
@@ -291,27 +291,27 @@ Frontend: Describe the technology and its purpose.
 
 Stack: (e.g., React, Next.js, TypeScript, Tailwind CSS)
 
-Why you chose it: "The frontend was built using Next.js (a React framework) and TypeScript. This stack was chosen for its ability to create a fast, responsive, and type-safe user interface, ideal for presenting complex information like source chunks and generated text in a clear, component-based manner."
+Why chose it: "The frontend was built using Next.js (a React framework) and TypeScript. This stack was chosen for its ability to create a fast, responsive, and type-safe user interface, ideal for presenting complex information like source chunks and generated text in a clear, component-based manner."
 
-Backend (API Server): This is the intermediary between the user interface and your Python RAG logic.
+Backend (API Server): This is the intermediary between the user interface and Python RAG logic.
 
 Stack: (e.g., Python with FastAPI or Flask)
 
-Why you chose it: "A backend API server was developed using FastAPI in Python. FastAPI was selected for its high performance, asynchronous capabilities (essential for handling potentially long-running RAG queries without blocking), and its automatic generation of interactive API documentation (Swagger UI), which aided in development and debugging."
+Why chose it: "A backend API server was developed using FastAPI in Python. FastAPI was selected for its high performance, asynchronous capabilities (essential for handling potentially long-running RAG queries without blocking), and its automatic generation of interactive API documentation (Swagger UI), which aided in development and debugging."
 
-RAG Services: This is your core research code.
+RAG Services: This is the core research code.
 
 How it's integrated: "The backend server wraps the core RAG logic. Each of the four RAG systems (Traditional, Graph, Multimodal, MultiRAG) was exposed via a distinct API endpoint. When a request is received from the frontend, the backend invokes the selected RAG pipeline, which performs the retrieval and generation, and then returns the final answer along with source metadata as a JSON object."
 
 #### Key Features and User Workflow
 
-Describe how a user interacts with your application. This is the perfect place to include screenshots.
+Describe how a user interacts with the application. This is the perfect place to include screenshots.
 
 Corpus Selection: "The user begins by selecting a document from a pre-loaded corpus based on our generated 'Consulting' dataset." (Add a screenshot of this interface).
 
 Query Interface: "The user then inputs their question into a text field and can select which RAG systems to run in parallel using a set of checkboxes: 'Traditional', 'Graph', 'Multimodal', and 'MultiRAG'."
 
-Results Display: "Upon submission, the application presents the results in a side-by-side comparison view." This is your money shot. Describe what is shown for each result:
+Results Display: "Upon submission, the application presents the results in a side-by-side comparison view." Describe what is shown for each result:
 
 Generated Answer: The final text generated by the LLM.
 
@@ -325,7 +325,7 @@ Visual Context: "Crucially, for the Multimodal and Traditional systems, the appl
 
 #### Role in the Research Project
 
-Finally, explicitly link the app back to your thesis.
+Finally, explicitly link the app back to the thesis.
 
 "Beyond being a demonstration tool, the application was instrumental in the research process. It was used extensively during the qualitative analysis phase to identify the strengths and weaknesses of each approach. For instance, the ability to visually compare the retrieved chunks for a multi-hop query immediately highlighted the superiority of the Graph RAG pipeline in that context. The specific examples used in the 'Discussion' section of this report were sourced directly through interaction with this platform."
 
@@ -339,9 +339,9 @@ Finally, explicitly link the app back to your thesis.
 
 ### Experimental Setup:
 
-Datasets: Describe your generated "Consulting" dataset (size, #QA pairs, types of questions) and any standard benchmarks used for comparison (e.g., "To validate our dataset's robustness, we also report performance on a subset of the DocVQA benchmark").
+Datasets: Describe the generated "Consulting" dataset (size, #QA pairs, types of questions) and any standard benchmarks used for comparison (e.g., "To validate our dataset's robustness, we also report performance on a subset of the DocVQA benchmark").
 
-Metrics: Define your evaluation metrics clearly. For retrieval: nDCG@k, Mean Reciprocal Rank (MRR). For generation: ROUGE-L, BERTScore, and perhaps a Factuality Score using an LLM judge.
+Metrics: Define the evaluation metrics clearly. For retrieval: nDCG@k, Mean Reciprocal Rank (MRR). For generation: ROUGE-L, BERTScore, and perhaps a Factuality Score using an LLM judge.
 
 Baselines: State clearly: "We compare our MultiRAG system against three baselines: our standalone implementations of Traditional RAG, Graph RAG, and Multimodal RAG."
 
@@ -365,11 +365,11 @@ Baselines: State clearly: "We compare our MultiRAG system against three baseline
 
 ### Results:
 
-Ablation Study: Individual RAG Performance: Present a table showing the performance of each of the 3 individual pipelines on your dataset. This is essential to show that different RAGs excel at different question types, justifying your hybrid approach.
+Ablation Study: Individual RAG Performance: Present a table showing the performance of each of the 3 individual pipelines on the dataset. This is essential to show that different RAGs excel at different question types, justifying the hybrid approach.
 
-Main Result: MultiRAG Performance: Present the key results table comparing MultiRAG against the three baselines. This table should be the centerpiece of your evaluation. Use bold to highlight the winning scores.
+Main Result: MultiRAG Performance: Present the key results table comparing MultiRAG against the three baselines. This table should be the centerpiece of the evaluation. Use bold to highlight the winning scores.
 
-Dataset Quality Analysis: If you benchmarked your dataset generation process itself, present those results here.
+Dataset Quality Analysis: If I benchmarked the dataset generation process itself, present those results here.
 
 ### Discussion and Error Analysis:
 
@@ -381,7 +381,7 @@ Discuss the limitations. When does MultiRAG fail? (e.g., "When all three retriev
 
 Conclusion:
 
-Briefly restate the problem, your solution (MultiRAG + dataset methodology), and summarize your main finding (e.g., "Our results confirm that combining retriever strengths through reranking provides a statistically significant improvement in retrieval quality...").
+Briefly restate the problem, the solution (MultiRAG + dataset methodology), and summarize the main finding (e.g., "Our results confirm that combining retriever strengths through reranking provides a statistically significant improvement in retrieval quality...").
 
 Limitations:
 
