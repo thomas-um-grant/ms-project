@@ -40,16 +40,24 @@ class BaseRAG(ABC):
     ):
         self.name = name
 
-        # If multirag used, bypass the setup as sub rag systems are instanciated
         if "multi" in configs.get("type", ""):
+            # Mark and exit early; children will perform their own setup.
+            self.is_multi_parent = True
+            logger.debug(
+                "Skipping BaseRAG storage/model setup for multi parent (type=%s, skip_storage=%s)",
+                rag_type,
+                skip_storage_flag,
+            )
             return
+
+        self.is_multi_parent = False
 
         # Load defaults for fallback values
         defaults = self._load_defaults()
         processing_defaults = defaults["processing"]
 
         knowledge_base = configs.get("knowledge_base", "default")
-        for prefix in ["vidore/", "sherpa/"]:
+        for prefix in ["vidore/", "sherpa/", "beir/"]:
             knowledge_base = knowledge_base.removeprefix(prefix)
         self.knowledge_base = knowledge_base
 
@@ -221,29 +229,41 @@ class BaseRAG(ABC):
     ) -> list[list[tuple[dict, float]]]:
         """Rerank using Jina embeddings."""
         try:
+            from pipeline.models.embedding_models import JinaV4Model
             from pipeline.rerankers import JinaRerankerFactory
-
-            # Create reranker if not exists
-            if not hasattr(self, "_jina_reranker"):
-                self._jina_reranker = JinaRerankerFactory.create_reranker(
-                    rag_type=self.name.split("_")[0],  # Extract RAG type from name
-                    corpus_dir=self.corpuses_dir,
-                    device_config=self.device_config,
-                )
-                # Only auto-precompute inside retrieve/answer if cache already exists; else skip.
-                if not self._jina_reranker._load_cached_embeddings():  # noqa: SLF001
-                    logger.warning(
-                        "Jina reranker cache missing; skipping rerank (run prepare to precompute).",
-                    )
-                    return retrieved_corpuses
-
-            return await self._jina_reranker.rerank(queries, retrieved_corpuses)
-
-        except ImportError:
-            logger.warning("Jina reranker not available, returning original ranking")
+        except ImportError:  # pragma: no cover
+            logger.warning("Jina reranker not available; skipping rerank")
             return retrieved_corpuses
-        except Exception as e:
-            logger.error(f"Error in Jina reranking: {e}")
+
+        # Only proceed if the retrieval embedding model itself is Jina
+        if not isinstance(getattr(self, "embedding_model", None), JinaV4Model):
+            logger.debug(
+                "Rerank method 'jina' requested but current embedding model is not Jina; bypassing.",
+            )
+            return retrieved_corpuses
+
+        if not hasattr(self, "_jina_reranker"):
+            self._jina_reranker = JinaRerankerFactory.create_reranker(
+                embeddings_path=self.embeddings_path,
+                embeddings_ids_path=self.embeddings_ids_path,
+                device_config=self.device_config,
+                embedding_model=self.embedding_model,  # reuse instance to save memory
+            )
+
+        # Guard: ensure embeddings exist; if not, bypass silently
+        if not self._jina_reranker.load_store_embeddings():
+            logger.warning(
+                "Jina store embeddings missing; skipping rerank (indexing with Jina required).",
+            )
+            return retrieved_corpuses
+
+        try:
+            return await self._jina_reranker.rerank(queries, retrieved_corpuses)
+        except Exception as exc:  # pragma: no cover - fail open
+            logger.exception(
+                "Jina reranking failed; returning original results: %s",
+                exc,
+            )
             return retrieved_corpuses
 
     async def _rerank_with_llm(
@@ -286,30 +306,26 @@ class BaseRAG(ABC):
 
     async def ensure_jina_reranker_embeddings(self) -> None:
         """
-        Precompute Jina reranker embeddings if configured and not present.
+        Compatibility no-op: reranker now directly reuses retrieval embeddings.
 
-        Called by preparation scripts to guarantee embeddings exist before evaluation.
+        Kept for external callers; will lazily validate presence of store embeddings
+        and initialize reranker instance if possible.
         """
         try:
+            from pipeline.models.embedding_models import JinaV4Model
             from pipeline.rerankers import JinaRerankerFactory
         except ImportError:  # pragma: no cover
-            logger.warning("Jina reranker factory not available")
             return
 
-        # If RAG type is MultiRAG, then always use Jina Multimodal Embeddings for reranking
-        if self.name.startswith("multi"):
-            rag_type = "multimodal"
-            corpus_dir = self.multimodal_rag.corpuses_dir
-        else:
-            rag_type = self.name.split("_")[0]
-            corpus_dir = self.corpuses_dir
+        if not isinstance(getattr(self, "embedding_model", None), JinaV4Model):
+            return
 
         if not hasattr(self, "_jina_reranker"):
             self._jina_reranker = JinaRerankerFactory.create_reranker(
-                rag_type=rag_type,
-                corpus_dir=corpus_dir,
+                embeddings_path=self.embeddings_path,
+                embeddings_ids_path=self.embeddings_ids_path,
                 device_config=self.device_config,
+                embedding_model=self.embedding_model,
             )
-        # If load fails or IDs mismatch -> recompute
-        metadata = self.metadata_manager.load_metadata()
-        await self._jina_reranker.precompute_corpus_embeddings(metadata)
+        # Attempt a load (no error if missing); this primes internal index map.
+        self._jina_reranker.load_store_embeddings()

@@ -109,7 +109,9 @@ async def _run_evaluation(
     with rag_configs_path.open("r") as f:
         rag_configs = json.load(f)
 
-    metrics_file = Path(__file__).parent / "results" / "metrics.json"
+    metrics_file = (
+        Path(__file__).parent / "results" / f"metrics_{rag_configs['name']}.json"
+    )
     metrics_file.parent.mkdir(parents=True, exist_ok=True)
 
     try:

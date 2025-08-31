@@ -5,8 +5,7 @@
     "embedding_model": "nomic_hf_embed",
     "generation_model": "llama_text_gen",
     "preferred_device": "mps",
-    "knowledge_base": "vidore/arxivqa_test_subsampled_beir",
-    "retrieval_method": "hybrid",
-    "reranker": "jina"
+    "knowledge_base": "beir/nfcorpus/dataset_texts",
+    "retrieval_method": "hybrid"
   }
 }
