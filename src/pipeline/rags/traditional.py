@@ -83,10 +83,9 @@ class TraditionalRAG(BaseRAG):
 
         # Log embedding file selection (BaseRAG already decided paths)
         logger.info(
-            "TraditionalRAG embedding storage -> %s / %s (legacy=%s)",
+            "TraditionalRAG embedding storage -> %s / %s",
             self.embeddings_path.name,
             self.embeddings_ids_path.name,
-            getattr(self, "using_legacy_embedding_files", False),
         )
 
     def _setup_bm25_resources(self) -> None:
@@ -256,7 +255,7 @@ class TraditionalRAG(BaseRAG):
 
     async def _index_vectors(self) -> None:
         """Create vector embeddings for all documents."""
-        print("Building vector index...")
+        logger.debug("Building vector index...")
         # Get unembedded documents for this embedding model
         unembedded = self.metadata_manager.get_unembedded_documents(
             self.embedding_model_tag,
@@ -334,7 +333,7 @@ class TraditionalRAG(BaseRAG):
 
     async def _index_bm25(self) -> None:
         """Create BM25 index from text documents."""
-        print("Building BM25 index...")
+        logger.debug("Building BM25 index...")
 
         metadata = self.metadata_manager.load_metadata()
         if not metadata:

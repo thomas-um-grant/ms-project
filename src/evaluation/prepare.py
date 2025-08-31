@@ -134,13 +134,13 @@ async def main():
     if torch.cuda.is_available():
         torch.cuda.empty_cache()
 
-    # If configuration specifies Jina reranker, precompute embeddings now
+    # If configuration specifies Jina reranker, attempt to load dedicated reranker embeddings
     try:
         reranker_method = rag_configs.get("configs", {}).get("reranker")
         if reranker_method == "jina":
-            print("Preparing Jina reranker embeddings (if not cached)...")
+            print("Priming Jina reranker embedding store (no build)...")
             await evaluation_rag.ensure_jina_reranker_embeddings()
-            print("Jina reranker embeddings ready.")
+            print("Jina reranker embedding store primed (or skipped).")
     except AttributeError:
         pass
     print("Indexing completed!")

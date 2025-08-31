@@ -41,12 +41,11 @@ class BaseRAG(ABC):
         self.name = name
 
         if "multi" in configs.get("type", ""):
-            # Mark and exit early; children will perform their own setup.
+            # Mark and exit early; children will perform their own setup (MultiRAG orchestrates sub-systems).
             self.is_multi_parent = True
             logger.debug(
-                "Skipping BaseRAG storage/model setup for multi parent (type=%s, skip_storage=%s)",
-                rag_type,
-                skip_storage_flag,
+                "Skipping BaseRAG storage/model setup for multi parent (type=%s)",
+                configs.get("type"),
             )
             return
 
@@ -77,40 +76,18 @@ class BaseRAG(ABC):
         # Determine embedding model tag
         self.embedding_model_tag = configs.get("embedding_model", "unknown")
 
-        # New suffixed file names
-        suffixed_embeddings_file = f"embeddings_{self.embedding_model_tag}.pt"
-        suffixed_ids_file = f"embeddings_ids_{self.embedding_model_tag}.jsonl"
-
-        new_embeddings_path = self.store_dir / suffixed_embeddings_file
-        new_embeddings_ids_path = self.store_dir / suffixed_ids_file
-
-        legacy_embeddings_path = self.store_dir / "embeddings.pt"
-        legacy_ids_path = self.store_dir / "embeddings_ids.jsonl"
-
-        # Backward compatibility: if legacy files exist and no suffixed files yet,
-        # reuse legacy paths so we don't duplicate or orphan existing data.
-        if (
-            legacy_embeddings_path.exists()
-            and legacy_ids_path.exists()
-            and not new_embeddings_path.exists()
-            and not new_embeddings_ids_path.exists()
-        ):
-            self.embeddings_path = legacy_embeddings_path
-            self.embeddings_ids_path = legacy_ids_path
-            self.using_legacy_embedding_files = True  # diagnostic flag
-            logger.info(
-                "Using legacy embedding files (no suffixed files present) for model tag '%s'",
-                self.embedding_model_tag,
-            )
-        else:
-            self.embeddings_path = new_embeddings_path
-            self.embeddings_ids_path = new_embeddings_ids_path
-            self.using_legacy_embedding_files = False
-            logger.info(
-                "Embedding files set to suffixed variants: %s / %s",
-                self.embeddings_path.name,
-                self.embeddings_ids_path.name,
-            )
+        # Embedding storage
+        self.embeddings_path = (
+            self.store_dir / f"embeddings_{self.embedding_model_tag}.pt"
+        )
+        self.embeddings_ids_path = (
+            self.store_dir / f"embeddings_ids_{self.embedding_model_tag}.jsonl"
+        )
+        logger.info(
+            "Embedding files: %s / %s",
+            self.embeddings_path.name,
+            self.embeddings_ids_path.name,
+        )
 
         # Setup models (optionally disable generation model to save memory during pure retrieval workflows)
         self.embedding_model = setup_embedding_model(
@@ -128,10 +105,9 @@ class BaseRAG(ABC):
                     configs.get("generation_model"),
                     device_config=self.device_config,
                 )
-            except Exception as exc:  # pragma: no cover - defensive
-                logger.error(
-                    "Failed to initialize generation model (%s); continuing without it.",
-                    exc,
+            except Exception:  # pragma: no cover - defensive fallback
+                logger.exception(
+                    "Failed to initialize generation model; continuing without it.",
                 )
                 self.generation_disabled = True
         else:
@@ -154,6 +130,19 @@ class BaseRAG(ABC):
             "auto_rerank",
             bool(self.reranker_method),
         )
+        # Jina reranker dedicated embeddings configuration (for cross-model rerank)
+        jina_reranker_cfg = configs.get("jina_reranker", {}) or {}
+        self.jina_reranker_tag: str = jina_reranker_cfg.get(
+            "embedding_model_tag",
+            "jina_embed",
+        )
+        self.jina_rerank_embeddings_path = (
+            self.store_dir / f"embeddings_{self.jina_reranker_tag}.pt"
+        )
+        self.jina_rerank_embeddings_ids_path = (
+            self.store_dir / f"embeddings_ids_{self.jina_reranker_tag}.jsonl"
+        )
+        self._jina_reranker_missing_logged = False
         if self.reranker_method and self.auto_rerank:
             logger.info(
                 "Auto-reranking enabled using method '%s'",
@@ -164,6 +153,22 @@ class BaseRAG(ABC):
                 "Reranker '%s' configured but auto_rerank disabled (manual rerank required)",
                 self.reranker_method,
             )
+
+        # If retrieval embedding model already Jina, skip separate Jina reranker (will no-op)
+        if self.reranker_method == "jina":  # runtime import guard
+            try:  # pragma: no cover
+                from pipeline.models.embedding_models import (
+                    JinaV4Model,  # type: ignore[attr-defined]
+                )
+
+                if isinstance(getattr(self, "embedding_model", None), JinaV4Model):
+                    logger.info(
+                        "Skipping external Jina reranker: retrieval embedding model is already Jina.",
+                    )
+                    # Disable automatic rerank to avoid redundant scoring
+                    self.auto_rerank = False
+            except ImportError:  # pragma: no cover
+                pass
 
         # Use configuration defaults with user overrides
         self.top_k = configs.get("top_k", processing_defaults["retrieval"]["top_k"])
@@ -235,34 +240,37 @@ class BaseRAG(ABC):
             logger.warning("Jina reranker not available; skipping rerank")
             return retrieved_corpuses
 
-        # Only proceed if the retrieval embedding model itself is Jina
-        if not isinstance(getattr(self, "embedding_model", None), JinaV4Model):
+        # If retrieval model already Jina, no external reranking needed
+        if isinstance(getattr(self, "embedding_model", None), JinaV4Model):
             logger.debug(
-                "Rerank method 'jina' requested but current embedding model is not Jina; bypassing.",
+                "Retrieval model is Jina; external Jina reranker bypassed.",
             )
             return retrieved_corpuses
 
+        # Lazy init dedicated reranker bound to Jina embedding store
         if not hasattr(self, "_jina_reranker"):
             self._jina_reranker = JinaRerankerFactory.create_reranker(
-                embeddings_path=self.embeddings_path,
-                embeddings_ids_path=self.embeddings_ids_path,
+                embeddings_path=self.jina_rerank_embeddings_path,
+                embeddings_ids_path=self.jina_rerank_embeddings_ids_path,
                 device_config=self.device_config,
-                embedding_model=self.embedding_model,  # reuse instance to save memory
+                embedding_model=None,  # let factory/model init its own Jina model
             )
 
-        # Guard: ensure embeddings exist; if not, bypass silently
+        # Ensure Jina reranker embeddings are available
         if not self._jina_reranker.load_store_embeddings():
-            logger.warning(
-                "Jina store embeddings missing; skipping rerank (indexing with Jina required).",
-            )
+            if not self._jina_reranker_missing_logged:
+                logger.warning(
+                    "Jina reranker embeddings missing (%s); skipping rerank.",
+                    self.jina_rerank_embeddings_path.name,
+                )
+                self._jina_reranker_missing_logged = True
             return retrieved_corpuses
 
         try:
             return await self._jina_reranker.rerank(queries, retrieved_corpuses)
-        except Exception as exc:  # pragma: no cover - fail open
+        except Exception:  # pragma: no cover - fail open
             logger.exception(
-                "Jina reranking failed; returning original results: %s",
-                exc,
+                "Jina reranking failed; returning original results",
             )
             return retrieved_corpuses
 
@@ -294,8 +302,8 @@ class BaseRAG(ABC):
                 self._llm_reranker: LLMReranker = LLMRerankerFactory.create_reranker(
                     **llm_conf,
                 )
-            except Exception as exc:  # pragma: no cover - fail open
-                logger.warning("Failed to initialize LLM reranker: %s", exc)
+            except Exception:  # pragma: no cover - fail open
+                logger.exception("Failed to initialize LLM reranker")
                 return retrieved_corpuses
 
         try:
@@ -306,26 +314,38 @@ class BaseRAG(ABC):
 
     async def ensure_jina_reranker_embeddings(self) -> None:
         """
-        Compatibility no-op: reranker now directly reuses retrieval embeddings.
+        Prime external Jina reranker by loading its dedicated embedding store.
 
-        Kept for external callers; will lazily validate presence of store embeddings
-        and initialize reranker instance if possible.
+        Skips when:
+          * Retrieval embedding model already Jina (no external rerank used), or
+          * Jina reranker not configured.
+
+        Does NOT build embeddings; assumes prior indexing run with the Jina
+        embedding model generated:
+            embeddings_{tag}.pt
+            embeddings_ids_{tag}.jsonl
+        where tag = self.jina_reranker_tag (default 'jina_embed').
         """
-        try:
-            from pipeline.models.embedding_models import JinaV4Model
-            from pipeline.rerankers import JinaRerankerFactory
+        if self.reranker_method != "jina":
+            return
+        try:  # pragma: no cover
+            from pipeline.models.embedding_models import (
+                JinaV4Model,  # type: ignore[attr-defined]
+            )
+            from pipeline.rerankers import (
+                JinaRerankerFactory,  # type: ignore[attr-defined]
+            )
         except ImportError:  # pragma: no cover
             return
 
-        if not isinstance(getattr(self, "embedding_model", None), JinaV4Model):
+        # If retrieval model already Jina, nothing to prime
+        if isinstance(getattr(self, "embedding_model", None), JinaV4Model):
             return
 
         if not hasattr(self, "_jina_reranker"):
             self._jina_reranker = JinaRerankerFactory.create_reranker(
-                embeddings_path=self.embeddings_path,
-                embeddings_ids_path=self.embeddings_ids_path,
+                embeddings_path=self.jina_rerank_embeddings_path,
+                embeddings_ids_path=self.jina_rerank_embeddings_ids_path,
                 device_config=self.device_config,
-                embedding_model=self.embedding_model,
             )
-        # Attempt a load (no error if missing); this primes internal index map.
         self._jina_reranker.load_store_embeddings()
