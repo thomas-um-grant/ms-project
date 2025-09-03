@@ -194,7 +194,7 @@ async def _evaluate(rag_configs: dict, complexity_mode: str = "auto"):
             dataset = json.load(f)
 
         # Expected columns (remove ambiguous standalone 'id')
-        corpus_columns = ["corpus-id", "doc-id", "image"]
+        corpus_columns = ["corpus-id", "doc-id"]
         queries_columns = ["query-id", "query", "query-type"]
         qrels_columns = ["query-id", "corpus-id", "doc-id", "answer", "score"]
 

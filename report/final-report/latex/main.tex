@@ -6,7 +6,7 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{A Hybrid Retrieval Framework for RAG: Combining Textual, Graph, and Multimodal Information via Reranking}
+\newcommand{\reporttitle}{A Hybrid Retrieval Framework for RAG: Combining Textual and Multimodal Information via Reranking}
 % \newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
@@ -477,6 +477,158 @@ Metrics tailored to cross-modal reasoning and question-answer alignment over lon
 
 \section{Framework}
 - UI Demo with augmented desktop finder and local knowledge base
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Body}
+\section{Algorithms}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Rerank and Fuse Results from Two Retrieval Modalities}
+\KwIn{%
+    $T$: list of (metadata, score) pairs from traditional retrieval; \\
+    $M$: list of (metadata, score) pairs from multimodal retrieval; \\
+    $\text{norm}$: normalization method $\in \{\text{L1}, \text{L2}\}$
+}
+\KwOut{$F$: fused list of (metadata, normalized score) pairs}
+\BlankLine
+
+\textbf{Step 1: Deduplication}\;
+\ForEach{$(md, sc)$ in $T$ and $M$}{
+    Construct unique identifier $cid$ from $(corpus\_id, doc\_id)$\;
+    Retain first occurrence of each $cid$\;
+}
+
+\BlankLine
+\textbf{Step 2: Normalization}\;
+\ForEach{modality list $L \in \{T, M\}$}{
+    Extract score vector $S$\;
+    \eIf{$\text{norm} = \text{L1}$}{
+        $S \gets S / \left(\sum S + \varepsilon\right)$
+    }{
+        $S \gets S / \left(\|S\|_2 + \varepsilon\right)$
+    }
+    Replace scores in $L$ with normalized $S$\;
+}
+
+\BlankLine
+\textbf{Step 3: Sorting}\;
+Sort $T$ and $M$ in descending order by normalized score\;
+
+\BlankLine
+\textbf{Step 4: Fusion by Round-Robin Reranking}\;
+Initialize $F \gets \emptyset$, $Seen \gets \emptyset$\;
+\For{$i \gets 0$ \KwTo $\max(|T|, |M|) - 1$}{
+    $Candidates \gets \{T[i], M[i]\}$ if available\;
+    Sort $Candidates$ by score descending\;
+    \ForEach{$(md, sc)$ in $Candidates$}{
+        Construct $cid$ from $md$\;
+        \If{$cid \notin Seen$}{
+            Add $(md, sc)$ to $F$\;
+            Mark $cid$ as seen\;
+            Annotate $md.fusion\_method \gets$ ``rerank\_fuse''\;
+        }
+    }
+}
+
+\BlankLine
+\Return{$F$}\;
+\end{algorithm}
+
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Normalize and Average Scores Across Modalities}
+\KwIn{%
+    $T$: list of (metadata, score) pairs from traditional retrieval; \\
+    $M$: list of (metadata, score) pairs from multimodal retrieval; \\
+    $\text{norm}$: normalization method $\in \{\text{L1}, \text{L2}\}$
+}
+\KwOut{$F$: list of (metadata, fused score) pairs sorted by score}
+\BlankLine
+
+\textbf{Step 1: Build ID $\rightarrow$ score mappings}\;
+\ForEach{$(md, sc)$ in $T$ and $M$}{
+    Construct unique identifier $cid$ from $(corpus\_id, doc\_id)$\;
+    If $cid$ not in map: store $(md, sc)$\;
+}
+
+\BlankLine
+\textbf{Step 2: Normalize scores per modality}\;
+\ForEach{score vector $S \in \{T, M\}$}{
+    \eIf{$\text{norm} = \text{L1}$}{
+        $S \gets S / \left(\sum S + \varepsilon\right)$
+    }{
+        $S \gets S / \left(\|S\|_2 + \varepsilon\right)$
+    }
+    Replace original scores with normalized values\;
+}
+
+\BlankLine
+\textbf{Step 3: Compute fused scores}\;
+$AllIDs \gets$ union of identifiers from $T$ and $M$\;
+\ForEach{$id \in AllIDs$}{
+    $vals \gets$ normalized scores from available modalities\;
+    $md \gets$ metadata from $T$ if available, else from $M$\;
+    \If{$vals \neq \emptyset$}{
+        $fused\_score \gets \text{mean}(vals)$\;
+        Annotate $md.fusion\_type \gets$
+            \eIf{$id \in T$ and $id \in M$}{``both''}
+            {\eIf{$id \in T$}{``traditional''}{``multimodal''}}\;
+        Annotate $md.fusion\_method \gets$ ``normalize\_average''\;
+        Add $(md, fused\_score)$ to $F$\;
+    }
+}
+
+\BlankLine
+\textbf{Step 4: Sorting}\;
+Sort $F$ in descending order by fused score\;
+
+\BlankLine
+\Return{$F$}\;
+\end{algorithm}
+
+
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Merge by Maximum Score Across Modalities}
+\KwIn{%
+    $T$: list of (metadata, score) pairs from traditional retrieval; \\
+    $M$: list of (metadata, score) pairs from multimodal retrieval
+}
+\KwOut{$F$: list of (metadata, score) pairs merged and sorted by score}
+\BlankLine
+
+\textbf{Step 1: Initialize accumulator}\;
+$Acc \gets \emptyset$ (map from identifier $\rightarrow$ (metadata, score))\;
+
+\BlankLine
+\textbf{Step 2: Process each modality}\;
+\ForEach{($label, L$) in \{(``traditional'', $T$), (``multimodal'', $M$)\}}{
+    \ForEach{$(md, sc)$ in $L$}{
+        $cid \gets$ extract identifier from $md$\;
+        \If{$cid$ is invalid}{continue}\;
+        Set $md.source\_rag \gets label$\;
+        \eIf{$cid \in Acc$}{
+            \If{$sc > Acc[cid].score$}{
+                $Acc[cid] \gets (md, sc)$
+            }
+        }{
+            $Acc[cid] \gets (md, sc)$
+        }
+    }
+}
+
+\BlankLine
+\textbf{Step 3: Sorting}\;
+$F \gets$ values of $Acc$ sorted in descending order by score\;
+
+\BlankLine
+\Return{$F$}\;
+\end{algorithm}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -123,39 +123,50 @@ class BaseRAG(ABC):
         self.similarity_metric: SimilarityMetric = configs.get("similarity_metric")
         self.routing_strategy: RoutingStrategy = configs.get("routing_strategy")
 
-        # Reranker configuration (e.g. 'jina'). If provided, we enable auto-rerank by default
-        self.reranker_method: str | None = configs.get("reranker")
-        # Allow user override; default True when a reranker is defined
-        self.auto_rerank: bool = configs.get(
+        # ------------------------------------------------------------------
+        # Reranker configuration:
+        # { "reranker": { "name": "jina", "configs": { "embedding_model": "jina_embed" } } }
+        # or
+        # { "reranker": { "name": "llm", "configs": { "content_mode": "full", ... } } }
+        # ------------------------------------------------------------------
+        self.reranker_method: str | None = None
+        self.reranker_configs: dict = {}
+
+        rer_conf = configs.get("reranker", {})
+        self.reranker_method = rer_conf.get("name")
+        self.reranker_configs = rer_conf.get("configs", {}) or {}
+        # Allow specifying auto_rerank inside the reranker dict
+        self.auto_rerank = rer_conf.get(
             "auto_rerank",
-            bool(self.reranker_method),
+            True,
         )
-        # Jina reranker dedicated embeddings configuration (for cross-model rerank)
-        jina_reranker_cfg = configs.get("jina_reranker", {}) or {}
-        self.jina_reranker_tag: str = jina_reranker_cfg.get(
-            "embedding_model_tag",
-            "jina_embed",
-        )
-        self.jina_rerank_embeddings_path = (
-            self.store_dir / f"embeddings_{self.jina_reranker_tag}.pt"
-        )
-        self.jina_rerank_embeddings_ids_path = (
-            self.store_dir / f"embeddings_ids_{self.jina_reranker_tag}.jsonl"
-        )
-        self._jina_reranker_missing_logged = False
-        if self.reranker_method and self.auto_rerank:
-            logger.info(
-                "Auto-reranking enabled using method '%s'",
-                self.reranker_method,
-            )
-        elif self.reranker_method:
-            logger.info(
-                "Reranker '%s' configured but auto_rerank disabled (manual rerank required)",
-                self.reranker_method,
+
+        # Derive Jina reranker embedding
+        if self.reranker_method == "jina":
+            self.jina_reranker_tag = (
+                self.reranker_configs.get("embedding_model") or "jina_embed"
             )
 
-        # If retrieval embedding model already Jina, skip separate Jina reranker (will no-op)
-        if self.reranker_method == "jina":  # runtime import guard
+            self.jina_rerank_embeddings_path = (
+                self.store_dir / f"embeddings_{self.jina_reranker_tag}.pt"
+            )
+            self.jina_rerank_embeddings_ids_path = (
+                self.store_dir / f"embeddings_ids_{self.jina_reranker_tag}.jsonl"
+            )
+            self._jina_reranker_missing_logged = False
+
+            if self.reranker_method and self.auto_rerank:
+                logger.info(
+                    "Auto-reranking enabled using method '%s' (new-style=%s)",
+                    self.reranker_method,
+                    isinstance(rer_conf, dict) and bool(rer_conf.get("name")),
+                )
+            elif self.reranker_method:
+                logger.info(
+                    "Reranker '%s' configured but auto_rerank disabled (manual rerank required)",
+                    self.reranker_method,
+                )
+
             try:  # pragma: no cover
                 from pipeline.models.embedding_models import (
                     JinaV4Model,  # type: ignore[attr-defined]
@@ -294,10 +305,7 @@ class BaseRAG(ABC):
 
         # Lazy init (single instance per BaseRAG)
         if not hasattr(self, "_llm_reranker"):
-            # Allow future config injection via self.config.get('llm_reranker', {})
-            llm_conf = (
-                self.config.get("llm_reranker", {}) if hasattr(self, "config") else {}
-            )
+            llm_conf = self.reranker_configs
             try:
                 self._llm_reranker: LLMReranker = LLMRerankerFactory.create_reranker(
                     **llm_conf,

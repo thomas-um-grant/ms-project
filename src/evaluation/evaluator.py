@@ -46,7 +46,6 @@ class Evaluator:
         doc_id_column: str | None = None,
         query_id_column: str | None = None,
         query_column: str | None = None,
-        passage_column: str | None = None,
         score_column: str | None = None,
     ):
         # Dataset column names
@@ -55,7 +54,6 @@ class Evaluator:
         self.doc_id_column = doc_id_column if doc_id_column else "doc-id"
         self.query_id_column = query_id_column if query_id_column else "query-id"
         self.query_column = query_column if query_column else "query"
-        self.passage_column = passage_column if passage_column else "image"
         self.score_column = score_column if score_column else "score"
 
         # Custom evaluator for MTEB metrics

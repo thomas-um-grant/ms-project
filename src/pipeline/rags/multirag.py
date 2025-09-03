@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import math
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
@@ -26,7 +27,7 @@ class MultiRAG(BaseRAG):
     Config example:
     {
         "fusion": {
-            "method": "normalize_average" | "rerank_fuse" | "max",
+            "method": "normalize_average" | "rerank_fuse" | "max" | "rrf",
             "norm": "l1" | "l2"
         }
     }
@@ -51,6 +52,7 @@ class MultiRAG(BaseRAG):
         fusion_cfg = self.configs.get("fusion", {})
         self.fusion_method: str = fusion_cfg.get("method", "max")
         self.fusion_norm: str = fusion_cfg.get("norm", "l1")
+        self.rrf_k: int = int(fusion_cfg.get("rrf_k", 100))
 
         # Instantiate Traditional RAG
         self.traditional_rag = TraditionalRAG(
@@ -159,6 +161,8 @@ class MultiRAG(BaseRAG):
                 fused = self._normalize_and_average(trad_list, multi_list, norm_type)
             elif method == "rerank_fuse":
                 fused = self._rerank_and_fuse(trad_list, multi_list, norm_type)
+            elif method == "rrf":
+                fused = self._rrf(trad_list, multi_list)
             elif method == "max":
                 fused = self._merge_max(trad_list, multi_list)
             else:
@@ -395,6 +399,87 @@ class MultiRAG(BaseRAG):
                 md["fusion_method"] = "rerank_fuse"
                 fused.append((md, float(sc)))
             i += 1
+
+        return fused
+
+    def _rrf(
+        self,
+        trad_list: list[tuple[dict, float]],
+        multi_list: list[tuple[dict, float]],
+    ) -> list[tuple[dict, float]]:
+        """
+        Reciprocal Rank Fusion (RRF) of traditional + multimodal result lists.
+
+        For each unique id appearing in either ranked list, compute:
+            score = sum( 1 / (k + rank_system(doc)) ) over systems where doc appears
+        where rank starts at 1 for the highest-scoring item within that system and
+        k = self.rrf_k (default 100) controls the steepness (higher = flatter).
+
+        Notes:
+          * Existing scores are only used to determine per-system ordering.
+          * Metadata preference order: traditional then multimodal.
+          * Adds metadata keys: fusion_method='rrf', fusion_type in {traditional, multimodal, both}.
+
+        """
+        k = self.rrf_k
+
+        # Sort inputs descending by their original score (best first) to assign ranks
+        trad_sorted = sorted(trad_list, key=lambda x: x[1], reverse=True)
+        multi_sorted = sorted(multi_list, key=lambda x: x[1], reverse=True)
+
+        trad_rank: dict[str, int] = {}
+        multi_rank: dict[str, int] = {}
+
+        def build_rank_map(items: list[tuple[dict, float]], out: dict[str, int]):
+            for idx, (md, _score) in enumerate(items, start=1):
+                cid = self._extract_id(md)
+                if cid and cid not in out:
+                    out[cid] = idx
+
+        build_rank_map(trad_sorted, trad_rank)
+        build_rank_map(multi_sorted, multi_rank)
+
+        # Helper to fetch one representative metadata (prefer traditional)
+        def fetch_metadata(cid: str):
+            for md, _ in trad_sorted:
+                if self._extract_id(md) == cid:
+                    return md
+            for md, _ in multi_sorted:
+                if self._extract_id(md) == cid:
+                    return md
+            return None
+
+        all_ids = set(trad_rank.keys()) | set(multi_rank.keys())
+        fused: list[tuple[dict, float]] = []
+        for cid in all_ids:
+            score = 0.0
+            if cid in trad_rank:
+                score += 1.0 / (k + trad_rank[cid])
+            if cid in multi_rank:
+                score += 1.0 / (k + multi_rank[cid])
+            md = fetch_metadata(cid)
+            if not md:
+                continue
+            md_copy = md.copy()
+            md_copy["fusion_method"] = "rrf"
+            md_copy["fusion_type"] = (
+                "both"
+                if (cid in trad_rank and cid in multi_rank)
+                else ("traditional" if cid in trad_rank else "multimodal")
+            )
+            fused.append((md_copy, float(score)))
+
+        fused = sorted(
+            fused,
+            key=lambda x: (
+                x[1],
+                -(
+                    trad_rank.get(self._extract_id(x[0]), math.inf)
+                    + multi_rank.get(self._extract_id(x[0]), math.inf)
+                ),
+            ),
+            reverse=True,
+        )
 
         return fused
 
