@@ -18,7 +18,7 @@ This project introduces "MultiRAG," a modular framework that merges outputs from
 
 Methodology & Results:
 
-We implemented original RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance (e.g., by X% in nDCG@10) compared to any single RAG approach.
+We implemented original RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance and reduces dataset type bias compared to other RAG approaches.
 
 Conclusion:
 
@@ -189,7 +189,7 @@ mmGraphRAG:
 
 ### Reranking strategies
 
-- Current reranking strats that exist
+- Current reranking strats that exist (RRF)
 - Why are they useful, and why are they different from our approach
 - Give some context to our approach if needed
 

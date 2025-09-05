@@ -209,7 +209,7 @@ def find_optimal_k(embeddings, data_folder: Path, k_range=range(1, 3, 1)):
     plt.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
     elbow_path = data_folder / "generated_data/plots/elbow_plot.png"
-    plt.savefig(elbow_path, dpi=200)
+    plt.savefig(elbow_path, dpi=400)
     plt.close()
     logger.info(f"Elbow plot saved to {elbow_path}")
     # Plot silhouette score
@@ -227,7 +227,7 @@ def find_optimal_k(embeddings, data_folder: Path, k_range=range(1, 3, 1)):
     plt.grid(True, linestyle="--", alpha=0.4)
     plt.tight_layout()
     silhouette_path = data_folder / "generated_data/plots/silhouette_plot.png"
-    plt.savefig(silhouette_path, dpi=200)
+    plt.savefig(silhouette_path, dpi=400)
     plt.close()
     logger.info(f"Silhouette plot saved to {silhouette_path}")
     # Return best k by silhouette score

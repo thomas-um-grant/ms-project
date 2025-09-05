@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import json
 import logging
 import re
@@ -249,9 +250,13 @@ class TraditionalRAG(BaseRAG):
     async def index(self) -> None:
         """Index documents for vector and/or BM25 retrieval."""
         if self.retrieval_method in [RetrievalMethod.VECTOR, RetrievalMethod.HYBRID]:
+            print("Starting vector indexing...")
             await self._index_vectors()
+            print("Vector indexing completed.")
         if self.retrieval_method in [RetrievalMethod.BM25, RetrievalMethod.HYBRID]:
+            print("Starting BM25 indexing...")
             await self._index_bm25()
+            print("BM25 indexing completed.")
 
     async def _index_vectors(self) -> None:
         """Create vector embeddings for all documents."""
@@ -260,8 +265,6 @@ class TraditionalRAG(BaseRAG):
         unembedded = self.metadata_manager.get_unembedded_documents(
             self.embedding_model_tag,
         )
-        # (metadata still needed later for reading corpus files)
-        metadata = self.metadata_manager.load_metadata()
 
         if not unembedded:
             print("No documents to index.")
@@ -272,7 +275,7 @@ class TraditionalRAG(BaseRAG):
 
         # Process new documents
         corpus_ids, texts = [], []
-        for doc_id, meta in tqdm(unembedded, desc="Loading texts", unit=" doc"):
+        for doc_id, meta in unembedded:
             text_path = self.corpuses_dir / meta["name"]
             try:
                 content = text_path.read_text(encoding="utf-8").strip()
@@ -288,19 +291,26 @@ class TraditionalRAG(BaseRAG):
 
         # Create embeddings in batches
         new_embeddings, new_ids = [], []
-        batch_iter = range(0, len(texts), self.batch_size)
-        batch_iter = tqdm(batch_iter, desc="Embedding batches", unit=" batch")
-        for i in batch_iter:
+        for i in range(0, len(texts), self.batch_size):
             batch_texts = texts[i : i + self.batch_size]
             batch_ids = corpus_ids[i : i + self.batch_size]
             try:
-                batch_embs = await self.embedding_model.embed_texts(batch_texts)
-                for doc_id, emb in zip(batch_ids, batch_embs, strict=False):
-                    if isinstance(emb, torch.Tensor) and emb.numel() > 0:
-                        new_embeddings.append(emb)
-                        new_ids.append(doc_id)
+                # Inference context to reduce overhead / disable autograd
+                with torch.inference_mode():
+                    batch_embs = await self.embedding_model.embed_texts(batch_texts)
+                    for doc_id, emb in zip(batch_ids, batch_embs, strict=False):
+                        if isinstance(emb, torch.Tensor) and emb.numel() > 0:
+                            new_embeddings.append(emb)
+                            new_ids.append(doc_id)
             except (RuntimeError, ValueError) as exc:
                 logger.warning("Embedding batch failed: %s", exc)
+            finally:
+                # Explicitly free batch tensors then clear CUDA cache if available
+                with contextlib.suppress(UnboundLocalError):
+                    del batch_embs  # type: ignore[name-defined]
+                if torch.cuda.is_available():  # pragma: no cover - hardware dependent
+                    with contextlib.suppress(RuntimeError):
+                        torch.cuda.empty_cache()
 
         # Save embeddings
         if new_embeddings:
@@ -341,11 +351,7 @@ class TraditionalRAG(BaseRAG):
             return
 
         documents, corpus_ids = [], []
-        for doc_id, meta in tqdm(
-            metadata.items(),
-            desc="Tokenizing for BM25",
-            unit=" doc",
-        ):
+        for doc_id, meta in metadata.items():
             text_path = self.corpuses_dir / meta["name"]
             try:
                 text = text_path.read_text(encoding="utf-8")
@@ -460,8 +466,9 @@ class TraditionalRAG(BaseRAG):
 
         doc_embeddings, doc_ids = zip(*valid_embeddings, strict=True)
 
-        # Get query embeddings
-        query_embeddings = await self.embedding_model.embed_texts(queries)
+        # Get query embeddings under inference mode
+        with torch.inference_mode():
+            query_embeddings = await self.embedding_model.embed_texts(queries)
 
         # Move to device
         doc_embeddings = [
@@ -471,30 +478,27 @@ class TraditionalRAG(BaseRAG):
             emb.to(self.device_config.device_str) for emb in query_embeddings
         ]
 
-        # Compute similarities
+        # Compute similarities under inference mode to avoid autograd tracking
         results = []
-        for query_emb in tqdm(
-            query_embeddings,
-            desc="Vector retrieval",
-            unit=" query",
-        ):
-            similarities = []
-            for i, doc_emb in enumerate(doc_embeddings):
-                similarity = torch.cosine_similarity(
-                    query_emb.unsqueeze(0),
-                    doc_emb.unsqueeze(0),
-                ).item()
-                similarities.append((similarity, i))
+        with torch.inference_mode():
+            for query_emb in query_embeddings:
+                similarities = []
+                for i, doc_emb in enumerate(doc_embeddings):
+                    similarity = torch.cosine_similarity(
+                        query_emb.unsqueeze(0),
+                        doc_emb.unsqueeze(0),
+                    ).item()
+                    similarities.append((similarity, i))
 
-            # Get top-k results
-            similarities.sort(reverse=True)
-            top_results = []
-            for sim_score, idx in similarities[:top_k]:
-                doc_id = doc_ids[idx]
-                if doc_id in metadata:
-                    top_results.append((metadata[doc_id], sim_score))
+                # Get top-k results
+                similarities.sort(reverse=True)
+                top_results = []
+                for sim_score, idx in similarities[:top_k]:
+                    doc_id = doc_ids[idx]
+                    if doc_id in metadata:
+                        top_results.append((metadata[doc_id], sim_score))
 
-            results.append(top_results)
+                results.append(top_results)
 
         return results
 
@@ -514,7 +518,7 @@ class TraditionalRAG(BaseRAG):
         metadata = self.metadata_manager.load_metadata()
         results = []
 
-        for query in tqdm(queries, desc="BM25 retrieval", unit=" query"):
+        for query in queries:
             tokens = self._tokenize_text(query)
             if not tokens:
                 results.append([])
@@ -549,11 +553,7 @@ class TraditionalRAG(BaseRAG):
         metadata = self.metadata_manager.load_metadata()
         combined_results = []
 
-        for vec_res, bm25_res in tqdm(
-            zip(vector_results, bm25_results, strict=True),
-            desc="Hybrid fusion",
-            unit=" query",
-        ):
+        for vec_res, bm25_res in zip(vector_results, bm25_results, strict=True):
             # Apply Reciprocal Rank Fusion
             doc_scores = {}
 

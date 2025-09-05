@@ -1,10 +1,13 @@
 import json
+import logging
 from pathlib import Path
 from typing import Any
 
 import torch
 from PIL import Image
 from tqdm import tqdm
+
+logger = logging.getLogger(__name__)
 
 
 class EmbeddingIndexer:
@@ -98,28 +101,101 @@ class EmbeddingIndexer:
             List of successfully indexed corpus IDs
 
         """
-        embeddings = []
-        indexed_ids = []
+        embeddings: list[torch.Tensor] = []
+        indexed_ids: list[str] = []
 
         # Load existing embeddings + ids if they exist
         existing_embeddings: list[torch.Tensor] = []
         existing_ids: list[str] = []
+        existing_set: set[str] = set()
         if self.embeddings_path.exists() and self.embeddings_ids_path.exists():
-            print("Loading existing embeddings...")
-            existing_embeddings = torch.load(
+            logger.debug(
+                "Loading existing embeddings for incremental indexing: %s",
                 self.embeddings_path,
-                map_location="cpu",
-                weights_only=True,
             )
-            with self.embeddings_ids_path.open("r") as f:
-                existing_ids = [json.loads(line) for line in f]
-
-            if len(existing_embeddings) != len(existing_ids):
-                print(
-                    f"[WARNING] Embedding / ID count mismatch (embeddings={len(existing_embeddings)} ids={len(existing_ids)}). Discarding existing index.",
+            try:
+                existing_embeddings = torch.load(
+                    self.embeddings_path,
+                    map_location="cpu",
+                    weights_only=True,
+                )
+                with self.embeddings_ids_path.open("r") as f:
+                    existing_ids = [json.loads(line) for line in f]
+            except Exception as exc:  # pragma: no cover - defensive
+                logger.warning(
+                    "Failed loading existing index (%s). Rebuilding from scratch.",
+                    exc,
                 )
                 existing_embeddings = []
                 existing_ids = []
+
+            if len(existing_embeddings) != len(existing_ids):
+                logger.warning(
+                    "Embedding / ID count mismatch (embeddings=%d ids=%d). Discarding existing index.",
+                    len(existing_embeddings),
+                    len(existing_ids),
+                )
+                existing_embeddings = []
+                existing_ids = []
+            existing_set = set(existing_ids)
+
+        # Filter out any corpus_ids that are *already* present to prevent duplicate vectors
+        if existing_set:
+            filtered_image_paths: list[Path] = []
+            filtered_corpus_ids: list[str] = []
+            skipped = 0
+            for p, cid in zip(image_paths, corpus_ids, strict=False):
+                if cid in existing_set:
+                    skipped += 1
+                    continue
+                filtered_image_paths.append(p)
+                filtered_corpus_ids.append(cid)
+            if skipped:
+                logger.info(
+                    "Skipped %d images already indexed (existing id reuse prevented). New=%d",
+                    skipped,
+                    len(filtered_corpus_ids),
+                )
+            image_paths = filtered_image_paths
+            corpus_ids = filtered_corpus_ids
+
+        if not image_paths:
+            # Even if no new images, we may still need to dedupe an older index
+            if existing_ids and len(existing_ids) != len(existing_set):
+                logger.warning(
+                    "Index contains %d ids but only %d are unique. Performing maintenance dedup.",
+                    len(existing_ids),
+                    len(existing_set),
+                )
+                # Build first occurrence mapping
+                seen: set[str] = set()
+                dedup_embeddings: list[torch.Tensor] = []
+                dedup_ids: list[str] = []
+                for emb, cid in zip(
+                    existing_embeddings,
+                    existing_ids,
+                    strict=False,
+                ):  # pragma: no cover (maintenance path)
+                    if cid in seen:
+                        continue
+                    seen.add(cid)
+                    dedup_embeddings.append(emb)
+                    dedup_ids.append(cid)
+                torch.save(dedup_embeddings, self.embeddings_path)
+                with self.embeddings_ids_path.open("w") as f:
+                    for cid in dedup_ids:
+                        f.write(json.dumps(cid) + "\n")
+                logger.info(
+                    "Maintenance dedup complete: %d -> %d unique embeddings.",
+                    len(existing_ids),
+                    len(dedup_ids),
+                )
+            else:
+                logger.info(
+                    "No new images to index (all %d requested IDs already present; index already unique).",
+                    len(existing_ids),
+                )
+            return []
 
         # Process images in batches
         for i in tqdm(range(0, len(image_paths), self.batch_size)):
@@ -138,8 +214,16 @@ class EmbeddingIndexer:
 
                 # Since we now get individual tensors, just append them directly
                 for j, embedding in enumerate(batch_embeddings):
+                    cid = batch_ids[j]
+                    # Guard against accidental duplicate within the same new batch set
+                    if cid in existing_set or cid in indexed_ids:
+                        logger.debug(
+                            "Duplicate id '%s' encountered in batch; skipping vector.",
+                            cid,
+                        )
+                        continue
                     embeddings.append(embedding)
-                    indexed_ids.append(batch_ids[j])
+                    indexed_ids.append(cid)
 
             except (RuntimeError, ValueError, ConnectionError, TimeoutError) as e:
                 print(f"Failed to process batch starting at index {i}: {e}")
@@ -147,15 +231,45 @@ class EmbeddingIndexer:
                 continue
 
         # Combine with existing embeddings / ids
+        # Combine (existing first to preserve stability)
         all_embeddings = existing_embeddings + embeddings
         all_ids = existing_ids + indexed_ids
 
+        # Final safety dedupe (should be no-ops normally)
+        if all_ids:
+            seen: set[str] = set()
+            dedup_embeddings: list[torch.Tensor] = []
+            dedup_ids: list[str] = []
+            for emb, cid in zip(all_embeddings, all_ids, strict=False):
+                if cid in seen:
+                    continue
+                seen.add(cid)
+                dedup_embeddings.append(emb)
+                dedup_ids.append(cid)
+            if len(dedup_ids) != len(all_ids):
+                logger.warning(
+                    "Removed %d duplicate embedding ids during save (final).",
+                    len(all_ids) - len(dedup_ids),
+                )
+            all_embeddings = dedup_embeddings
+            all_ids = dedup_ids
+
         # Save embeddings + ids atomically when new embeddings added
-        if embeddings:
+        if indexed_ids:
             torch.save(all_embeddings, self.embeddings_path)
             with self.embeddings_ids_path.open("w") as f:
                 for corp_id in all_ids:
                     f.write(json.dumps(corp_id) + "\n")
+            logger.info(
+                "Indexed %d new images (total %d unique embeddings).",
+                len(indexed_ids),
+                len(all_ids),
+            )
+        else:
+            logger.info(
+                "No new embeddings generated; index unchanged (%d unique).",
+                len(all_ids),
+            )
 
         return indexed_ids
 

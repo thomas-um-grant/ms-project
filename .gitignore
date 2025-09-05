@@ -41,4 +41,5 @@ report/final-report/latex/*
 !report/background-report/latex/figures
 
 # Outputs
+scripts
 outputs

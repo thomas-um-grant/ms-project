@@ -36,6 +36,9 @@ class JinaReranker:
         self._corpus_embeddings: list[torch.Tensor] | None = None
         self._corpus_ids: list[str] | None = None
         self._id_to_idx: dict[str, int] = {}
+        # Cached L2-normalized embeddings (computed after successful load) to
+        # avoid repeated per-candidate normalization inside rerank loop.
+        self._norm_corpus_embeddings: list[torch.Tensor] | None = None
 
         logger.info(
             "Initialized JinaReranker using store embeddings (%s / %s)",
@@ -76,6 +79,15 @@ class JinaReranker:
                         ids.append(line)
             self._corpus_ids = ids
             self._id_to_idx = {cid: i for i, cid in enumerate(ids)}
+            # Precompute normalized embeddings once (cheap relative to repeated loop)
+            try:
+                self._norm_corpus_embeddings = [
+                    emb / (emb.norm(p=2) + 1e-9) for emb in self._corpus_embeddings
+                ]
+            except (
+                Exception
+            ):  # pragma: no cover - defensive; fall back to on-the-fly normalization
+                self._norm_corpus_embeddings = None
             logger.info("Loaded %d Jina embeddings for reranking", len(ids))
             return True
         except Exception as e:  # pragma: no cover - defensive
@@ -83,6 +95,7 @@ class JinaReranker:
             self._corpus_embeddings = None
             self._corpus_ids = None
             self._id_to_idx = {}
+            self._norm_corpus_embeddings = None
             return False
 
     # ------------------------------------------------------------------
@@ -158,8 +171,11 @@ class JinaReranker:
                         idx = self._id_to_idx[pid]
                         break
                 if idx >= 0:
-                    d = self._corpus_embeddings[idx]
-                    d = d / (d.norm(p=2) + 1e-9)
+                    if self._norm_corpus_embeddings is not None:
+                        d = self._norm_corpus_embeddings[idx]
+                    else:  # Fallback if precompute failed
+                        d = self._corpus_embeddings[idx]
+                        d = d / (d.norm(p=2) + 1e-9)
                     sim = float(torch.dot(q_emb, d).item())
                     scored.append((meta, sim))
                 else:

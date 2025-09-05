@@ -1,5 +1,6 @@
 import asyncio
 import logging
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -308,6 +309,10 @@ class MultiModalRAG(BaseRAG):
             return []
 
         embeddings, embedding_ids, metadata = self.embedding_indexer.load_index()
+
+        dups = [k for k, c in Counter(embedding_ids).items() if c > 1]
+        if dups:
+            logger.warning(f"{len(dups)} identical(s) vectors found.")
 
         if len(embeddings) != len(embedding_ids):
             msg = f"Corrupt index: {len(embeddings)} embeddings vs {len(embedding_ids)} ids"

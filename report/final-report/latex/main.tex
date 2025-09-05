@@ -6,7 +6,7 @@
 % Edit these to provide the correct information
 % e.g. \newcommand{\reportauthor}{Timothy Kimber}
 
-\newcommand{\reporttitle}{A Hybrid Retrieval Framework for RAG: Combining Textual and Multimodal Information via Reranking}
+\newcommand{\reporttitle}{A Unified Framework for RAG: Combining Modalities Post-Retrieval via Reranking}
 % \newcommand{\reporttitle}{Background Report for MultiGrAg: A Multi-Modal Graph RAG Framework}
 \newcommand{\reportauthor}{Thomas Grant}
 \newcommand{\supervisor}{Nihir Vedd}
@@ -65,8 +65,6 @@ Our findings validate that a hybrid, reranking-based approach is a potent strate
 \section*{Acknowledgments}
 I would like to express my most sincere gratitude to my supervisor, Dr. Nihir Vedd, for his invaluable guidance and support throughout this research project. His deep expertise in natural language processing and retrieval systems and his insightful feedback were instrumental in shaping the direction of this work. His rigorous approach and challenging questions pushed me to refine my ideas and improve the quality of my research. This project would not have been possible without his supervision.
 
-I would like to also extend my sincere gratitude to a London-based technology firm for their generous in-kind support. Their provision of access to significant computational resources to generate a large-scale evaluation dataset was a cornerstone of this project's experimental validation and demonstration of academic datasets limitations.
-
 \clearpage{\pagestyle{empty}\cleardoublepage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,8 +109,15 @@ Together, these developments represent a shift from unimodal generation toward s
 %\textit{Retrieval-Augmented Generation (RAG): combines LLMs with external retrieval to ground responses in relevant documents} \\
 The original Retrieval-Augmented Generation (RAG) system was introduced by the Facebook AI Research (FAIR) team in 2020\cite{FAIRRAG}. They proposed a framework which integrates external knowledge to enhance the output quality. Additionally, it enables traceability, identifying the provenance of the knowledge behind generated content. The RAG framework demonstrated this approach produces more factual and specific responses compared to standalone LLMs. Since then, a growing ecosystem of RAGs has emerged\cite{RAGSurvey}, exploring trade-offs tailored for specific use cases.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/First RAG.png}
+    \caption{First introduction of the RAG framework by FAIR in 2020\cite{FAIRRAG}.}
+    \label{fig:FAIRRAG}
+\end{figure}
+
 %\textit{Pipeline: retrieve relevant chunks, then feed to LLM for answer generation} \\
-Despite the variability accross RAG implementations, the core methodology remains consistent. A standard pipeline consists of three sequential stages: retrieve, augment, and generate. First, the retrieval process involves fetching pertinent information from an external knowledge base named "corpus". To do so, it encodes the user query to obtain its vector representation, which is then used to search for similar vectors among pre-indexed corpora. The top-N most similar matches are then retrieved from the corpus. The retrieved information is then provided alongside the original query to the foundational model. In this pioneering research, the FAIR team demonstrate that augmenting the original query with retrieved relevant context improves the answer quality in terms of factuality and specificity. In the final step, the foundational model generates a response conditioned on the augmented query provided.
+Despite the variability accross RAG implementations, the core methodology remains consistent, as presented in figure \ref{fig:FAIRRAG}. A standard pipeline consists of three sequential stages: retrieve, augment, and generate. First, the retrieval process involves fetching pertinent information from an external knowledge base named "corpus". To do so, it encodes the user query to obtain its vector representation, which is then used to search for similar vectors among pre-indexed corpora. The top-N most similar matches are then retrieved from the corpus. The retrieved information is then provided alongside the original query to the foundational model. In this pioneering research, the FAIR team demonstrate that augmenting the original query with retrieved relevant context improves the answer quality in terms of factuality and specificity. In the final step, the foundational model generates a response conditioned on the augmented query provided.
 
 %\textit{Overview of its potential:} \\
 %\textit{Improves factuality, reduces hallucination} \\
@@ -126,27 +131,32 @@ Recent research has advanced two particularly promising directions: Multimodal R
 
 In parallel, Graph RAG architectures aim to enhance reasoning capabilities by explicitly modeling entities and their relationships in a knowledge graph. This structure supports multi-hop retrieval, compositional reasoning, and interpretable evidence chains. Notable examples include PathRAG\cite{PathRAG}, which introduces traversal and pruning mechanisms to surface semantically meaningful paths between concepts, and LightRAG\cite{LightRAG}, which incrementally builds and queries graph-enhanced memory for up-to-date document recall. These methods enable RAG systems to move beyond isolated fact retrieval toward more structured and context-aware synthesis.
 
-By combining these advances, researchers are beginning to construct hybrid RAG frameworks that integrate both graph-structured reasoning and multimodal retrieval capabilities. This convergence not only improves robustness and relevance across data types, but also opens the door to more generalizable, explainable, and scalable RAG applications across scientific, industrial, and public sector domains.
+By combining these advances, researchers are beginning to construct hybrid RAG frameworks that integrate both graph-structured reasoning and multimodal retrieval capabilities \cite{HMRAG}. This convergence not only improves robustness and relevance across data types, but also opens the door to more generalizable, explainable, and scalable RAG applications across scientific, industrial, and public sector domains.
+
+Despite the current advancements, it seems paradigms for RAG research are increasingly focused on selecting a modality and convert all inputs into that modality for a unified embedding and retrieval pipeline. A noticeable under explored area is the potential for independant parallel retrieval pipelines, each specialized for a different modality, and then combine their outputs to leverage their complementary strengths. This project aims to investigate this hybrid RAG approach, combining traditional text-based, and multimodal retrieval methods via a final merging step.
 
 \section{Research project purpose}
+
+In a real world setting, RAG systems must effectively integrate and retrieve information from diverse modalities, including text, images, sometimes even audio, or video content. This requires not only robust retrieval mechanisms but also sophisticated reasoning capabilities to synthesize information from multiple sources. In our case study, we take consulting as an example due to its high variety of data types, based on the company industry a consultant operates in, and the various tasks a consulting company achieves.
+
+For instance, a consultant whom may operate in a pharmaceutical company that requires extensive research and analysis of clinical trial data, might be focused on legal and safety reports, while when they operate in a food chain that needs insights into consumer behavior and market trends, they might be looking at statistical and behavioral reports. Therefore the reports may include text-heavy reports, tables, charts, or images. The consultant must then synthesize this information to provide actionable recommendations to both clients.
+
+
+
 The purpose of this research project is twofold.
-
-% \textit{Introducing a new benchmark generation framework for domain specific knowledge (Consulting):} \\
-% \textit{Address lack of robust, real-world, and multimodal evaluation datasets} \\
-% \textit{Propose new methods for dataset creation and benchmarking on specific domain} \\
-First, we propose a novel process for generating evaluation datasets tailored to real-world multimodal use cases. While existing benchmarks primarily focus on either textual retrieval or narrow vision-language tasks, there remains a gap in domain-specific, heterogeneous datasets that reflect practical RAG deployments. Our approach aims to address this by introducing a semi-automated method for generating diverse, high-quality multimodal evaluation corpora. This will facilitate more rigorous benchmarking, encourage fair comparison of techniques, and support future research on retrieval-augmented systems operating beyond purely textual domains.
-
 
 %\textit{Introducing a new RAG framework from combined best practices:} \\
 %\textit{Introduce latest RAG approaches (Multimodal and Graph)} \\
 %\textit{Combine best practices from traditional, graph-based, and multimodal RAG} \\
 %\textit{Modular pipeline for easy experimentation and benchmarking} \\
-Second, we investigate best practices of Retrieval-Augmented Generation (RAG) systems that operate across multiple modalities, commonly referred to as Multimodal RAG, as well as those that utilize knowledge graph structures, often called Graph RAG. These approaches have individually shown promise in extending the retrieval and reasoning capabilities of foundation models, particularly in scenarios involving complex visual layouts or multi-hop semantic relationships. By combining these two complementary paradigms, we aim to construct a high-performing framework that leverages multiple structured and unstructured inputs, as demonstrated in recent work on hierarchical and multimodal RAG architectures \cite{HMRAG}. 
+First, we investigate best practices of Retrieval-Augmented Generation (RAG) systems that operate across text, and multiple modalities (e.g. text and image), commonly referred to as Multimodal RAG. These approaches have individually shown promise in extending the retrieval and reasoning capabilities of foundation models, particularly in scenarios involving large text corpora and complex visual layouts. By combining these two complementary paradigms, we aim to construct a framework that leverages different input modalities and systems expertise to improve the overall system performance.
 
+To this end, we design a modular and extensible pipeline that integrates enhancement techniques within document parsers, retrievers, and rerankers, each of which can be independently tested or ablated. This architecture supports reproducible experimentation and provide a systematic means to evaluate the contribution of each component to overall performance, robustness, and efficiency.
 
-To this end, we will design a modular and extensible pipeline that integrates various enhancement techniques, including visual document encoders, graph-based retrieval layers, and reranking modules, each of which can be independently tested or ablated. This architecture will support reproducible experimentation and provide a systematic means to evaluate the contribution of each component to overall performance, robustness, and efficiency.
-
-
+% \textit{Introducing a new benchmark generation framework for domain specific knowledge (Consulting):} \\
+% \textit{Address lack of robust, real-world, and multimodal evaluation datasets} \\
+% \textit{Propose new methods for dataset creation and benchmarking on specific domain} \\
+Second, we propose a novel process for generating evaluation datasets tailored to real-world multimodal use cases. While existing benchmarks primarily focus on either textual retrieval or narrow vision-language tasks, there remains a gap in domain-specific, heterogeneous datasets that reflect practical RAG deployments. Our approach aims to address this by introducing a semi-automated method for generating diverse, high-quality multimodal evaluation corpora. This facilitates more rigorous benchmarking, encourages fair comparison of techniques, and supports future research on retrieval-augmented systems operating beyond purely textual domains.
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,6 +185,13 @@ To this end, we will design a modular and extensible pipeline that integrates va
 The transformer architecture, introduced in 2017, revolutionized sequence modeling by replacing recurrence with self-attention. This design enables each token in a sequence to contextualize itself relative to all others, allowing efficient modeling of long-range dependencies, a task previously limited by the sequential nature of RNNs and LSTMs.
 
 At its core, the Transformer consists of an encoder and a decoder, both constructed from stacked layers of multi-head self-attention and position-wise feed-forward networks. The encoder processes an input sequence to generate contextualized representations, while the decoder uses those representations, alongside previously generated tokens, to produce outputs in an auto-regressive manner. This architecture enables parallelization during training and inference, significantly improving scalability and speed.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{./figures/Transformer.png}
+    \caption{The Transformer architecture. On the left, the encoder processes the input sequence, while on the right, the decoder generates the output sequence.}
+    \label{fig:Transformer}
+\end{figure}
 
 \textbf{Self-Attention Mechanism:}
 The self-attention mechanism allows the model to weigh the relevance of different tokens when encoding a given token's context. Each token is transformed into a query, key, and value vector. Attention scores are computed by taking the scaled dot-product between queries and keys, then using these scores to weight the corresponding values. This operation is performed across all positions in the sequence, allowing the model to encode dependencies regardless of their distance.
@@ -231,11 +248,18 @@ In Retrieval-Augmented Generation (RAG) frameworks, Transformer architectures se
 % \textit{Generator module (LLM, e.g., GPT-4, Llama)} \\
 % \textit{Reranker module to improve retrieval quality} \\
 At the core of any RAG system lies a modular pipeline that orchestrates document preparation, retrieval, and generation. The process begins with \textbf{document chunking and preprocessing}, where raw texts (e.g. PDFs, HTML pages) are cleaned, normalized, and split into manageable passages. Early approaches employed fixed-length character or token windows; however, modern implementations increasingly leverage \textbf{recursive splitting heuristics}\cite{RecurrentChunking}\cite{SplittingHeuristics} to avoid excessively small or large segments and \textbf{semantic chunking} via clustering embeddings to respect topical boundaries. Recursive splitters adjust boundaries based on punctuation or section markers, whereas \textbf{cluster-based semantic chunking} groups contiguous sentences by embedding similarity, yielding more coherent passages at the cost of increased computational overhead.
-Recent advancements also explore LLM-guided chunking, where language models are prompted to identify topic shifts or logical segment boundaries. The LumberChunker\cite{LumberChunker} paper, introduced at the ACL 2024, adaptively splits documents using a combination of language model predictions and perplexity scoring, significantly improving retrieval recall in the Needle-In-The-Haystack settings such as on the GutenQA benchmark, which we discussed later on. During this stage, metadata such as section headings and publication dates are also extracted to enhance downstream retrieval.
+Recent advancements also explore LLM-guided chunking, where language models are prompted to identify topic shifts or logical segment boundaries. The LumberChunker\cite{LumberChunker} paper, introduced at the ACL 2024, adaptively splits documents using a combination of language model predictions and perplexity scoring, significantly improving retrieval recall of specific information in a large corpora such as on the GutenQA benchmark. During this stage, metadata such as section headings and publication dates are also extracted to enhance downstream retrieval.
 
 Next, each chunk is transformed into a vector representation in the \textbf{embedding generation} phase. Models such as Sentence-BERT \cite{SentenceBERT}, OpenAI's text-embedding-ada \cite{OpenAITextEmbedding}, or domain-specific encoders encode semantic content into high-dimensional dense vectors. In parallel, \textbf{sparse representations} (e.g., BM25\cite{BM25} term vectors) may be computed, and \textbf{hybrid embeddings} formed by concatenating dense and sparse signals, striking a balance between semantic understanding and keyword recall.
 
 Hybrid encoders now go beyond concatenating dense and sparse signals. Techniques inspired by ColBERT and FLMR architectures apply multi-vector representations where both documents and queries are decomposed into token-level embeddings, enabling late interaction scoring\cite{ColBERT}. This approach improves fine-grained relevance matching, particularly in retrieval-heavy tasks.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/ColBert MaxSim.png}
+    \caption{Colbert differentiation}
+    \label{fig:ColBert}
+\end{figure}
 
 These embeddings are then indexed in a \textbf{vector store}, for example, FAISS \cite{FAISS}, Weaviate \cite{Weaviate}, or Milvus \cite{Milvus}, which exploits advanced data structures like inverted file systems (IVF)\ref{appendix:invertedFileSystem}, product quantization (PQ)\ref{appendix:quantizationTechniques}, and Hierarchical Navigable Small World graphs (HNSW)\ref{appendix:HNSW} to support sub-linear nearest-neighbor search over millions of vectors.
 
@@ -327,13 +351,13 @@ Research is actively exploring how to hybridize graph-based and vector-based ret
 %%
 Hybrid graph-based retrieval represents a convergence of vector-based and knowledge graph-based retrieval strategies to address the limitations inherent in each approach when used in isolation. In this paradigm, both dense vector search and structured graph traversal are leveraged to enhance the extraction and interpretation of complex information from unstructured text (e.g financial earnings call transcripts). By integrating semantic similarity search with explicit entity and relationship modeling, HybridRAG enables more robust retrieval of relevant context, particularly in domains characterized by specialized terminology and intricate document structures.
 
-As these systems evolve, new evaluation metrics will be needed to assess performance in multi-hop, cross-modal, and graph-augmented settings, where traditional retrieval and generation scores may fall short. Interpretability remains a core concern as well: graph paths offer a natural substrate for explainability, enabling models to articulate the basis of their outputs.
+As these systems evolve, new evaluation metrics are needed to assess performance in multi-hop, cross-modal, and graph-augmented settings, where traditional retrieval and generation scores may fall short. Interpretability remains a core concern as well: graph paths offer a natural substrate for explainability, enabling models to articulate the basis of their outputs.
 
-Finally, Graph RAG is well-positioned to support agentic workflows, in which LLMs act not only as generators but as planners or critics, navigating the graph to construct or validate reasoning chains. Supporting such agents will require efficient APIs for real-time or streaming graph updates, enabling knowledge flows that are both reactive and grounded.
+Finally, Graph RAG is well-positioned to support agentic workflows, in which LLMs act not only as generators but as planners or critics, navigating the graph to construct or validate reasoning chains. Supporting such agents requires efficient APIs for real-time or streaming graph updates, enabling knowledge flows that are both reactive and grounded.
 
 \section{Multimodal RAG}
 
-Traditional RAG architectures are predominantly unimodal, assuming that the input corpus is composed solely of text. However, many real-world documents, such as scanned PDFs, scientific papers, forms, and diagrams, contain complex visual layouts, embedded figures, or non-textual cues that textual embeddings alone cannot adequately capture. Multimodal RAG aims to extend the retrieval-augmented generation paradigm to such heterogeneous data, integrating visual and textual modalities to support retrieval, reasoning, and generation over richly formatted or image-based content.
+Traditional RAG and Graph RAG architectures are predominantly unimodal, assuming that the input corpus is composed solely of text. However, many real-world documents, such as scanned PDFs, scientific papers, forms, and diagrams, contain complex visual layouts, embedded figures, or non-textual cues that textual embeddings alone cannot adequately capture. Multimodal RAG aims to extend the retrieval-augmented generation paradigm to such heterogeneous data, integrating visual and textual modalities to support retrieval, reasoning, and generation over richly formatted or image-based content.
 
 % (\textcolor{red}{TODO - Put a diagram of a MultiModal RAG framework here})
 
@@ -351,6 +375,13 @@ To address these limitations, newer systems incorporate vision-language models c
 % \textit{Bypasses OCR, directly encodes document pages as images} \\
 % \textit{Late interaction retrieval: Multi-vector image embeddings, fine-grained matching} \\
 A more radical shift is embodied in ColPali\cite{ColPali}, which bypasses OCR entirely. Instead of converting documents into text, ColPali treats each page as a raw image and encodes it directly using a multi-vector image embedding scheme with PaliGemma. These embeddings support late interaction retrieval, meaning that fine-grained relevance can be determined during inference rather than at index time. Late interaction retrieval means each query vector is compared to each image patch embedding and relevance is computed using a max-sum strategy, similar to ColBERT. This strategy enhances alignment between query semantics and document visuals, particularly for complex documents that defy easy text extraction.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/ColPali Framework.png}
+    \caption{ColPali differentiation}
+    \label{fig:ColPali}
+\end{figure}
 
 % \textit{Other approaches:} \\
 % \textit{VDocRAG:} \\
@@ -376,6 +407,33 @@ Promising directions for future research include the development of cross-modal 
 
 More broadly, multimodal RAG systems offer a path toward explainable AI\cite{ExplainAI}, where retrieved evidence, whether textual, visual, or relational, can be explicitly surfaced and interpreted. This opens the door to interactive, agent-driven reasoning systems, capable not only of answering questions, but of demonstrating how and why a given response was generated. This is well demonstrated in ColPali with the similarity patches showing which patches of the images have high similarity with the query.
 
+
+\section{Unification over Mixture-of-Experts Retrieval}
+
+- The current paradigm: Unify modality to retrieve from a single vector space
+
+- The proposed solution: Mixture-of-Experts (MoE) retrieval
+
+Why?
+
+- Efficiency \& Simplicity
+
+Building independent RAGs for every modality (text, image, audio, etc.) and merging results would introduce high latency, complex orchestration, and inconsistent scoring across modalities.
+
+- Embedding Synergy
+
+Leveraging shared or aligned embeddings (like CLIP) allows cross-modal retrieval without needing separate pipelines, enabling any-to-any retrieval (e.g., text-to-image, image-to-text).
+
+- Fusion Advantages
+
+A unified model can better model cross-modal context—allowing attention mechanisms to focus on the most relevant parts regardless of modality.
+
+- Complexity of Modality-specific RAGs
+
+Managing separate retrieval engines per modality doubles down on maintenance, scoring normalization, balancing ranked chunks, etc. Need of a robust fusion logic. It's more practical to align embeddings and let one engine handle them together.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \section{Needle-in-the-Haystack Problem}
 A major challenge for RAG is the Needle-in-the-Haystack scenario: retrieving a very small, critical piece of information called "needle" from a big, mostly irrelevant corpus, the "haystack". In this setting, even a strong average-recall system may fail entirely if the rare relevant chunk is not found. This problem critically affects grounding and faithfulness: if the needle isn't retrieved, the LLM may hallucinate or guess. Standard metrics (e.g. top-$k$ recall) often understate this risk, since missing one key fact can irreparably break an answer.
 One concrete illustration is the GutenQA benchmark introduced with LumberChunker\cite{LumberChunker} paper. It contains 3,000 QA pairs where each answer depends on a tiny fact in a long narrative. In such tests, specialized chunking and retrieval were needed to succeed. More broadly, several benchmarks emphasize this issue. For example, Sequential-NIAH\cite{SequentialNIAH} constructs contexts up to 128K tokens containing one or more "needles"; even the best models score only ~63\% accuracy extracting these items.
@@ -383,8 +441,6 @@ One concrete illustration is the GutenQA benchmark introduced with LumberChunker
 Similarly, the "Needle-in-the-Haystack" evaluation (e.g. Kamradt's LLMTest\cite{NeedleInHaystackTest}) shows that as context size grows or multiple needles are added, retrieval performance degrades sharply.
 
 Other open-domain QA tasks like HotpotQA\cite{HotpotQA} (distractor setting) and TriviaQA\cite{TriviaQA} also embody this: the answer may hinge on one sentence in a vast source. The implications for RAG are serious. Low recall on needles means RAG can produce confident but unsupported answers. It also complicates evaluation: a system might get an answer right by lucky inference, not retrieval. To mitigate this, recent research both creates new benchmarks and develops techniques to raise retrieval fidelity. For instance, methods like hypothesis-generation (HyDE) or chain-of-retrieval aim to boost the chance that needles are considered. Benchmark datasets like GutenQA and Sequential-NIAH explicitly test RAG systems on needle problems, highlighting how much room for improvement remains. Overall, the Needle-in-the-Haystack issue reminds us that RAG must not only retrieve relevant context on average, but must reliably capture the critical few facts; addressing this requires specialized indexing strategies, more exhaustive retrieval, and evaluation protocols that focus on rare-query sensitivity.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Evaluation Datasets and Benchmarks}
@@ -411,7 +467,7 @@ Other open-domain QA tasks like HotpotQA\cite{HotpotQA} (distractor setting) and
 
 % \textit{Synthetic and real-world datasets (DocVQA, OpenDocVQA, ViDoRe, ViDoSeek)} \\
 % \textit{Multi-hop, context-independent, and visually-rich question generation} \\
-Current benchmarks for multimodal RAG, such as ViDoRe\cite{ColPali}, and ViDoSeek\cite{ViDoRAG}, provide valuable foundations but exhibit limitations in scale, complexity, and modality alignment. These benchmarks are composed of a variety of datasets that are often skewed toward single-hop or context-specific queries, and lack the semantic depth necessary for evaluating multi-step, visually-grounded reasoning.
+Current benchmarks for multimodal RAG, such as ViDoRe\cite{ColPali}, and ViDoSeek\cite{ViDoRAG}, provide valuable foundations but exhibit limitations in scale, complexity, and modality alignment. These benchmarks are composed of a variety of datasets that are often skewed toward single-hop or context-specific queries, and lack the semantic depth necessary for evaluating multi-step, textually and visually-grounded reasoning.
 
 To address this, we focus on generating a dataset that capture multi-hop dependencies, require context-independent reasoning, and incorporate visually-rich document structures. This includes crafting synthetic questions that simulate real-world tasks, such as extracting legal inferences from scanned contracts or tracing decision flows across tabular and textual components in financial documents.
 
@@ -420,7 +476,7 @@ To address this, we focus on generating a dataset that capture multi-hop depende
 % \textit{Difficulty in evaluating multi-hop and cross-modal reasoning} \\
 % \textit{Dataset bias, annotation quality, and coverage} \\
 However, this task is fraught with challenges:
-Absence of standardized and rigorous multimodal benchmarks hinders consistent comparisons across models and research groups.
+Absence of standardized and rigorous multi-modality benchmarks hinders consistent comparisons across models and research groups.
 Evaluating multi-hop and cross-modal reasoning is non-trivial, particularly when model predictions span different modalities or semantic layers.
 Dataset bias, annotation inconsistency, and limited coverage reduce the reliability of evaluations and may overstate model generalization.
 
@@ -429,59 +485,251 @@ Dataset bias, annotation inconsistency, and limited coverage reduce the reliabil
 % \textit{Better metrics for cross-modal and multi-hop evaluation} \\
 % \textit{Further automation for dataset generation and annotation} \\
 Looking forward, there is a clear need for:
-Novel benchmarks explicitly designed for graph-based and multimodal RAG workflows.
+Novel benchmarks explicitly designed for RAG workflows ingesting multiple modalities.
 Metrics tailored to cross-modal reasoning and question-answer alignment over long contexts. Increased automation and quality control for dataset generation, ensuring diversity, precision, and annotation integrity at scale.
 
 
-
-
-\chapter{Methodology} % Body of report
-\section{Generating an evaluation dataset}
+\chapter{Methodology and System Implementation} % Body of report
+% \section{Generating an evaluation dataset}
 % \textit{Propose new dataset creation methods} \\
 % \textit{Benchmark on existing and new datasets} \\
 % Given the current lack of publicly available, high-quality datasets capable of robustly evaluating complex multimodal RAG systems, we propose a new dataset generation framework tailored to the needs of retrieval-augmented multimodal reasoning. This framework emphasizes semantic complexity, visual-textual interplay, and multi-hop retrieval tasks, aiming to capture the challenges that arise in realistic, heterogeneous document corpora.
 
-% % (\textcolor{red}{TODO: Redraw what Nihir drew on the board to show the overview of the process})
+\section{Overall System Architecture}
 
-% We define a set of evaluation metrics aligned with both retrieval effectiveness (e.g., recall@k, MRR) and generation quality (e.g., factual consistency, completeness, multimodal grounding). These metrics are designed to offer fine-grained insight into system performance and support consistent comparisons across model variants. We demonstrate the robustness and relevance of the proposed dataset by benchmarking it against existing datasets in the ViDoRe benchmark suite, highlighting its capacity to surface failure modes and differentiate between advanced retrieval strategies. The proposed dataset thus serves both as a diagnostic tool and a development driver for future multimodal RAG research.
-
-- How we address the challenges in our new approach
-- Metadata extraction
-- Document Clustering
-- Question generation
-- Corpus selection for answering
-- Answer generation
-- LLM Peer review
-
-
-\section{Combining an enhanced RAG framework}
-% \textit{Integrate best practices from literature} \\
-% \textit{Experiment with hybrid approaches} \\
-% \textit{Explain how to assess whether combining different approaches is relevant} \\
-% \textit{Explain why it is rational to assemble such methods and why it should work} \\
-% To identify optimal strategies for enhancing Retrieval-Augmented Generation (RAG) systems, we propose a modular framework in which a variety of techniques and components can be selectively enabled or disabled. Drawing from best practices in the literature, including recent advances in multimodal retrieval, graph-based reasoning, and reranking strategies, we design a flexible architecture capable of isolating the contributions of individual modules.
-
-% % (\textcolor{red}{TODO: Draw a RAG pipeline with each steps modularized so we can swap in place / combine methods at wish})
-
-% To evaluate the effectiveness of combining different approaches, we adopt a systematic benchmarking strategy. Each module or enhancement is first tested in isolation, with performance assessed on the ViDoRe\cite{ColPali} v1s and v2s datasets. Subsequently, we evaluate composite configurations, enabling combinations of techniques to determine whether their joint application yields synergistic performance gains. The results are analyzed comparatively to establish whether integration leads to improvements beyond the sum of individual parts. This analysis also enables us to articulate why and how specific combinations contribute to superior outcomes, guiding both architectural design and component selection.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=1\textwidth]{figures/Multi RAG system.png}
+    \caption{Multi-RAG Framework Overview}
+    \label{fig:MultiRAGPipeline}
+\end{figure}
 
 - Integrate best practices from literature
 - Experiment with hybrid approaches
 - Explain how to assess whether combining different approaches is relevant
 - Explain why it is rational to assemble such methods and why it should work
 
-\section{Use case}
-\section{Existing and potential use cases}
-- Specialized: Sherpa, Harvey
-- All big techs proposing new APIs for scale
 
-\section{Framework}
-- UI Demo with augmented desktop finder and local knowledge base
+\section{Traditional RAG Pipeline}
+
+Detail the choices. (e.g., "Text was extracted using PyMuPDF, chunked semantically using a sentence-transformer model, embedded with bge-large-en-v1.5, and indexed in a FAISS vector store.")
+
+- In-Depth techniques -> Enhancement possible - TODO Nihir: Should this go in future work?
+
+- Extraction: OCR for scanned docs, entity extraction, metadata parsing
+- Transformation: Text splitting (by sentence, paragraph, semantic units), context windowing
+- Embedding: Dense (transformers), sparse (BM25), hybrid
+- Storing: Vector DBs, hybrid stores (text + graph)
+- Retrieving: vector based search with kNN search, hybrid retrieval, query expansion, dual encoders
+- Reranking: Cross-encoder rerankers, contrastive reranking, in-context reranking
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/RAG Indexing.png}
+    \caption{Indexing in RAG Pipeline}
+    \label{fig:IndexingRAG}
+\end{figure}
+
+\section{Multimodal RAG Pipeline}
+
+Detail the approach. (e.g., "We implemented a multimodal pipeline based on the ColPali principle, directly encoding document page images using PaliGemma-3b to create multi-vector embeddings...")
+
+
+\section{Multi RAG Pipeline}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Multi RAG Indexing.png}
+    \caption{Indexing in Multi RAG Pipeline}
+    \label{fig:IndexingMultiRAG}
+\end{figure}
+
+\section{The Fusion Strategy: Multi-Retrieval Reranking}
+
+This is a core part of the novelty. Explain the algorithm precisely.
+
+How did I gather the chunks from the 3 pipelines? (e.g., "We retrieve the top-k=20 chunks from each pipeline.")
+
+How do I handle duplicates?
+
+How are the candidates reranked? (e.g., "The combined set of up to 60 chunks is then passed to a bge-reranker-large cross-encoder, and the final top-k=5 chunks are selected.")
+
+
+
+\subsection{Raw Rerank and Fuse}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Merge by Maximum Score Across Modalities}
+\KwIn{%
+    $T$: list of (metadata, score) pairs from traditional retrieval; \\
+    $M$: list of (metadata, score) pairs from multimodal retrieval
+}
+\KwOut{$F$: list of (metadata, score) pairs merged and sorted by score}
+\BlankLine
+
+\textbf{Step 1: Initialize accumulator}\;
+$Acc \gets \emptyset$ (map from identifier $\rightarrow$ (metadata, score))\;
+
+\BlankLine
+\textbf{Step 2: Process each modality}\;
+\ForEach{($label, L$) in \{(``traditional'', $T$), (``multimodal'', $M$)\}}{
+    \ForEach{$(md, sc)$ in $L$}{
+        $cid \gets$ extract identifier from $md$\;
+        \If{$cid$ is invalid}{continue}\;
+        Set $md.source\_rag \gets label$\;
+        \eIf{$cid \in Acc$}{
+            \If{$sc > Acc[cid].score$}{
+                $Acc[cid] \gets (md, sc)$
+            }
+        }{
+            $Acc[cid] \gets (md, sc)$
+        }
+    }
+}
+
+\BlankLine
+\textbf{Step 3: Sorting}\;
+$F \gets$ values of $Acc$ sorted in descending order by score\;
+
+\BlankLine
+\Return{$F$}\;
+\end{algorithm}
+
+
+\subsection{Reciprocal Rank Fusion (RRF)}
+
+Reciprocal Rank Fusion (RRF) \cite{cormack2009rrf} is a rank-based method for combining the outputs of multiple retrieval systems. 
+Instead of relying on raw retrieval scores, which may not be directly comparable across systems, RRF aggregates evidence using document ranks.
+
+Formally, let $\mathcal{R} = \{R_1, R_2, \dots, R_m\}$ be the set of $m$ ranked lists returned by different retrieval modalities or systems 
+(e.g., traditional textual retrieval and multimodal retrieval). 
+For a given document $d$, its rank in system $R_j$ is denoted as $\text{rank}_{R_j}(d)$, where smaller values correspond to higher ranks. 
+If $d$ does not appear in $R_j$, its rank is set to $+\infty$.
+
+The fused score of document $d$ under RRF is defined as:
+
+\begin{equation}
+    \text{RRF}(d) = \sum_{j=1}^{m} \frac{1}{k + \text{rank}_{R_j}(d)}
+    \label{eq:rrf}
+\end{equation}
+
+where $k$ is a positive constant (commonly set between $50$ and $100$) that controls the contribution of lower-ranked documents. 
+A higher $k$ reduces the relative weight of high ranks, making the fusion less sensitive to small rank differences.
+
+Finally, documents are sorted in descending order of $\text{RRF}(d)$ to produce the fused ranked list. 
+This method is robust across heterogeneous retrieval systems because it does not require score normalization and favors documents 
+that are consistently ranked highly across modalities.
+
+
+\begin{algorithm}[H]
+\caption{Reciprocal Rank Fusion (RRF)}
+\label{alg:rrf}
+\KwIn{
+$T$: list of (metadata, rank) pairs from traditional retrieval; \\
+$M$: list of (metadata, rank) pairs from multimodal retrieval; \\
+$k$: fusion constant (e.g., 60 or 100)
+}
+\KwOut{
+$F$: fused list of (metadata, RRF score) pairs
+}
+
+\BlankLine
+\textbf{Step 1: Build ID $\rightarrow$ rank mappings} \\
+\ForEach{list $L \in \{T, M\}$}{
+    \ForEach{(md, rank) in $L$}{
+        $cid \leftarrow$ extract identifier from $md$ \\
+        store $rank_{L}(cid) \leftarrow rank$
+    }
+}
+
+\BlankLine
+\textbf{Step 2: Compute RRF scores} \\
+$AllIDs \leftarrow$ union of identifiers from $T$ and $M$ \\
+\ForEach{$id \in AllIDs$}{
+    $score \leftarrow 0$ \\
+    \ForEach{retriever $R \in \{T, M\}$}{
+        \If{$id \in R$}{
+            $score \leftarrow score + \frac{1}{k + rank_R(id)}$
+        }
+    }
+    Add $(md, score)$ to $F$ with $md$ metadata
+}
+
+\BlankLine
+\textbf{Step 3: Sorting} \\
+Sort $F$ in descending order of $score$ \\
+
+\Return $F$
+\end{algorithm}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\chapter{Body}
-\section{Algorithms}
+
+
+% % (\textcolor{red}{TODO: Redraw what Nihir drew on the board to show the overview of the process})
+
+% We define a set of evaluation metrics aligned with both retrieval effectiveness (e.g., recall@k, MRR) and generation quality (e.g., factual consistency, completeness, multimodal grounding). These metrics are designed to offer fine-grained insight into system performance and support consistent comparisons across model variants. We demonstrate the robustness and relevance of the proposed dataset by benchmarking it against existing datasets in the ViDoRe benchmark suite, highlighting its capacity to surface failure modes and differentiate between advanced retrieval strategies. The proposed dataset thus serves both as a diagnostic tool and a development driver for future multimodal RAG research.
+
+
+\subsection{Normalize, Average and Fuse}
+
+\begin{algorithm}[H]
+\DontPrintSemicolon
+\caption{Normalize and Average Scores Across Modalities}
+\KwIn{%
+    $T$: list of (metadata, score) pairs from traditional retrieval; \\
+    $M$: list of (metadata, score) pairs from multimodal retrieval; \\
+    $\text{norm}$: normalization method $\in \{\text{L1}, \text{L2}\}$
+}
+\KwOut{$F$: list of (metadata, fused score) pairs sorted by score}
+\BlankLine
+
+\textbf{Step 1: Build ID $\rightarrow$ score mappings}\;
+\ForEach{$(md, sc)$ in $T$ and $M$}{
+    Construct unique identifier $cid$ from $(corpus\_id, doc\_id)$\;
+    If $cid$ not in map: store $(md, sc)$\;
+}
+
+\BlankLine
+\textbf{Step 2: Normalize scores per modality}\;
+\ForEach{score vector $S \in \{T, M\}$}{
+    \eIf{$\text{norm} = \text{L1}$}{
+        $S \gets S / \left(\sum S + \varepsilon\right)$
+    }{
+        $S \gets S / \left(\|S\|_2 + \varepsilon\right)$
+    }
+    Replace original scores with normalized values\;
+}
+
+\BlankLine
+\textbf{Step 3: Compute fused scores}\;
+$AllIDs \gets$ union of identifiers from $T$ and $M$\;
+\ForEach{$id \in AllIDs$}{
+    $vals \gets$ normalized scores from available modalities\;
+    $md \gets$ metadata from $T$ if available, else from $M$\;
+    \If{$vals \neq \emptyset$}{
+        $fused\_score \gets \text{mean}(vals)$\;
+        Annotate $md.fusion\_type \gets$
+            \eIf{$id \in T$ and $id \in M$}{``both''}
+            {\eIf{$id \in T$}{``traditional''}{``multimodal''}}\;
+        Annotate $md.fusion\_method \gets$ ``normalize\_average''\;
+        Add $(md, fused\_score)$ to $F$\;
+    }
+}
+
+\BlankLine
+\textbf{Step 4: Sorting}\;
+Sort $F$ in descending order by fused score\;
+
+\BlankLine
+\Return{$F$}\;
+\end{algorithm}
+
+
+\subsection{Normalize, Rerank and Fuse}
 
 \begin{algorithm}[H]
 \DontPrintSemicolon
@@ -537,98 +785,175 @@ Initialize $F \gets \emptyset$, $Seen \gets \emptyset$\;
 \end{algorithm}
 
 
-\begin{algorithm}[H]
-\DontPrintSemicolon
-\caption{Normalize and Average Scores Across Modalities}
-\KwIn{%
-    $T$: list of (metadata, score) pairs from traditional retrieval; \\
-    $M$: list of (metadata, score) pairs from multimodal retrieval; \\
-    $\text{norm}$: normalization method $\in \{\text{L1}, \text{L2}\}$
-}
-\KwOut{$F$: list of (metadata, fused score) pairs sorted by score}
-\BlankLine
+\section{Evaluation Dataset Generation Methodology}
 
-\textbf{Step 1: Build ID $\rightarrow$ score mappings}\;
-\ForEach{$(md, sc)$ in $T$ and $M$}{
-    Construct unique identifier $cid$ from $(corpus\_id, doc\_id)$\;
-    If $cid$ not in map: store $(md, sc)$\;
-}
+- How we address the challenges in our new approach
+- Metadata extraction
+- Document Clustering
+- Question generation
+- Corpus selection for answering
+- Answer generation
+- LLM Peer review
 
-\BlankLine
-\textbf{Step 2: Normalize scores per modality}\;
-\ForEach{score vector $S \in \{T, M\}$}{
-    \eIf{$\text{norm} = \text{L1}$}{
-        $S \gets S / \left(\sum S + \varepsilon\right)$
-    }{
-        $S \gets S / \left(\|S\|_2 + \varepsilon\right)$
-    }
-    Replace original scores with normalized values\;
-}
+This is the second major contribution. Detail it like a scientific recipe.
 
-\BlankLine
-\textbf{Step 3: Compute fused scores}\;
-$AllIDs \gets$ union of identifiers from $T$ and $M$\;
-\ForEach{$id \in AllIDs$}{
-    $vals \gets$ normalized scores from available modalities\;
-    $md \gets$ metadata from $T$ if available, else from $M$\;
-    \If{$vals \neq \emptyset$}{
-        $fused\_score \gets \text{mean}(vals)$\;
-        Annotate $md.fusion\_type \gets$
-            \eIf{$id \in T$ and $id \in M$}{``both''}
-            {\eIf{$id \in T$}{``traditional''}{``multimodal''}}\;
-        Annotate $md.fusion\_method \gets$ ``normalize\_average''\;
-        Add $(md, fused\_score)$ to $F$\;
-    }
-}
+\subsection{Corpus Selection and Extraction}
 
-\BlankLine
-\textbf{Step 4: Sorting}\;
-Sort $F$ in descending order by fused score\;
+Explain the source (e.g., "publicly available consulting reports from...") and preprocessing.
 
-\BlankLine
-\Return{$F$}\;
-\end{algorithm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Document Extraction.png}
+    \caption{Document Extraction Process}
+    \label{fig:document_extraction}
+\end{figure}
+
+\subsection{Document Clustering and Metadata}
+
+"Documents were clustered by topic using BERTopic to ensure thematic diversity in question generation."
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/clusters_tsne_plot.png}
+    \caption{Document Clustering Analysis}
+    \label{fig:cluster_scatter_plot}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/elbow_plot.png}
+    \caption{Elbow Method for Optimal Clusters}
+    \label{fig:elbow_plot}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/silhouette_plot.png}
+    \caption{Silhouette Analysis for Document Clustering}
+    \label{fig:silhouette_plot}
+\end{figure}
+
+\subsection{Synthetic Question-Answer Generation}
+
+"For each cluster, a fine-tuned Mixtral 8x7B model was prompted to generate 5 types of questions (e.g., simple fact-finding, comparative, multi-hop reasoning)..."
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Question Generation.png}
+    \caption{Question Generation Process}
+    \label{fig:question_generation}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/Answer Generation.png}
+    \caption{Answer Generation Process}
+    \label{fig:answer_generation}
+\end{figure}
+
+\subsection{Ground Truth Establishment and LLM Peer Review}
+
+"Generated QA pairs were validated by a separate GPT-4 agent acting as a reviewer, which checked for factuality against the source document and answerability. Pairs failing validation were discarded."
+
+\subsection{Reproducibility}
+
+The large-scale 'Consulting' dataset was generated following the methodology detailed in this chapter. The generation process was performed utilizing computational resources provided by a UK based company. Due to the proprietary nature of the source documents and the terms of the collaboration, this dataset remains the intellectual property of the company and cannot be publicly released. However, the dataset generation pipeline developed for this project is a core contribution of this work and can be applied to any corpus to create similar high-quality evaluation benchmarks.
+
+TODO: Add samples of the dataset
 
 
+\section{Use Case: An Interactive Demonstration and Analysis Platform}
 
-\begin{algorithm}[H]
-\DontPrintSemicolon
-\caption{Merge by Maximum Score Across Modalities}
-\KwIn{%
-    $T$: list of (metadata, score) pairs from traditional retrieval; \\
-    $M$: list of (metadata, score) pairs from multimodal retrieval
-}
-\KwOut{$F$: list of (metadata, score) pairs merged and sorted by score}
-\BlankLine
+This title frames the app not just as a demo, but as a tool used for the own analysis, which strengthens its academic relevance.
 
-\textbf{Step 1: Initialize accumulator}\;
-$Acc \gets \emptyset$ (map from identifier $\rightarrow$ (metadata, score))\;
+How to Structure the Section
+Break down the description into four key parts: Purpose, Architecture, Features, and its Role in the Research.
 
-\BlankLine
-\textbf{Step 2: Process each modality}\;
-\ForEach{($label, L$) in \{(``traditional'', $T$), (``multimodal'', $M$)\}}{
-    \ForEach{$(md, sc)$ in $L$}{
-        $cid \gets$ extract identifier from $md$\;
-        \If{$cid$ is invalid}{continue}\;
-        Set $md.source\_rag \gets label$\;
-        \eIf{$cid \in Acc$}{
-            \If{$sc > Acc[cid].score$}{
-                $Acc[cid] \gets (md, sc)$
-            }
-        }{
-            $Acc[cid] \gets (md, sc)$
-        }
-    }
-}
 
-\BlankLine
-\textbf{Step 3: Sorting}\;
-$F \gets$ values of $Acc$ sorted in descending order by score\;
+- Purpose and Objectives
 
-\BlankLine
-\Return{$F$}\;
-\end{algorithm}
+Start by explaining why building the application. What was its goal in the context of the Master's project?
 
+To Provide a Tangible Demonstration: State that the primary objective was to create an interactive interface to demonstrate the end-to-end functionality of the implemented RAG systems.
+
+To Enable Comparative Analysis: A key goal was to allow for a direct, side-by-side comparison of the outputs from the Traditional, Graph, Multimodal, and the proposed MultiRAG systems for any given query. This visual comparison is much more powerful than looking at metrics tables alone.
+
+To Facilitate Qualitative Evaluation: The application served as a crucial tool for the research, allowing to perform qualitative error analysis and identify specific examples where one system excelled or failed, which can then discuss in the "Results" section.
+
+Example Text:
+
+"To demonstrate the practical application and facilitate comparative analysis of the different RAG pipelines, a full-stack web application was developed. The platform's primary objectives were: 1) to provide an interactive interface for querying the implemented RAG systems against a selected document corpus, 2) to enable a direct, side-by-side comparison of the generated answers and retrieved sources, and 3) to serve as a tool for the qualitative evaluation and error analysis presented in the 'Evaluation' chapter of this report."
+
+
+% \section{Combining an enhanced RAG framework}
+% \textit{Integrate best practices from literature} \\
+% \textit{Experiment with hybrid approaches} \\
+% \textit{Explain how to assess whether combining different approaches is relevant} \\
+% \textit{Explain why it is rational to assemble such methods and why it should work} \\
+% To identify optimal strategies for enhancing Retrieval-Augmented Generation (RAG) systems, we propose a modular framework in which a variety of techniques and components can be selectively enabled or disabled. Drawing from best practices in the literature, including recent advances in multimodal retrieval, graph-based reasoning, and reranking strategies, we design a flexible architecture capable of isolating the contributions of individual modules.
+
+% % (\textcolor{red}{TODO: Draw a RAG pipeline with each steps modularized so we can swap in place / combine methods at wish})
+
+% To evaluate the effectiveness of combining different approaches, we adopt a systematic benchmarking strategy. Each module or enhancement is first tested in isolation, with performance assessed on the ViDoRe\cite{ColPali} v1s and v2s datasets. Subsequently, we evaluate composite configurations, enabling combinations of techniques to determine whether their joint application yields synergistic performance gains. The results are analyzed comparatively to establish whether integration leads to improvements beyond the sum of individual parts. This analysis also enables us to articulate why and how specific combinations contribute to superior outcomes, guiding both architectural design and component selection.
+
+
+\subsection{Real world potential}
+- Specialized: Sherpa, Harvey
+- All big techs proposing new APIs for scale
+
+\subsection{System Architecture}
+
+This is where to detail the technical stack. A simple architecture diagram TODO.
+
+Diagram: Create a simple block diagram with three columns: Frontend, Backend (API Server), and RAG Services.
+
+Text Description:
+
+Frontend: Describe the technology and its purpose.
+
+Stack: (e.g., React, Next.js, TypeScript, Tailwind CSS)
+
+Why chose it: "The frontend was built using Next.js (a React framework) and TypeScript. This stack was chosen for its ability to create a fast, responsive, and type-safe user interface, ideal for presenting complex information like source chunks and generated text in a clear, component-based manner."
+
+Backend (API Server): This is the intermediary between the user interface and Python RAG logic.
+
+Stack: (e.g., Python with FastAPI or Flask)
+
+Why chose it: "A backend API server was developed using FastAPI in Python. FastAPI was selected for its high performance, asynchronous capabilities (essential for handling potentially long-running RAG queries without blocking), and its automatic generation of interactive API documentation (Swagger UI), which aided in development and debugging."
+
+RAG Services: This is the core research code.
+
+How it's integrated: "The backend server wraps the core RAG logic. Each of the four RAG systems (Traditional, Graph, Multimodal, MultiRAG) was exposed via a distinct API endpoint. When a request is received from the frontend, the backend invokes the selected RAG pipeline, which performs the retrieval and generation, and then returns the final answer along with source metadata as a JSON object."
+
+
+\subsection{Key Features and User Workflow}
+
+Describe how a user interacts with the application. This is the perfect place to include screenshots.
+
+Corpus Selection: "The user begins by selecting a document from a pre-loaded corpus based on our generated 'Consulting' dataset." (Add a screenshot of this interface).
+
+Query Interface: "The user then inputs their question into a text field and can select which RAG systems to run in parallel using a set of checkboxes: 'Traditional', 'Graph', 'Multimodal', and 'MultiRAG'."
+
+Results Display: "Upon submission, the application presents the results in a side-by-side comparison view." Describe what is shown for each result:
+
+Generated Answer: The final text generated by the LLM.
+
+Retrieved Sources: The list of source chunks used to generate the answer.
+
+Source Metadata: For each chunk, display crucial metadata like the source document name, page number, and the retrieval score.
+
+Visual Context: "Crucially, for the Multimodal and Traditional systems, the application displays a thumbnail image of the document page from which the chunk was extracted, with the chunk's bounding box highlighted. For the Graph RAG, a simplified visualization of the retrieved knowledge subgraph is rendered."
+
+(Include a well-composed screenshot showing the side-by-side comparison of two different RAG outputs for the same query).
+
+
+TODO: Add screenshot of the Webapp
+
+\subsection{Role in the Research Project}
+
+Finally, explicitly link the app back to the thesis.
+
+"Beyond being a demonstration tool, the application was instrumental in the research process. It was used extensively during the qualitative analysis phase to identify the strengths and weaknesses of each approach. For instance, the ability to visually compare the retrieved chunks for a multi-hop query immediately highlighted the superiority of the Graph RAG pipeline in that context. The specific examples used in the 'Discussion' section of this report were sourced directly through interaction with this platform."
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -640,6 +965,16 @@ $F \gets$ values of $Acc$ sorted in descending order by score\;
 Robust evaluation is central to the development and advancement of RAG systems. As RAG moves beyond text-based question answering into multimodal, multi-hop, and real-world applications, traditional evaluation paradigms fall short. Accurate assessment of a system's ability to retrieve, reason, and generate coherent responses across modalities requires holistic and fine-grained evaluation frameworks.
 
 It is not sufficient to only assess generation quality in isolation; the retrieval pipeline, the reasoning mechanisms, and the interaction across data modalities must be simultaneously evaluated. Without comprehensive evaluation, the efficacy of complex enhancements, such as graph-based retrieval or visual-textual embeddings cannot be properly understood, compared, or trusted.
+
+
+
+
+OLD - Purpose
+
+- What / why is evaluation important
+- Need for robust, real-world, and multimodal evaluation
+- Assess retrieval, generation, and reasoning quality
+
 
 \section{Metrics}
 % \textit{Factuality, relevance, comprehensiveness, diversity, logicality, coherence} \\
@@ -691,9 +1026,6 @@ Together, these metrics offer a nuanced and rigorous framework for evaluating th
 Ultimately, no single metric can fully capture the nuanced performance of RAG systems, especially in multimodal and reasoning-intensive contexts. Therefore, the combination of these diverse metrics ensures a holistic view of system behavior, balancing retrieval fidelity, contextual grounding, and response coherence. As RAG continues to evolve toward more interactive, explainable, and agentic applications, so too must our evaluation protocols. Future work should emphasize benchmark diversity, real-world task simulation, and the development of automated tools for fine-grained diagnostic analysis.
 
 
-\section{Dataset generation}
-- Benchmark on existing and new datasets to assess dataset quality
-
 \section{RAG pipeline and experimentations}
 % \textit{What is lacking in the current dataset generation approaches} \\
 % \textit{How we will address the challenges in our new approach} \\
@@ -706,13 +1038,84 @@ By directly addressing the limitations of existing benchmarks, our approach offe
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+Datasets: Describe the generated "Consulting" dataset (size, number of QA pairs, types of questions) and any standard benchmarks used for comparison (e.g., "To validate our dataset's robustness, we also report performance on a subset of the DocVQA benchmark").
+
+Metrics: Define the evaluation metrics clearly. For retrieval: nDCG@k, Mean Reciprocal Rank (MRR). For generation: ROUGE-L, BERTScore, and perhaps a Factuality Score using an LLM judge.
+
+Baselines: State clearly: "We compare our MultiRAG system against three baselines: our standalone implementations of Traditional RAG, Graph RAG, and Multimodal RAG."
+
+OLD - Exisiting work
+
+- ViDoRe benchmark v1 and v2
+- MTEB benchmarks
+- BEIR format
+
+OLD - Challenges
+
+- Lack of standardized, multimodal, and challenging benchmarks
+- Difficulty in evaluating multi-hop and cross-modal reasoning
+- Dataset bias, annotation quality, and coverage
+- No noise, limited size to assess at scale
+
+OLD - Metrics
+
+- Factuality, relevance, comprehensiveness, diversity, logicality, coherence
+- Retrieval accuracy, answer correctness, multi-hop reasoning
+
+Results:
+
+Ablation Study: Individual RAG Performance: Present a table showing the performance of each of the 3 individual pipelines on the dataset. This is essential to show that different RAGs excel at different question types, justifying the hybrid approach.
+
+Main Result: MultiRAG Performance: Present the key results table comparing MultiRAG against the three baselines. This table should be the centerpiece of the evaluation. Use bold to highlight the winning scores.
+
+Dataset Quality Analysis: If I benchmarked the dataset generation process itself, present those results here.
+
+
+TODO: Add tables and charts showing the results.
+
+
+\section{Dataset generation}
+- Benchmark on existing and new datasets to assess dataset quality
+
+
 \chapter{Conclusions and future work}
+
+
+Discussion and Error Analysis:
+
+Don't just present numbers. Interpret them. Why did MultiRAG perform better? Show an example where Traditional RAG failed, Graph RAG found a key connection, and MultiRAG's reranker correctly prioritized the graph context.
+
+Discuss the limitations. When does MultiRAG fail? (e.g., "When all three retrievers fail to find relevant context, the reranker has nothing to work with.")
+
+Conclusions and future work
+
+Conclusion:
+
+Briefly restate the problem, the solution (MultiRAG + dataset methodology), and summarize the main finding (e.g., "Our results confirm that combining retriever strengths through reranking provides a statistically significant improvement in retrieval quality...").
+
+Limitations:
+
+Be honest about the weaknesses (e.g., "The MultiRAG system has higher computational overhead and latency due to running three parallel retrieval systems.").
+
+Future Work:
+
+- On MultiRAG:
+  "Future work could explore more sophisticated fusion techniques, such as adaptive weighting of retrievers based on query type, or using a learning-to-rank model instead of a static cross-encoder."
+
+- On Dataset Generation:
+  "The dataset generation process could be enhanced by incorporating more complex, non-textual question types (e.g., 'What is the trend shown in the chart on page 5?')."
+
+
 \section{Conclusion}
 This is the conclusion of the report
 
 Dataset gen:
 
 Rag pipeline:
+
+\section{Limitations}
 
 \section{Future work}
 This is the future work section.

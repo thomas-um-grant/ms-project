@@ -1,4 +1,5 @@
 import asyncio
+import json
 import logging
 import math
 from collections.abc import Iterable
@@ -152,10 +153,70 @@ class MultiRAG(BaseRAG):
         method = (fusion_method or self.fusion_method or "max").lower()
         norm_type = (norm or self.fusion_norm or "l2").lower()
 
+        # Compiling analysis files to assess the quality of the input embeddings
+        analysis_path = (
+            Path(__file__).parent / f"{self.configs['knowledge_base']}_analysis.json"
+        )
+
+        analysis = {}
+        if analysis_path.exists():
+            with analysis_path.open() as f:
+                analysis = json.load(f)
+        else:
+            analysis_path.parent.mkdir(parents=True, exist_ok=True)
+
         fused_all: list[list[tuple[dict, float]]] = []
-        for qi, _ in enumerate(query_texts):
+        for qi, query_value in enumerate(query_texts):
             trad_list = trad_results[qi] if qi < len(trad_results) else []
             multi_list = multi_results[qi] if qi < len(multi_results) else []
+
+            if qi not in analysis:  # Only run once per question
+                analysis[qi] = {}
+                analysis[qi]["question"] = query_value
+
+                for source_label, results in [
+                    ("traditional", trad_list),
+                    ("multimodal", multi_list),
+                ]:
+                    if source_label == "traditional":
+                        # After retrieval, before fusion
+                        all_ids = [self._extract_id(md) for md, _ in results]
+                        if len(all_ids) != len(set(all_ids)):
+                            print(
+                                "multi total hits:",
+                                len(all_ids),
+                                "unique ids:",
+                                len(set(all_ids)),
+                            )
+                    elif source_label == "multimodal":
+                        # After retrieval, before fusion
+                        all_ids = [self._extract_id(md) for md, _ in results]
+                        if len(all_ids) != len(set(all_ids)):
+                            print(
+                                "trad total hits:",
+                                len(all_ids),
+                                "unique ids:",
+                                len(set(all_ids)),
+                            )
+
+                    for metadata, score in results:
+                        cid = self._extract_id(metadata)
+                        if not cid:
+                            print(f"No CID found: {metadata}")
+                            print()
+                            continue
+
+                        if cid not in analysis[qi]:
+                            analysis[qi][cid] = {}
+
+                        analysis[qi][cid][source_label] = {
+                            "metadata": metadata,
+                            "score": score,
+                        }
+
+                # dump json in file
+                with analysis_path.open("w") as f:
+                    json.dump(analysis, f)
 
             if method == "normalize_average":
                 fused = self._normalize_and_average(trad_list, multi_list, norm_type)
@@ -188,10 +249,10 @@ class MultiRAG(BaseRAG):
         multi_list: list[tuple[dict, float]],
     ) -> list[tuple[dict, float]]:
         accumulator: dict[str, tuple[dict, float]] = {}
-        for source_label, results in (
+        for source_label, results in [
             ("traditional", trad_list),
             ("multimodal", multi_list),
-        ):
+        ]:
             for metadata, score in results:
                 cid = self._extract_id(metadata)
                 if not cid:
@@ -237,9 +298,7 @@ class MultiRAG(BaseRAG):
         def build_map(items: Iterable[tuple[dict, float]]):
             m = {}
             for md, sc in items:
-                corpus_id = md.get("corpus-id")
-                doc_id = md.get("doc-id")
-                cid = f"{corpus_id}{f'_{doc_id}' if doc_id else ''}"
+                cid = self._extract_id(md)
 
                 if cid is None:
                     continue
@@ -334,9 +393,7 @@ class MultiRAG(BaseRAG):
         def build_list(items: list[tuple[dict, float]]):
             reduced: dict[str, tuple[dict, float]] = {}
             for md, sc in items:
-                corpus_id = md.get("corpus-id")
-                doc_id = md.get("doc-id")
-                cid = f"{corpus_id}{f'_{doc_id}' if doc_id else ''}"
+                cid = self._extract_id(md)
 
                 if cid is None:
                     continue
@@ -388,10 +445,7 @@ class MultiRAG(BaseRAG):
             # Order by score desc for this rank pair so highest inserted first
             pair.sort(key=lambda x: x[1], reverse=True)
             for md, sc in pair:
-                corpus_id = md.get("corpus-id")
-                doc_id = md.get("doc-id")
-                cid = f"{corpus_id}{f'_{doc_id}' if doc_id else ''}"
-
+                cid = self._extract_id(md)
                 if cid in seen:
                     continue
                 seen.add(cid)
