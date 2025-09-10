@@ -31,9 +31,7 @@ Imperial College London – Computing MSc Individual Project
 12. [Extending Pipelines](#-extending-pipelines)
 13. [Project Structure](#-project-structure)
 14. [Environment Variables](#-environment-variables)
-15. [Development Guide](#-development-guide)
 16. [Roadmap](#-roadmap)
-17. [Research Notes / Background](#-research-notes--background)
 18. [Contributing](#-contributing)
 19. [License](#-license)
 
