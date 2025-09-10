@@ -1,0 +1,278 @@
+{
+  "datasets": [
+    {
+      "id": "msmarco",
+      "name": "MSMARCO Trimmed",
+      "displayName": "MS MARCO Trimmed",
+      "category": "Web Passage QA",
+      "description": "Large-scale real-world web search queries paired with relevant passages for open-domain QA and passage ranking.",
+      "details": {
+        "purpose": "Evaluate large-scale passage retrieval and open-domain question answering",
+        "domain": "Web Search & Open QA",
+        "size": "697 corpuses, 36 queries, 697 QA pairs",
+        "format": "Natural language queries with one or more relevant passages and sparse relevance labels",
+        "challenges": "Noisy user queries, lexical mismatch, sparse supervision"
+      },
+      "icon": "🔎",
+      "color": "#00BCD4",
+      "url": "https://huggingface.co/datasets/BeIR/msmarco"
+    },
+    {
+      "id": "nfcorpus",
+      "name": "NFCorpus Trimmed",
+      "displayName": "NFCorpus Trimmed",
+      "category": "Medical Retrieval",
+      "description": "Consumer health question answering and retrieval over curated medical information documents.",
+      "details": {
+        "purpose": "Assess retrieval for layperson medical and health information needs",
+        "domain": "Consumer Health",
+        "size": "1000 corpuses, 48 queries, 1666 QA pairs",
+        "format": "Health-related questions with graded relevance judgments over medical articles",
+        "challenges": "Specialized terminology, layperson phrasing"
+      },
+      "icon": "🩺",
+      "color": "#2E7D32",
+      "url": "https://huggingface.co/datasets/BeIR/nfcorpus"
+    },
+    {
+      "id": "scidocs",
+      "name": "SciDocs Trimmed",
+      "displayName": "SciDocs Trimmed",
+      "category": "Scientific Retrieval",
+      "description": "Scientific document retrieval and citation-oriented recommendation over scholarly publications.",
+      "details": {
+        "purpose": "Evaluate retrieval on scientific literature with citation/context signals",
+        "domain": "Scholarly Communication",
+        "size": "1000 corpuses, 217 queries, 1069 QA pairs",
+        "format": "Queries formed from paper titles/abstracts with relevance derived from citation and usage graphs",
+        "challenges": "Domain jargon, multi-task signals, long document abstracts"
+      },
+      "icon": "📚",
+      "color": "#00897B",
+      "url": "https://huggingface.co/datasets/BeIR/scidocs"
+    },
+    {
+      "id": "arxivqa",
+      "name": "ArXivQA",
+      "displayName": "ArXiv QA",
+      "category": "Scientific QA",
+      "description": "Scientific question answering over ArXiv papers combining textual and visual (figure) content.",
+      "details": {
+        "purpose": "Evaluate multi-modal scientific document comprehension and question answering",
+        "domain": "Scientific Literature",
+        "size": "500 corpuses, 500 queries, 500 QA pairs",
+        "format": "Questions paired with paper passages, figures and captions",
+        "challenges": "Complex notation, figure interpretation, multi-modal reasoning"
+      },
+      "icon": "🔬",
+      "color": "#4CAF50",
+      "url": "https://huggingface.co/datasets/vidore/arxivqa_test_subsampled"
+    },
+    {
+      "id": "docvqa",
+      "name": "DocVQA",
+      "displayName": "DocVQA",
+      "category": "Document QA",
+      "description": "Visual document question answering over scanned and photographed documents.",
+      "details": {
+        "purpose": "Evaluate visual document understanding and question answering",
+        "domain": "Document Images",
+        "size": "500 corpuses, 451 queries, 500 QA pairs",
+        "format": "Questions paired with real-world document images",
+        "challenges": "OCR noise, layout structure, visual-text alignment"
+      },
+      "icon": "📄",
+      "color": "#2196F3",
+      "url": "https://huggingface.co/datasets/vidore/docvqa_test_subsampled"
+    },
+    {
+      "id": "infovqa",
+      "name": "InfoVQA",
+      "displayName": "InfoVQA",
+      "category": "Infographic QA",
+      "description": "Question answering over infographics and charts requiring visual data interpretation.",
+      "details": {
+        "purpose": "Evaluate understanding of infographics, charts and visually encoded data",
+        "domain": "Infographics & Charts",
+        "size": "500 corpuses, 494 queries, 500 QA pairs",
+        "format": "Questions about infographic and chart visuals",
+        "challenges": "Visual reasoning, data extraction, multi-modal synthesis"
+      },
+      "icon": "📊",
+      "color": "#FF9800",
+      "url": "https://huggingface.co/datasets/vidore/infovqa_test_subsampled"
+    },
+    {
+      "id": "tabfquad",
+      "name": "TabFQuAD",
+      "displayName": "TabFQuAD",
+      "category": "Table QA",
+      "description": "Table-focused QA over financial and structured tabular data.",
+      "details": {
+        "purpose": "Evaluate table understanding and financial QA",
+        "domain": "Financial & Tabular Data",
+        "size": "70 corpuses, 280 queries, 280 QA pairs",
+        "format": "Questions about structured tables and associated figures",
+        "challenges": "Table structure parsing, numerical reasoning, financial context"
+      },
+      "icon": "📈",
+      "color": "#E91E63",
+      "url": "https://huggingface.co/datasets/vidore/tabfquad_test_subsampled"
+    },
+    {
+      "id": "esg_reports",
+      "name": "ESG Reports",
+      "displayName": "ESG Reports",
+      "category": "Sustainability Reports",
+      "description": "ESG-focused QA over sustainability and corporate responsibility reports (food industry emphasis).",
+      "details": {
+        "purpose": "Evaluate sustainability and ESG disclosure understanding",
+        "domain": "ESG & Sustainability",
+        "size": "1540 corpuses (from 30 unique documents), 228 queries, 888 QA pairs",
+        "format": "Reports with narrative, KPIs and compliance sections",
+        "challenges": "Domain terminology, regulatory references, impact assessment"
+      },
+      "icon": "🌱",
+      "color": "#795548",
+      "url": "https://huggingface.co/datasets/vidore/esg_reports_v2"
+    },
+    {
+      "id": "biomedical_lectures",
+      "name": "Biomedical Lectures",
+      "displayName": "Biomedical Lectures",
+      "category": "Biomedical Lectures",
+      "description": "Biomedical lecture materials (slides + transcripts) for multi-modal educational QA.",
+      "details": {
+        "purpose": "Evaluate retrieval over biomedical lecture slides and transcripts",
+        "domain": "Biomedical Education",
+        "size": "1020 corpuses (from 27 unique documents), 640 queries, 2060 QA pairs",
+        "format": "Slide decks, transcripts, figure descriptions",
+        "challenges": "Specialized terminology, figure references, integrating bullet and narrative"
+      },
+      "icon": "🧬",
+      "color": "#3F51B5",
+      "url": "https://huggingface.co/datasets/vidore/biomedical_lectures_v2"
+    },
+    {
+      "id": "economics_reports",
+      "name": "Economics Reports",
+      "displayName": "Economics Reports",
+      "category": "Economic Reports",
+      "description": "Economic analysis and policy reports covering macro, trade and market themes.",
+      "details": {
+        "purpose": "Assess retrieval on analytical economic narratives and structured indicators",
+        "domain": "Economics & Finance",
+        "size": "452 corpuses (from 5 unique documents), 232 queries, 3630 QA pairs",
+        "format": "Structured reports with sections, tables and commentary",
+        "challenges": "Domain jargon, interpreting indicators, linking narrative to quantitative context"
+      },
+      "icon": "💹",
+      "color": "#607D8B",
+      "url": "https://huggingface.co/datasets/vidore/economics_reports_v2"
+    },
+    {
+      "id": "consulting_reports",
+      "name": "Consulting Reports",
+      "displayName": "Consulting Reports",
+      "category": "Consulting Reports",
+      "description": "Public consulting industry reports from firm and consultant publications.",
+      "details": {
+        "purpose": "Evaluate retrieval over strategic, market and operational consulting narratives",
+        "domain": "Management Consulting",
+        "size": "Light version: 1010 corpuses (from 264 unique documents), 300 queries, 1200 QA pairs\nFull version: 16952 corpuses (from 468 unique documents), 300 queries, 1200 QA pairs",
+        "format": "Strategy decks, insight briefs, industry analyses, methodology notes",
+        "challenges": "Style variance, synthesized frameworks, uneven depth across sources"
+      },
+      "icon": "🏢",
+      "color": "#455A64",
+      "url": null
+    }
+  ],
+  "metrics": [
+    {
+      "id": "ndcg",
+      "name": "NDCG",
+      "displayName": "NDCG@K",
+      "category": "Ranking Quality",
+      "description": "Normalized Discounted Cumulative Gain measures the quality of ranking by considering both relevance and position.",
+      "details": {
+        "formulaPlain": "NDCG at k equals DCG at k divided by IDCG at k.",
+        "formulaLatex": "\\mathrm{NDCG}_k = \\frac{\\mathrm{DCG}_k}{\\mathrm{IDCG}_k}",
+        "range": "0.0 to 1.0 (higher is better)",
+        "interpretation": "1.0 = perfect ranking, 0.0 = worst possible ranking",
+        "advantages": "Considers graded relevance and position bias",
+        "use_case": "Best for evaluating ranking quality when multiple relevance levels exist"
+      },
+      "icon": "📊",
+      "color": "#4CAF50"
+    },
+    {
+      "id": "recall",
+      "name": "Recall",
+      "displayName": "Recall@K",
+      "category": "Coverage",
+      "description": "Measures the proportion of relevant documents that are retrieved in the top-K results.",
+      "details": {
+        "formulaPlain": "Recall at k equals the number of relevant documents retrieved in the top k divided by the total number of relevant documents.",
+        "formulaLatex": "\\mathrm{Recall}_k = \\frac{|R \\cap R_k|}{|R|}",
+        "range": "0.0 to 1.0 (higher is better)",
+        "interpretation": "1.0 = all relevant documents retrieved, 0.0 = no relevant documents retrieved",
+        "advantages": "Simple to understand and interpret",
+        "use_case": "Important when you need to find as many relevant documents as possible"
+      },
+      "icon": "🎯",
+      "color": "#2196F3"
+    },
+    {
+      "id": "precision",
+      "name": "Precision",
+      "displayName": "Precision@K",
+      "category": "Accuracy",
+      "description": "Measures the proportion of retrieved documents that are relevant in the top-K results.",
+      "details": {
+        "formulaPlain": "Precision at k equals the number of relevant documents in the top k results divided by k.",
+        "formulaLatex": "\\mathrm{Precision}_k = \\frac{|R \\cap R_k|}{k}",
+        "range": "0.0 to 1.0 (higher is better)",
+        "interpretation": "1.0 = all retrieved documents are relevant, 0.0 = no retrieved documents are relevant",
+        "advantages": "Measures the accuracy of retrieval",
+        "use_case": "Important when false positives are costly"
+      },
+      "icon": "🎲",
+      "color": "#FF9800"
+    },
+    {
+      "id": "map",
+      "name": "MAP",
+      "displayName": "MAP@K",
+      "category": "Average Performance",
+      "description": "Mean Average Precision calculates the average precision across all queries at different recall levels.",
+      "details": {
+        "formulaPlain": "MAP at k equals the mean of Average Precision at k over all queries.",
+        "formulaLatex": "\\mathrm{MAP}_k = \\frac{1}{Q} \\sum_{q=1}^Q \\mathrm{AP}_{k,q}",
+        "range": "0.0 to 1.0 (higher is better)",
+        "interpretation": "Summarizes precision-recall curve in a single number",
+        "advantages": "Balances precision and recall considerations",
+        "use_case": "Good overall metric for comparing retrieval systems"
+      },
+      "icon": "📈",
+      "color": "#9C27B0"
+    },
+    {
+      "id": "mrr",
+      "name": "MRR",
+      "displayName": "MRR@K",
+      "category": "First Relevant",
+      "description": "Mean Reciprocal Rank measures how quickly the first relevant document is found.",
+      "details": {
+        "formulaPlain": "MRR at k equals the mean over queries of the reciprocal rank of the first relevant document (capped at k).",
+        "formulaLatex": "\\mathrm{MRR}_k = \\frac{1}{Q} \\sum_{q=1}^Q \\frac{1}{r_q}",
+        "range": "0.0 to 1.0 (higher is better)",
+        "interpretation": "1.0 = first result always relevant, lower values = relevant results appear later",
+        "advantages": "Focuses on finding at least one relevant document quickly",
+        "use_case": "Important when users typically only look at the first few results"
+      },
+      "icon": "🥇",
+      "color": "#E91E63"
+    }
+  ]
+}

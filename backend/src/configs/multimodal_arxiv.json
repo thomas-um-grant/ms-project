@@ -1,0 +1,12 @@
+{
+  "type": "multimodal",
+  "name": "multimodal",
+  "configs": {
+    "embedding_model": "colpali_embed",
+    "generation_model": "colqwen2_ollama_gen",
+    "preferred_device": "cuda",
+    "chunking_strategy": "page",
+    "knowledge_base": "vidore/arxivqa_test_subsampled_beir",
+    "reranker": "jina"
+  }
+}

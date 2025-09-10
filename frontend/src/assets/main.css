@@ -1,0 +1,26 @@
+@import "./design-system.css";
+
+/* Application-specific styles */
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+  background: var(--color-surface);
+}
+
+/* Global link styles */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color var(--transition-normal);
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+/* Remove legacy Vue template styles */

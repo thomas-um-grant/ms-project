@@ -1,0 +1,12 @@
+{
+  "type": "traditional",
+  "name": "traditional",
+  "configs": {
+    "embedding_model": "nomic_ollama_embed",
+    "generation_model": "llama_text_gen",
+    "preferred_device": "cuda",
+    "knowledge_base": "vidore/esg_reports_v2",
+    "retrieval_method": "hybrid",
+    "reranker": "jina"
+  }
+}
