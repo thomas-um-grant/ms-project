@@ -19,8 +19,8 @@ Imperial College London – Computing MSc Individual Project
 ## 📌 Table of Contents
 
 1. [Vision](#-vision)
-2. [Core Features](#-core-features)
-3. [Architecture](#-architecture)
+2. [Core Features](#-core-features-in-development)
+3. [Architecture](#-architecture-in-development)
 4. [Diagrams](#-diagrams)
 5. [Tech Stack](#-tech-stack)
 6. [Quick Start](#-quick-start)
@@ -28,7 +28,6 @@ Imperial College London – Computing MSc Individual Project
 8. [Frontend (Evaluation UI)](#-frontend-evaluation-ui)
 9. [Data & Indexing Workflow](#-data--indexing-workflow)
 10. [API Reference](#-api-reference)
-11. [Evaluation & Metrics](#-evaluation--metrics)
 12. [Extending Pipelines](#-extending-pipelines)
 13. [Project Structure](#-project-structure)
 14. [Environment Variables](#-environment-variables)
