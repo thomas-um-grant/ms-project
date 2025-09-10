@@ -4,25 +4,9 @@
 
 ## Abstract
 
-Context:
-
-Retrieval-Augmented Generation (RAG) is crucial for grounding LLMs, but no single retrieval method (traditional, graph, or multimodal) excels in all scenarios.
-
-Problem:
-
-This fragmentation necessitates a way to combine the strengths of these disparate retrievers to improve overall retrieval quality. Furthermore, evaluating such systems is hampered by a lack of robust, domain-specific benchmarks.
-
-Our Contribution:
-
-This project introduces "MultiRAG," a modular framework that merges outputs from traditional, and multimodal RAG pipelines using a final reranking step. We also propose and implement a novel methodology for generating large-scale, high-quality evaluation datasets for specialised domains.
-
-Methodology & Results:
-
-We implemented original RAG archetypes and our MultiRAG system. Through extensive ablation studies on our generated "Consulting" dataset, we demonstrate that MultiRAG improves retrieval relevance and reduces dataset type bias compared to other RAG approaches.
-
-Conclusion:
-
-Our findings validate that a hybrid, reranking-based approach is a potent strategy for RAG optimization, and our dataset generation technique provides a valuable tool for future research.
+Retrieval-Augmented Generation (RAG) is a key technique for grounding Large Language Models (LLMs) in factual data. However, the performance of RAG systems is often constrained by the 'one-size-fits-all' nature of their underlying retriever, as no single method excels across all data types and query complexities. Real-world applications often involve a heterogeneous mix of data modalities (e.g., text, tables, images), which poses a significant challenge for unimodal retrieval systems. This diversity necessitates a hybrid approach that can effectively fuse the outputs of multiple, specialized retrievers to provide a more comprehensive context for the generator. Furthermore, evaluating such systems is hampered by a lack of robust, domain-specific benchmarks.
+To address this, we propose MultiRAG, a modular framework that aggregates and reranks candidate documents from multiple, independent retrieval systems, spanning both textual and multimodal sources before the final generation step. We evaluate MultiRAG's performance on established benchmarks including Vidore datasets, text-based datasets, as well as a new robust domain-specific dataset and demonstrate its superiority over a state-of-the-art multimodal retrieval baseline: ColPali.
+To facilitate more rigorous evaluation in specialized fields, we also introduce an LLM-driven methodology for creating domain-specific RAG benchmarks. Using a 'Consulting' dataset generated with this method, our extensive ablation studies show that MultiRAG improves retrieval metrics (e.g., nDCG@10) and, crucially, reduces the performance bias observed when single retrievers are applied to non-optimal document types. Our findings suggest that a hybrid, reranking-based architecture is an effective and robust strategy for optimizing RAG systems in complex information environments. Furthermore, our dataset generation pipeline offers a scalable tool for future research in domain-specific RAG. The framework and results are demonstrated via an accompanying web application.
 
 ## Acknowledgements
 

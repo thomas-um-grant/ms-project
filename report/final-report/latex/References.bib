@@ -1,4 +1,4 @@
-@misc{DALL.E-2,
+@misc{DALL-E-2,
    title = {DALL·E 2 | OpenAI},
    url = {https://openai.com/index/dall-e-2/}
 }
@@ -76,7 +76,7 @@
 
 @misc{FoundationModelsInBigBusiness,
    title = {AI Foundation Models: Transforming Big Business},
-   url = {https://dataforest.ai/blog/ai-foundation-models-for-big-business-innovation?utm_source=chatgpt.com}
+   url = {https://dataforest.ai/blog/ai-foundation-models-for-big-business-innovation}
 }
 @article{Hallucinations,
    abstract = {As large language models continue to advance in Artificial Intelligence (AI), text generation systems have been shown to suffer from a problematic phenomenon often termed as "hallucination."However, with AI's increasing presence across various domains, including medicine, concerns have arisen regarding the use of the term itself. In this study, we conducted a systematic review to identify papers defining "AI hallucination"across fourteen databases. We present and analyze definitions obtained from all databases, categorize them based on their applications, and extract key points within each category. Our results highlight a lack of consistency in how the term is used, but also help identify several alternative terms in the literature. We discuss the implications of these findings and call for a more unified effort to bring consistency to this important contemporary AI issue, which can significantly affect multiple domains.},
@@ -425,7 +425,7 @@
 }
 @misc{mmGraphRAG,
    title = {Multimodal Graph RAG (mmGraphRAG): Incorporating Vision in Search and Analytics - Enterprise Knowledge},
-   url = {https://enterprise-knowledge.com/multimodal-graph-rag-mmgraphrag-incorporating-vision-in-search-and-analytics/?utm_medium=referral&utm_source=componentcontenalliance.com&utm_campaign=cca_website}
+   url = {https://enterprise-knowledge.com/multimodal-graph-rag-mmgraphrag-incorporating-vision-in-search-and-analytics/}
 }
 @article{HyDE,
    abstract = {While dense retrieval has been shown effective and efficient across tasks and languages, it remains difficult to create effective fully zero-shot dense retrieval systems when no relevance label is available. In this paper, we recognize the difficulty of zero-shot learning and encoding relevance. Instead, we propose to pivot through Hypothetical Document Embeddings~(HyDE). Given a query, HyDE first zero-shot instructs an instruction-following language model (e.g. InstructGPT) to generate a hypothetical document. The document captures relevance patterns but is unreal and may contain false details. Then, an unsupervised contrastively learned encoder~(e.g. Contriever) encodes the document into an embedding vector. This vector identifies a neighborhood in the corpus embedding space, where similar real documents are retrieved based on vector similarity. This second step ground the generated document to the actual corpus, with the encoder's dense bottleneck filtering out the incorrect details. Our experiments show that HyDE significantly outperforms the state-of-the-art unsupervised dense retriever Contriever and shows strong performance comparable to fine-tuned retrievers, across various tasks (e.g. web search, QA, fact verification) and languages~(e.g. sw, ko, ja).},
@@ -524,4 +524,212 @@
    title = {ColBERT: Efficient and Effective Passage Search via Contextualized Late Interaction over BERT},
    url = {https://arxiv.org/pdf/2004.12832},
    year = {2020}
+}
+
+@article{WavRAG,
+   abstract = {Retrieval Augmented Generation (RAG) has gained widespread adoption owing to its capacity to empower large language models (LLMs) to integrate external knowledge. However, existing RAG frameworks are primarily designed for text-based LLMs and rely on Automatic Speech Recognition to process speech input, which discards crucial audio information, risks transcription errors, and increases computational overhead. Therefore, we introduce WavRAG, the first retrieval augmented generation framework with native, end-to-end audio support. WavRAG offers two key features: 1) Bypassing ASR, WavRAG directly processes raw audio for both embedding and retrieval. 2) WavRAG integrates audio and text into a unified knowledge representation. Specifically, we propose the WavRetriever to facilitate the retrieval from a text-audio hybrid knowledge base, and further enhance the in-context capabilities of spoken dialogue models through the integration of chain-of-thought reasoning. In comparison to state-of-the-art ASR-Text RAG pipelines, WavRAG achieves comparable retrieval performance while delivering a 10x acceleration. Furthermore, WavRAG's unique text-audio hybrid retrieval capability extends the boundaries of RAG to the audio modality.},
+   author = {Yifu Chen and Shengpeng Ji and Haoxiao Wang and Ziqing Wang and Siyu Chen and Jinzheng He and Jin Xu and Zhou Zhao},
+   doi = {10.18653/v1/2025.acl-long.613},
+   isbn = {2502.14727v1},
+   month = {2},
+   pages = {12505-12523},
+   publisher = {Association for Computational Linguistics (ACL)},
+   title = {WavRAG: Audio-Integrated Retrieval Augmented Generation for Spoken Dialogue Models},
+   url = {https://arxiv.org/pdf/2502.14727},
+   year = {2025}
+}
+
+@article{RNN,
+   abstract = {Because of their effectiveness in broad practical applications, LSTM networks have received a wealth of coverage in scientific journals, technical blogs, and implementation guides. However, in most articles, the inference formulas for the LSTM network and its parent, RNN, are stated axiomatically, while the training formulas are omitted altogether. In addition, the technique of “unrolling” an RNN is routinely presented without justification throughout the literature. The goal of this tutorial is to explain the essential RNN and LSTM fundamentals in a single document. Drawing from concepts in Signal Processing, we formally derive the canonical RNN formulation from differential equations. We then propose and prove a precise statement, which yields the RNN unrolling technique. We also review the difficulties with training the standard RNN and address them by transforming the RNN into the “Vanilla LSTM”1 network through a series of logical arguments. We provide all equations pertaining to the LSTM system together with detailed descriptions of its constituent entities. Albeit unconventional, our choice of notation and the method for presenting the LSTM system emphasizes ease of understanding. As part of the analysis, we identify new opportunities to enrich the LSTM system and incorporate these extensions into the Vanilla LSTM network, producing the most general LSTM variant to date. The target reader has already been exposed to RNNs and LSTM networks through numerous available resources and is open to an alternative pedagogical approach. A Machine Learning practitioner seeking guidance for implementing our new augmented LSTM model in software for experimentation and research will find the insights and derivations in this treatise valuable as well.},
+   author = {Alex Sherstinsky},
+   doi = {10.1016/j.physd.2019.132306},
+   issn = {01672789},
+   journal = {Physica D: Nonlinear Phenomena},
+   keywords = {Convolutional input context windows,External input gate,LSTM,RNN,RNN unfolding/unrolling},
+   month = {3},
+   publisher = {Elsevier B.V.},
+   title = {Fundamentals of Recurrent Neural Network (RNN) and Long Short-Term Memory (LSTM) network},
+   volume = {404},
+   url = {http://arxiv.org/abs/1808.03314 http://dx.doi.org/10.1016/j.physd.2019.132306},
+   year = {2020}
+}
+
+@article{BiasVQA,
+   abstract = {The task of Visual Question Answering (VQA) is known to be plagued by the issue of VQA models exploiting biases within the dataset to make its final prediction. Various previous ensemble based debiasing methods have been proposed where an additional model is purposefully trained to be biased in order to train a robust target model. However, these methods compute the bias for a model simply from the label statistics of the training data or from single modal branches. In this work, in order to better learn the bias a target VQA model suffers from, we propose a generative method to train the bias model directly from the target model, called GenB. In particular, GenB employs a generative network to learn the bias in the target model through a combination of the adversarial objective and knowledge distillation. We then debias our target model with GenB as a bias model, and show through extensive experiments the effects of our method on various VQA bias datasets including VQA-CP2, VQA-CP1, GQA-OOD, and VQA-CE, and show state-of-the-art results with the LXMERT architecture on VQA-CP2.},
+   author = {Jae Won Cho and Dong Jin Kim and Hyeonggon Ryu and In So Kweon},
+   doi = {10.1109/CVPR52729.2023.01124},
+   issn = {10636919},
+   journal = {Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition},
+   keywords = {Vision,language,reasoning},
+   month = {8},
+   pages = {11681-11690},
+   publisher = {IEEE Computer Society},
+   title = {Generative Bias for Robust Visual Question Answering},
+   volume = {2023-June},
+   url = {https://arxiv.org/pdf/2208.00690},
+   year = {2022}
+}
+
+@misc{NomicHF,
+   title = {nomic-ai/nomic-embed-text-v1 - Hugging Face},
+   url = {https://huggingface.co/nomic-ai/nomic-embed-text-v1}
+}
+@misc{VidoreColPali,
+   title = {vidore/colpali-v1.3 - Hugging Face},
+   url = {https://huggingface.co/vidore/colpali-v1.3}
+}
+@misc{JinaV4HF,
+   title = {jinaai/jina-embeddings-v4 - Hugging Face},
+   url = {https://huggingface.co/jinaai/jina-embeddings-v4}
+}
+@article{JinaV4,
+   abstract = {We introduce jina-embeddings-v4, a 3.8 billion parameter multimodal embedding model that unifies text and image representations through a novel architecture supporting both single-vector and multi-vector embeddings in the late interaction style. The model incorporates task-specific Low-Rank Adaptation (LoRA) adapters to optimize performance across diverse retrieval scenarios, including query-document retrieval, semantic text similarity, and code search. Comprehensive evaluations demonstrate that jina-embeddings-v4 achieves state-of-the-art performance on both single-modal and cross-modal retrieval tasks, with particular strength in processing visually rich content such as tables, charts, diagrams, and mixed-media formats. To facilitate evaluation of this capability, we also introduce Jina-VDR, a novel benchmark specifically designed for visually rich image retrieval.},
+   author = {Michael Günther and Saba Sturua and Mohammad Kalim Akram and Isabelle Mohr and Andrei Ungureanu and Bo Wang and Sedigheh Eslami and Scott Martens and Maximilian Werk and Nan Wang and Han Xiao},
+   keywords = {cs.AI,cs.CL,cs.IR},
+   month = {6},
+   title = {jina-embeddings-v4: Universal Embeddings for Multimodal Multilingual Retrieval},
+   url = {https://arxiv.org/pdf/2506.18902},
+   year = {2025}
+}
+
+@misc{GeminiModel,
+   title = {Gemini models - Gemini API - Google AI for Developers},
+   url = {https://ai.google.dev/gemini-api/docs/models#gemini-2.0-flash}
+}
+@article{RRFExplained,
+   abstract = {Reciprocal Rank Fusion (RRF), a simple method for combining the document rankings from multiple IR systems, consistently yields better results than any individual system, and better results than the standard method Condorcet Fuse. This result is demonstrated by using RRF to combine the results of several TREC experiments, and to build a meta-learner that ranks the LETOR 3 dataset better than any previously reported method.},
+   author = {Gordon V. Cormack and Charles L.A. Clarke and Stefan Buettcher},
+   doi = {10.1145/1571941.1572114},
+   isbn = {9781605584836},
+   journal = {Proceedings - 32nd Annual International ACM SIGIR Conference on Research and Development in Information Retrieval, SIGIR 2009},
+   keywords = {Aggregation,Fusion,Ranking,ranking},
+   pages = {758-759},
+   title = {Reciprocal rank fusion outperforms condorcet and individual rank learning methods},
+   url = {https://dl.acm.org/doi/pdf/10.1145/1571941.1572114},
+   year = {2009}
+}
+@misc{OpenAIModel,
+   title = {Model - OpenAI API},
+   url = {https://platform.openai.com/docs/models/gpt-4o-mini}
+}
+
+@article{DocVQA,
+   abstract = {We present a new dataset for Visual Question Answering (VQA) on document images called DocVQA. The dataset consists of 50,000 questions defined on 12,000+ document images. Detailed analysis of the dataset in comparison with similar datasets for VQA and reading comprehension is presented. We report several baseline results by adopting existing VQA and reading comprehension models. Although the existing models perform reasonably well on certain types of questions, there is large performance gap compared to human performance (94.36% accuracy). The models need to improve specifically on questions where understanding structure of the document is crucial. The dataset, code and leaderboard are available at docvqa.org},
+   author = {Minesh Mathew and Dimosthenis Karatzas and C. V. Jawahar},
+   doi = {10.1109/WACV48630.2021.00225},
+   isbn = {9780738142661},
+   journal = {Proceedings - 2021 IEEE Winter Conference on Applications of Computer Vision, WACV 2021},
+   month = {7},
+   pages = {2199-2208},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {DocVQA: A Dataset for VQA on Document Images},
+   url = {https://arxiv.org/pdf/2007.00398},
+   year = {2020}
+}
+
+@misc{VidoreBenchmark,
+   title = {ViDoRe Benchmark - a vidore Collection},
+   url = {https://huggingface.co/collections/vidore/vidore-benchmark-667173f98e70a1c0fa4db00d}
+}
+
+@misc{BEIR_HF,
+   title = {BeIR (BEIR)},
+   url = {https://huggingface.co/BeIR}
+}
+
+
+@article{SlideVQA,
+   abstract = {Visual question answering on document images that contain textual, visual, and layout information, called document VQA, has received much attention recently. Although many datasets have been proposed for developing document VQA systems, most of the existing datasets focus on understanding the content relationships within a single image and not across multiple images. In this study, we propose a new multi-image document VQA dataset, SlideVQA, containing 2.6k+ slide decks composed of 52k+ slide images and 14.5k questions about a slide deck. SlideVQA requires complex reasoning, including single-hop, multi-hop, and numerical reasoning, and also provides annotated arithmetic expressions of numerical answers for enhancing the ability of numerical reasoning. Moreover, we developed a new end-to-end document VQA model that treats evidence selection and question answering in a unified sequence-to-sequence format. Experiments on SlideVQA show that our model outperformed existing state-of-the-art QA models, but that it still has a large gap behind human performance. We believe that our dataset will facilitate research on document VQA.},
+   author = {Ryota Tanaka and Kyosuke Nishida and Kosuke Nishida and Taku Hasegawa and Itsumi Saito and Kuniko Saito},
+   doi = {10.1609/aaai.v37i11.26598},
+   isbn = {9781577358800},
+   issn = {2159-5399},
+   journal = {Proceedings of the 37th AAAI Conference on Artificial Intelligence, AAAI 2023},
+   month = {1},
+   pages = {13636-13645},
+   publisher = {AAAI Press},
+   title = {SlideVQA: A Dataset for Document Visual Question Answering on Multiple Images},
+   volume = {37},
+   url = {https://arxiv.org/pdf/2301.04883},
+   year = {2023}
+}
+@article{OpenDocVQA,
+   abstract = {We aim to develop a retrieval-augmented generation (RAG) framework that answers questions over a corpus of visually-rich documents presented in mixed modalities (e.g., charts, tables) and diverse formats (e.g., PDF, PPTX). In this paper, we introduce a new RAG framework, VDocRAG, which can directly understand varied documents and modalities in a unified image format to prevent missing information that occurs by parsing documents to obtain text. To improve the performance, we propose novel self-supervised pre-training tasks that adapt large vision-language models for retrieval by compressing visual information into dense token representations while aligning them with textual content in documents. Furthermore, we introduce OpenDocVQA, the first unified collection of open-domain document visual question answering datasets, encompassing diverse document types and formats. OpenDocVQA provides a comprehensive resource for training and evaluating retrieval and question answering models on visually-rich documents in an open-domain setting. Experiments show that VDocRAG substantially outperforms conventional text-based RAG and has strong generalization capability, highlighting the potential of an effective RAG paradigm for real-world documents.},
+   author = {Ryota Tanaka and Taichi Iki and Taku Hasegawa and Kyosuke Nishida and Kuniko Saito and Jun Suzuki},
+   month = {4},
+   title = {VDocRAG: Retrieval-Augmented Generation over Visually-Rich Documents},
+   url = {https://arxiv.org/pdf/2504.09795},
+   year = {2025}
+}
+@article{InfoVQA,
+   abstract = {Infographics are documents designed to effectively communicate information using a combination of textual, graphical and visual elements. In this work, we explore the automatic understanding of infographic images by using Visual Question Answering technique.To this end, we present InfographicVQA, a new dataset that comprises a diverse collection of infographics along with natural language questions and answers annotations. The collected questions require methods to jointly reason over the document layout, textual content, graphical elements, and data visualizations. We curate the dataset with emphasis on questions that require elementary reasoning and basic arithmetic skills. Finally, we evaluate two strong baselines based on state of the art multi-modal VQA models, and establish baseline performance for the new task. The dataset, code and leaderboard will be made available at http://docvqa.org},
+   author = {Minesh Mathew and Viraj Bagal and Ruben Tito and Dimosthenis Karatzas and Ernest Valveny and C. V. Jawahar},
+   doi = {10.1109/WACV51458.2022.00264},
+   isbn = {9781665409155},
+   journal = {Proceedings - 2022 IEEE/CVF Winter Conference on Applications of Computer Vision, WACV 2022},
+   keywords = {Document Analysis Datasets,Evaluation and Comparison of Vision Algorithms,Vision and Languages},
+   month = {4},
+   pages = {2582-2591},
+   publisher = {Institute of Electrical and Electronics Engineers Inc.},
+   title = {InfographicVQA},
+   url = {https://arxiv.org/pdf/2104.12756},
+   year = {2021}
+}
+@article{ArXivQA,
+   abstract = {Large vision-language models (LVLMs) excel across diverse tasks involving concrete images from natural scenes. However, their ability to interpret abstract figures, such as geometry shapes and scientific plots, remains limited due to a scarcity of training datasets in scientific domains. To fill this gap, we introduce Multimodal ArXiv, consisting of ArXivCap and ArXivQA, for enhancing LVLMs scientific comprehension. ArXivCap is a figure-caption dataset comprising 6.4M images and 3.9M captions, sourced from 572K ArXiv papers spanning various scientific domains. Drawing from ArXivCap, we introduce ArXivQA, a question-answering dataset generated by prompting GPT-4V based on scientific figures. ArXivQA greatly enhances open-sourced LVLMs' mathematical reasoning capabilities, achieving a 10.4\% absolute accuracy gain on a multimodal mathematical reasoning benchmark. Furthermore, employing ArXivCap, we devise four vision-to-text tasks for benchmarking LVLMs. Evaluation results with state-of-the-art LVLMs underscore their struggle with the nuanced semantics of academic figures, while domain-specific training yields substantial performance gains. Our error analysis uncovers misinterpretations of visual context, recognition errors, and the production of overly simplified captions by current LVLMs, shedding light on future improvements.},
+   author = {Lei Li and Yuqi Wang and Runxin Xu and Peiyi Wang and Xiachong Feng and Lingpeng Kong and Qi Liu},
+   doi = {10.18653/v1/2024.acl-long.775},
+   isbn = {9798891760943},
+   issn = {0736587X},
+   journal = {Proceedings of the Annual Meeting of the Association for Computational Linguistics},
+   month = {3},
+   pages = {14369-14387},
+   publisher = {Association for Computational Linguistics (ACL)},
+   title = {Multimodal ArXiv: A Dataset for Improving Scientific Comprehension of Large Vision-Language Models},
+   volume = {1},
+   url = {https://arxiv.org/pdf/2403.00231},
+   year = {2024}
+}
+@article{TableQA,
+   abstract = {Parsing natural language to corresponding SQL (NL2SQL) with data driven approaches like deep neural networks attracts much attention in recent years. Existing NL2SQL datasets assume that condition values should appear exactly in natural language questions and the queries are answerable given the table. However, these assumptions may fail in practical scenarios, because user may use different expressions for the same content in the table, and query information outside the table without the full picture of contents in table. Therefore we present TableQA, a large-scale cross-domain Natural Language to SQL dataset in Chinese language consisting 64,891 questions and 20,311 unique SQL queries on over 6,000 tables. Different from exisiting NL2SQL datasets, TableQA requires to generalize well not only to SQL skeletons of different questions and table schemas, but also to the various expressions for condition values. Experiment results show that the state-of-the-art model with 95.1% condition value accuracy on WikiSQL only gets 46.8% condition value accuracy and 43.0% logic form accuracy on TableQA, indicating the proposed dataset is challenging and necessary to handle. Two table-aware approaches are proposed to alleviate the problem, the end-to-end approaches obtains 51.3% and 47.4% accuracy on the condition value and logic form tasks, with improvement of 4.7% and 3.4% respectively.},
+   author = {Ningyuan Sun and Xuefeng Yang and Yunfeng Liu},
+   month = {6},
+   title = {TableQA: a Large-Scale Chinese Text-to-SQL Dataset for Table-Aware SQL Generation},
+   url = {https://arxiv.org/pdf/2006.06434},
+   year = {2020}
+}
+
+@article{VidoRAG,
+   abstract = {Understanding information from visually rich documents remains a significant challenge for traditional Retrieval-Augmented Generation (RAG) methods. Existing benchmarks predominantly focus on image-based question answering (QA), overlooking the fundamental challenges of efficient retrieval, comprehension, and reasoning within dense visual documents. To bridge this gap, we introduce ViDoSeek, a novel dataset designed to evaluate RAG performance on visually rich documents requiring complex reasoning. Based on it, we identify key limitations in current RAG approaches: (i) purely visual retrieval methods struggle to effectively integrate both textual and visual features, and (ii) previous approaches often allocate insufficient reasoning tokens, limiting their effectiveness. To address these challenges, we propose ViDoRAG, a novel multi-agent RAG framework tailored for complex reasoning across visual documents. ViDoRAG employs a Gaussian Mixture Model (GMM)-based hybrid strategy to effectively handle multi-modal retrieval. To further elicit the model's reasoning capabilities, we introduce an iterative agent workflow incorporating exploration, summarization, and reflection, providing a framework for investigating test-time scaling in RAG domains. Extensive experiments on ViDoSeek validate the effectiveness and generalization of our approach. Notably, ViDoRAG outperforms existing methods by over 10% on the competitive ViDoSeek benchmark.},
+   author = {Qiuchen Wang and Ruixue Ding and Zehui Chen and Weiqi Wu and Shihang Wang and Pengjun Xie and Feng Zhao},
+   isbn = {2502.18017v1},
+   month = {2},
+   title = {ViDoRAG: Visual Document Retrieval-Augmented Generation via Dynamic Iterative Reasoning Agents},
+   url = {https://arxiv.org/pdf/2502.18017},
+   year = {2025}
+}
+
+@article{BEIR_Framework,
+   abstract = {Existing neural information retrieval (IR) models have often been studied in homogeneous and narrow settings, which has considerably limited insights into their out-of-distribution (OOD) generalization capabilities. To address this, and to facilitate researchers to broadly evaluate the effectiveness of their models, we introduce Benchmarking-IR (BEIR), a robust and heterogeneous evaluation benchmark for information retrieval. We leverage a careful selection of 18 publicly available datasets from diverse text retrieval tasks and domains and evaluate 10 state-of-the-art retrieval systems including lexical, sparse, dense, late-interaction and re-ranking architectures on the BEIR benchmark. Our results show BM25 is a robust baseline and re-ranking and late-interaction-based models on average achieve the best zero-shot performances, however, at high computational costs. In contrast, dense and sparse-retrieval models are computationally more efficient but often underperform other approaches, highlighting the considerable room for improvement in their generalization capabilities. We hope this framework allows us to better evaluate and understand existing retrieval systems, and contributes to accelerating progress towards better robust and generalizable systems in the future. BEIR is publicly available at https://github.com/UKPLab/beir.},
+   author = {Nandan Thakur and Nils Reimers and Andreas Rücklé and Abhishek Srivastava and Iryna Gurevych},
+   issn = {10495258},
+   journal = {Advances in Neural Information Processing Systems},
+   month = {4},
+   publisher = {Neural information processing systems foundation},
+   title = {BEIR: A Heterogenous Benchmark for Zero-shot Evaluation of Information Retrieval Models},
+   url = {https://arxiv.org/pdf/2104.08663},
+   year = {2021}
+}
+@article{MTEB_Paper,
+   abstract = {Text embeddings are commonly evaluated on a small set of datasets from a single task not covering their possible applications to other tasks. It is unclear whether state-of-the-art embeddings on semantic textual similarity (STS) can be equally well applied to other tasks like clustering or reranking. This makes progress in the field difficult to track, as various models are constantly being proposed without proper evaluation. To solve this problem, we introduce the Massive Text Embedding Benchmark (MTEB). MTEB spans 8 embedding tasks covering a total of 58 datasets and 112 languages. Through the benchmarking of 33 models on MTEB, we establish the most comprehensive benchmark of text embeddings to date. We find that no particular text embedding method dominates across all tasks. This suggests that the field has yet to converge on a universal text embedding method and scale it up sufficiently to provide state-of-the-art results on all embedding tasks. MTEB comes with open-source code and a public leaderboard at https://github.com/embeddings-benchmark/mteb.},
+   author = {Niklas Muennighoff and Nouamane Tazi and Loïc Magne and Nils Reimers},
+   doi = {10.18653/v1/2023.eacl-main.148},
+   isbn = {9781959429449},
+   journal = {EACL 2023 - 17th Conference of the European Chapter of the Association for Computational Linguistics, Proceedings of the Conference},
+   month = {10},
+   pages = {2006-2029},
+   publisher = {Association for Computational Linguistics (ACL)},
+   title = {MTEB: Massive Text Embedding Benchmark},
+   url = {https://arxiv.org/pdf/2210.07316},
+   year = {2022}
 }

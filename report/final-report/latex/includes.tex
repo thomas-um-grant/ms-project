@@ -17,12 +17,11 @@
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
 %----------------------------------------------------------------------------------------
-\usepackage[a4paper,hmargin=2.8cm,vmargin=2.0cm,includeheadfoot]{geometry}
+\usepackage[a4paper,hmargin=2.5cm,vmargin=2.0cm,includeheadfoot]{geometry}
 \usepackage{textpos}
 \usepackage[numbers]{natbib} % for bibliography
-\usepackage{tabularx,longtable,multirow,subfigure,caption}%hangcaption
-\usepackage{fncylab} %formatting of labels
-\usepackage{fancyhdr} % page layout
+\usepackage{tabularx,longtable,multirow,caption,subcaption}%hangcaption
+
 \usepackage{url} % URLs
 \usepackage[english]{babel}
 \usepackage{amsmath}
@@ -36,6 +35,22 @@
 \usepackage[pdftex,pagebackref,hypertexnames=false,colorlinks]{hyperref} % provide links in pdf
 \usepackage{parskip}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage{enumitem}
+\setlist[itemize]{left=0pt,labelsep=0.5em}
+
+% Colored Quote
+\usepackage{xcolor}
+\usepackage{mdframed}
+\newmdenv[
+  backgroundcolor=gray!10, % light gray background
+  linecolor=gray!50,       % border color
+  skipabove=10pt,
+  skipbelow=10pt,
+  innertopmargin=6pt,
+  innerbottommargin=6pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt
+]{colquote}
 
 \hypersetup{pdftitle={},
   pdfsubject={}, 
@@ -51,6 +66,17 @@
 
 \usepackage[all]{hypcap}
 
+% Table
+\usepackage{tabularx} % For the tabularx environment and X column type
+\usepackage{array}    % For advanced column specifications
+% A new column type for centered, wrapping text in tabularx
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+
+\usepackage{fancyhdr} % page layout
+\fancypagestyle{plain}{%
+    \fancyhf{} % clear all header and footer fields
+    \fancyfoot[C]{\sffamily{\thepage}} % page number centered
+}
 
 %\usepackage{color}
 %\usepackage[tight,ugly]{units}

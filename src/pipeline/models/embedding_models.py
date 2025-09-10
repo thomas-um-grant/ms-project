@@ -780,7 +780,7 @@ class ColPaliModel(BaseEmbeddingModel):
     _model_cache: ClassVar[dict[str, tuple[ColPali, ColPaliProcessor]]] = {}
 
     def __init__(self, device_config: DeviceConfig):
-        self.model_name = "vidore/colpali-v1.2"
+        self.model_name = "vidore/colpali-v1.3"
         self.device_config = device_config
         self.model: ColPali | None = None
         self.processor: ColPaliProcessor | None = None

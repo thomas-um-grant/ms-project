@@ -439,8 +439,71 @@ class TraditionalRAG(BaseRAG):
                 logger.exception(
                     "Automatic rerank failed; returning raw retrieval results",
                 )
+        self._save_retrieval_results(query_list, raw_results)
 
         return raw_results
+
+    def _save_retrieval_results(
+        self,
+        query_list: list[str],
+        raw_results: list[list[tuple[dict, float]]],
+    ) -> None:
+        """
+        Persist retrieval results without overwriting earlier entries.
+
+        JSON structure example:
+        {
+            "0": {"query": "...", "retrieval": [{"file": str, "score": float}, ...]},
+            "1": { ... }
+        }
+        """
+        output_dir = Path(__file__).parent / self.name / "results"
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        output_file = (
+            output_dir
+            / f"{self.name}_{self.knowledge_base.replace('/', '_')}_results.json"
+        )
+
+        data: dict[int, dict] = {}
+        if output_file.exists():
+            try:
+                with output_file.open("r") as f:
+                    loaded = json.load(f)
+                if isinstance(loaded, dict):
+                    for k, v in loaded.items():
+                        try:
+                            data[int(k)] = v  # type: ignore[arg-type]
+                        except (ValueError, TypeError):
+                            continue
+            except (json.JSONDecodeError, OSError) as exc:
+                logger.warning(
+                    "Failed to load existing retrieval results (%s); recreating file",
+                    exc,
+                )
+                data = {}
+
+        start_idx = (max(data.keys()) + 1) if data else 0
+
+        for offset, (query, query_results) in enumerate(
+            zip(query_list, raw_results, strict=True),
+            start=0,
+        ):
+            absolute_idx = start_idx + offset
+            data[absolute_idx] = {
+                "query": query,
+                "retrieval": [
+                    {"file": meta.get("name", ""), "score": score}
+                    for meta, score in query_results[:5]
+                ],
+            }
+
+        serializable = {str(k): v for k, v in sorted(data.items(), key=lambda x: x[0])}
+        try:
+            with output_file.open("w") as f:
+                json.dump(serializable, f, indent=2)
+        except OSError:
+            logger.exception("Failed writing retrieval results")
 
     async def _retrieve_vectors(
         self,

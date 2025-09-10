@@ -78,7 +78,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 358.5
   },
   "right": {
     "id": "b4793366fbe28109",
@@ -176,6 +176,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
+      "bases:Create new base": false,
       "canvas:Create new canvas": false,
       "daily-notes:Open today's daily note": false,
       "command-palette:Open command palette": false,
@@ -186,7 +187,7 @@
       "omnisearch:Omnisearch": false
     }
   },
-  "active": "dbcf9d5c708644a9",
+  "active": "b331b9ded097ca9c",
   "lastOpenFiles": [
     "background-research/papers/more-relevant/Evals/DocVQA.md",
     "background-research/other contents/Transformer Embeddings -  MultiModal and advanced Positional.md",
