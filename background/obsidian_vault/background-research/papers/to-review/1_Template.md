@@ -1,6 +1,0 @@
-# Title
-## Reference
-
-## Summary
-
-## Notes

@@ -3,8 +3,6 @@
 .vscode
 .venv
 .env
-.clinerules
-memory-bank
 
 # Cache
 __pycache__
@@ -13,33 +11,8 @@ __pycache__
 
 # Data
 data
-relational.db
-
-# Notebook Practices
-notebooks/practices
+archive
 
 # Logs
 logs
 *.log
-background/obsidian_vault/journal
-
-# Reports
-report/background-report/latex/*
-!report/background-report/latex/main.tex
-!report/background-report/latex/includes.tex
-!report/background-report/latex/notation.tex
-!report/background-report/latex/titlepage.tex
-!report/background-report/latex/References.bib
-!report/background-report/latex/figures
-
-report/final-report/latex/*
-!report/final-report/latex/main.tex
-!report/final-report/latex/includes.tex
-!report/final-report/latex/notation.tex
-!report/final-report/latex/titlepage.tex
-!report/final-report/latex/References.bib
-!report/background-report/latex/figures
-
-# Outputs
-scripts
-outputs
