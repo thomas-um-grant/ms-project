@@ -20,9 +20,9 @@ from PyPDF2.errors import PdfReadError
 from rank_bm25 import BM25Okapi
 from tqdm import tqdm
 
-from pipeline.rags.base_rag import BaseRAG
-from pipeline.rags.helpers import MetadataManager
-from utils.device import cleanup_memory
+from src.pipeline.rags.base_rag import BaseRAG
+from src.pipeline.rags.helpers import MetadataManager
+from src.utils.device import cleanup_memory
 
 logger = logging.getLogger(__name__)
 

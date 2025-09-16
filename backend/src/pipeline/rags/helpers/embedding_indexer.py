@@ -76,6 +76,24 @@ class EmbeddingIndexer:
             map_location="cpu",  # Load to CPU first for memory efficiency
             weights_only=True,
         )
+        # Upcast to float32 if older indices were saved in fp16/bf16
+        upcasted = False
+        fixed_embeddings: list[torch.Tensor] = []
+        for emb in embeddings:
+            if isinstance(emb, torch.Tensor) and emb.dtype != torch.float32:
+                fixed_embeddings.append(emb.to(torch.float32))
+                upcasted = True
+            else:
+                fixed_embeddings.append(emb)
+        if upcasted:
+            try:
+                torch.save(fixed_embeddings, self.embeddings_path)
+                embeddings = fixed_embeddings
+                logger.info("Upcasted stored embeddings to float32 for consistency.")
+            except Exception:  # pragma: no cover
+                logger.exception(
+                    "Failed to persist upcasted embeddings; proceeding in-memory.",
+                )
 
         with self.embeddings_ids_path.open() as f:
             embeddings_ids = [json.loads(line) for line in f]
@@ -119,6 +137,24 @@ class EmbeddingIndexer:
                     map_location="cpu",
                     weights_only=True,
                 )
+                # Upcast to float32 if older indices were saved in fp16/bf16
+                if any(
+                    isinstance(t, torch.Tensor) and t.dtype != torch.float32
+                    for t in existing_embeddings
+                ):
+                    existing_embeddings = [
+                        (t.to(torch.float32) if isinstance(t, torch.Tensor) else t)
+                        for t in existing_embeddings
+                    ]
+                    try:
+                        torch.save(existing_embeddings, self.embeddings_path)
+                        logger.info(
+                            "Upcasted existing stored embeddings to float32 for consistency.",
+                        )
+                    except Exception:  # pragma: no cover
+                        logger.exception(
+                            "Failed to persist upcasted existing embeddings; proceeding in-memory.",
+                        )
                 with self.embeddings_ids_path.open("r") as f:
                     existing_ids = [json.loads(line) for line in f]
             except Exception as exc:  # pragma: no cover - defensive
@@ -237,22 +273,22 @@ class EmbeddingIndexer:
 
         # Final safety dedupe (should be no-ops normally)
         if all_ids:
-            seen: set[str] = set()
-            dedup_embeddings: list[torch.Tensor] = []
-            dedup_ids: list[str] = []
+            seen_final: set[str] = set()
+            dedup_embeddings_final: list[torch.Tensor] = []
+            dedup_ids_final: list[str] = []
             for emb, cid in zip(all_embeddings, all_ids, strict=False):
-                if cid in seen:
+                if cid in seen_final:
                     continue
-                seen.add(cid)
-                dedup_embeddings.append(emb)
-                dedup_ids.append(cid)
-            if len(dedup_ids) != len(all_ids):
+                seen_final.add(cid)
+                dedup_embeddings_final.append(emb)
+                dedup_ids_final.append(cid)
+            if len(dedup_ids_final) != len(all_ids):
                 logger.warning(
                     "Removed %d duplicate embedding ids during save (final).",
-                    len(all_ids) - len(dedup_ids),
+                    len(all_ids) - len(dedup_ids_final),
                 )
-            all_embeddings = dedup_embeddings
-            all_ids = dedup_ids
+            all_embeddings = dedup_embeddings_final
+            all_ids = dedup_ids_final
 
         # Save embeddings + ids atomically when new embeddings added
         if indexed_ids:

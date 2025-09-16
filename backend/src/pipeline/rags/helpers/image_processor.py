@@ -3,7 +3,7 @@ from typing import Any
 
 from PIL import Image
 
-from utils.device import cleanup_memory, log_memory_usage
+from src.utils.device import cleanup_memory, log_memory_usage
 
 
 class ImageProcessor:

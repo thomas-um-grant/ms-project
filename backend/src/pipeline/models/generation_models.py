@@ -7,8 +7,8 @@ import ollama
 import torch
 from PIL import Image
 
-from pipeline.models.base_generator import BaseGenerationModel
-from utils.device import DeviceConfig
+from src.pipeline.models.base_generator import BaseGenerationModel
+from src.utils.device import DeviceConfig
 
 
 class LlamaOllamaTextModel(BaseGenerationModel):

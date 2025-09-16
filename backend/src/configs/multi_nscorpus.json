@@ -1,0 +1,43 @@
+{
+  "type": "multi",
+  "name": "multi",
+  "configs": {
+    "embedding_model": "colpali_embed",
+    "generation_model": "colqwen2_ollama_gen",
+    "preferred_device": "cpu",
+    "knowledge_base": "beir/nfcorpus/dataset_images",
+    "traditional": {
+      "type": "traditional",
+      "name": "traditional",
+      "configs": {
+        "embedding_model": "nomic_hf_embed",
+        "generation_model": "colqwen2_ollama_gen",
+        "preferred_device": "mps",
+        "retrieval_method": "hybrid",
+        "reranker": {
+          "name": "jina",
+          "configs": { "embedding_model": "jina_embed" }
+        },
+        "knowledge_base": "beir/nfcorpus/dataset_texts"
+      }
+    },
+    "multimodal": {
+      "type": "multimodal",
+      "name": "multimodal",
+      "configs": {
+        "embedding_model": "colpali_embed",
+        "generation_model": "colqwen2_ollama_gen",
+        "preferred_device": "cpu",
+        "chunking_strategy": "page",
+        "reranker": {
+          "name": "jina",
+          "configs": { "embedding_model": "jina_embed" }
+        },
+        "knowledge_base": "beir/nfcorpus/dataset_images"
+      }
+    },
+    "fusion": {
+      "method": "max"
+    }
+  }
+}

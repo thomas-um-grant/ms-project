@@ -8,9 +8,9 @@ from typing import Any
 
 import numpy as np
 
-from pipeline.rags.base_rag import BaseRAG
-from pipeline.rags.multimodal import MultiModalRAG
-from pipeline.rags.traditional import TraditionalRAG
+from src.pipeline.rags.base_rag import BaseRAG
+from src.pipeline.rags.multimodal import MultiModalRAG
+from src.pipeline.rags.traditional import TraditionalRAG
 
 logger = logging.getLogger(__name__)
 

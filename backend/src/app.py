@@ -21,6 +21,7 @@ from __future__ import annotations
 import asyncio
 import json
 import logging
+import platform
 import shutil
 import uuid
 from datetime import UTC, datetime
@@ -298,12 +299,15 @@ async def _run_index(
                         q.put_nowait(snapshot)
 
     await _update("running", started_at=_now_iso())
+    # Collect documents up front to avoid raising inside the main try block
+    paths = _collect_documents(folder_path, documents)
+    if not paths:
+        msg = "No valid documents to process"
+        await _update("error", finished_at=_now_iso(), error=msg)
+        return
     try:
         await rag_manager.load(config, knowledge_base)
         rag = await rag_manager.ensure_active()
-        paths = _collect_documents(folder_path, documents)
-        if not paths:
-            raise RuntimeError("No valid documents to process")
         await rag.extract(paths)
         await rag.index()
         cleanup_memory()
@@ -351,7 +355,8 @@ def _clone_config_with_new_kb(original_config: str, new_kb: str) -> str:
 def _resolve_effective_index_params(req: IndexRequest) -> tuple[str, str, str]:
     """Return (config_filename, knowledge_base, folder_path) after staging/cloning."""
     if not (req.documents or req.folder_path):
-        raise ValueError("No documents or folder path provided")
+        msg = "No documents or folder path provided"
+        raise ValueError(msg)
 
     if req.folder_path:
         return _resolve_from_folder(req)
@@ -384,7 +389,9 @@ def _resolve_from_folder(req: IndexRequest) -> tuple[str, str, str]:
 
 def _resolve_from_documents(req: IndexRequest) -> tuple[str, str, str]:
     effective_kb = req.knowledge_base
-    staging_root = DATA_DIR / req.config["name"] / effective_kb
+    # Place staged documents under a folder named after the config file stem
+    config_stem = Path(req.config).stem
+    staging_root = DATA_DIR / config_stem / effective_kb
     staging_root.mkdir(parents=True, exist_ok=True)
     for d in req.documents or []:
         src = Path(d)
@@ -531,6 +538,127 @@ async def _startup_index_task_cleanup():  # pragma: no cover
     task.add_done_callback(_background_tasks.discard)
 
 
+# ---------------- Helper utilities to enrich result metadata with file paths ---------------- #
+def _normalize_kb(knowledge_base: str) -> str:
+    """
+    Remove known source/provider prefixes from the knowledge base path.
+
+    Example: "vidore/infovqa_test_subsampled_beir" -> "infovqa_test_subsampled_beir".
+    Only leading segments in {"vidore", "beir", "sherpa"} are stripped.
+    """
+    if not knowledge_base:
+        return knowledge_base
+    parts = [p for p in str(knowledge_base).split("/") if p]
+    prefixes = {"vidore", "beir", "sherpa"}
+    # strip leading prefixes
+    while parts and parts[0] in prefixes:
+        parts.pop(0)
+
+    # hotfix
+    if parts and parts[0] == "nfcorpus":
+        parts[0] = "nfcorpus/dataset_texts"
+    return "/".join(parts) if parts else ""
+
+
+def _infer_base_dir_for_rag(rag: Any, knowledge_base: str) -> Path:
+    """Return the base directory where source files for the given RAG+KB live."""
+    kb = _normalize_kb(knowledge_base)
+    if isinstance(rag, TraditionalRAG):
+        return (DATA_DIR / "traditional" / kb).resolve()
+    if isinstance(rag, MultiModalRAG):
+        return (DATA_DIR / "multimodal" / kb).resolve()
+    if isinstance(rag, MultiRAG):
+        return (DATA_DIR / "multi" / kb).resolve()
+    return (DATA_DIR / kb).resolve()
+
+
+def _candidate_paths_from_meta(meta: dict[str, Any], base_dir: Path) -> list[Path]:
+    """Build a list of candidate paths from metadata fields."""
+    # Prefer any explicit path already present
+    explicit = (
+        meta.get("path")
+        or meta.get("file_path")
+        or meta.get("filepath")
+        or meta.get("full_path")
+        or meta.get("source_path")
+        or meta.get("absolute_path")
+    )
+    candidates: list[Path] = []
+    if isinstance(explicit, str) and explicit.strip():
+        p = Path(explicit)
+        candidates.append(p if p.is_absolute() else (base_dir / p))
+
+    # Fall back to filename-like fields
+    name = (
+        meta.get("name")
+        or meta.get("filename")
+        or meta.get("file_name")
+        or meta.get("title")
+    )
+    if isinstance(name, str) and name.strip():
+        # Prefer 'corpuses' for datasets organized that way, but also try other common folders
+        for sub in ("corpuses", "dataset_texts", "documents", ""):
+            p = (base_dir / sub / name).resolve()
+            candidates.append(p)
+            if not p.suffix:
+                for ext in (".txt", ".md", ".pdf"):
+                    candidates.append((base_dir / sub / f"{name}{ext}").resolve())
+    return candidates
+
+
+def _expand_multi_remap(p: Path) -> list[Path]:
+    """
+    If a path contains a 'multi' segment, also propose a remapped variant.
+
+    Based on file type: .png -> 'multimodal', .txt -> 'traditional'.
+    """
+    if "multi" not in p.parts:
+        return [p]
+    suf = p.suffix.lower()
+    replacement: str | None = None
+    if suf == ".png":
+        replacement = "multimodal"
+    elif suf == ".txt":
+        replacement = "traditional"
+    if not replacement:
+        return [p]
+    parts = list(p.parts)
+    try:
+        i = parts.index("multi")
+    except ValueError:
+        return [p]
+    remapped = Path(*([*parts[:i], replacement, *parts[i + 1 :]]))
+    return [p, remapped]
+
+
+def _attach_paths_to_meta(meta: dict[str, Any], base_dir: Path) -> dict[str, Any]:
+    """
+    Attach an absolute file path to a result metadata dict if possible.
+
+    The backend only stores a document 'name' (filename). We reconstruct the full
+    path using the known knowledge base location and add common aliases so the
+    frontend can reliably detect it.
+    """
+    candidates = _candidate_paths_from_meta(meta, base_dir)
+    # Expand with multi-folder remapping heuristics
+    expanded: list[Path] = []
+    for c in candidates:
+        expanded.extend(_expand_multi_remap(c))
+
+    # Prefer an existing path; otherwise fall back to the first reasonable candidate
+    chosen = next(
+        (c for c in expanded if c.exists()),
+        expanded[0] if expanded else None,
+    )
+    if chosen is not None:
+        path_str = str(chosen)
+        meta.setdefault("file_path", path_str)
+        meta.setdefault("absolute_path", path_str)
+        meta.setdefault("source_path", path_str)
+        meta.setdefault("full_path", path_str)
+    return meta
+
+
 @app.post("/retrieve", response_model=RetrieveResponse)
 async def retrieve(req: QueryRequest):
     try:
@@ -548,7 +676,16 @@ async def retrieve(req: QueryRequest):
             detail=f"Retrieval failed: {exc}",
         ) from exc
 
-    model_results = [RetrieveResult(metadata=m, score=float(s)) for m, s in results]
+    # --- Augment metadata with resolvable file paths so the frontend can open files --- #
+    kb = rag_manager.state.get("knowledge_base") or ""
+    base_dir = _infer_base_dir_for_rag(rag, kb)
+    enriched_results = [
+        (_attach_paths_to_meta(dict(m), base_dir), s) for m, s in results
+    ]
+
+    model_results = [
+        RetrieveResult(metadata=m, score=float(s)) for m, s in enriched_results
+    ]
 
     return RetrieveResponse(
         rag=rag_manager.state["config"] or "unknown",
@@ -577,7 +714,16 @@ async def answer(req: QueryRequest):
             detail=f"Answer generation failed: {exc}",
         ) from exc
 
-    model_results = [RetrieveResult(metadata=m, score=float(s)) for m, s in retrieved]
+    # Reuse the same enrichment logic as in /retrieve
+    kb = rag_manager.state.get("knowledge_base") or ""
+    base_dir = _infer_base_dir_for_rag(rag, kb)
+    enriched_results = [
+        (_attach_paths_to_meta(dict(m), base_dir), s) for m, s in retrieved
+    ]
+
+    model_results = [
+        RetrieveResult(metadata=m, score=float(s)) for m, s in enriched_results
+    ]
 
     return AnswerResponse(
         rag=rag_manager.state["config"] or "unknown",
@@ -586,3 +732,62 @@ async def answer(req: QueryRequest):
         results=model_results,
         answer=answer_text,
     )
+
+
+# ---------------- Convenience endpoint for opening/revealing files on host OS ---------------- #
+class OpenPathRequest(BaseModel):
+    path: str
+    reveal: bool = Field(
+        True,
+        description="Reveal in file manager if True (default). If False, open with default app.",
+    )
+
+
+@app.post("/open-path")
+async def open_path(req: OpenPathRequest):  # pragma: no cover (host interaction)
+    target = Path(req.path).resolve()
+    # Restrict to DATA_DIR to avoid arbitrary host access
+    try:
+        data_root = DATA_DIR.resolve()
+        target.relative_to(data_root)
+    except Exception as exc:
+        raise HTTPException(status_code=403, detail="Path not allowed") from exc
+
+    if not target.exists():
+        raise HTTPException(status_code=404, detail="Path does not exist")
+
+    system = platform.system().lower()
+
+    async def run_exec(exe: str, *args: str) -> None:
+        try:
+            proc = await asyncio.create_subprocess_exec(exe, *args)
+            await proc.communicate()
+        except FileNotFoundError as exc:
+            raise HTTPException(
+                status_code=500,
+                detail=f"Executable not found: {exe}",
+            ) from exc
+        except Exception as exc:  # pragma: no cover
+            raise HTTPException(
+                status_code=500,
+                detail=f"Failed to open path: {exc}",
+            ) from exc
+
+    if system == "darwin":
+        exe = "/usr/bin/open"
+        if req.reveal:
+            await run_exec(exe, "-R", str(target))
+        else:
+            await run_exec(exe, str(target))
+    elif system == "windows":
+        explorer = shutil.which("explorer") or str(Path("C:/Windows/explorer.exe"))
+        if req.reveal:
+            await run_exec(explorer, "/select,", str(target))
+        else:
+            await run_exec(explorer, str(target))
+    else:
+        exe = shutil.which("xdg-open") or "/usr/bin/xdg-open"
+        open_target = target.parent if req.reveal else target
+        await run_exec(exe, str(open_target))
+
+    return {"status": "ok"}

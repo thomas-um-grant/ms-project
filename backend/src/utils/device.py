@@ -104,19 +104,21 @@ class DeviceConfig:
 
         """
         if device == "cuda":
+            # Prefer float32 for numerical stability during similarity scoring
+            # while keeping AUTO device mapping for model placement.
             return cls(
                 device=DeviceType.CUDA,
-                dtype=torch.float16,
+                dtype=torch.float32,
                 device_map=DeviceMap.AUTO,
             )
         if device == "mps":
             # Test MPS stability
             try:
-                test_tensor = torch.randn(10, 10, dtype=torch.float16, device="mps")
+                test_tensor = torch.randn(10, 10, dtype=torch.float32, device="mps")
                 _ = torch.mm(test_tensor, test_tensor.T)
                 return cls(
                     device=DeviceType.MPS,
-                    dtype=torch.float16,
+                    dtype=torch.float32,
                     device_map=DeviceMap.MPS,
                 )
             except RuntimeError:

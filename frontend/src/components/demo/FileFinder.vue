@@ -110,32 +110,9 @@
           <div class="file-header">
             <div class="file-info">
               <h4 class="file-name">{{ file.name }}</h4>
-              <span class="file-score"
-                >{{ (file.score * 100).toFixed(1) }}% match</span
-              >
             </div>
             <div class="file-actions">
-              <Button
-                variant="secondary"
-                size="sm"
-                @click.stop="downloadFile(file)"
-                class="download-btn"
-              >
-                <svg
-                  class="download-icon"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                Download
-              </Button>
+              <span class="file-rank">Rank {{ index + 1 }}</span>
             </div>
           </div>
 
@@ -169,27 +146,29 @@
                   stroke-linecap="round"
                   stroke-linejoin="round"
                   stroke-width="2"
-                  d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-4 8h4m-4-4h4m-4-4h4M7 21h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
-              {{ formatFileSize(file.size) }}
-            </span>
-            <span class="metadata-item">
-              <svg
-                class="metadata-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
                   d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4m-6 9l2 2 4-4m6-2V7a2 2 0 00-2-2H9a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2z"
                 />
               </svg>
               {{ formatDate(file.lastModified) }}
             </span>
+          </div>
+
+          <div class="file-footer">
+            <button
+              class="open-button"
+              @click.stop="openFileInManager(file)"
+              :title="'Reveal this file in your file manager'"
+            >
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M3 7h18M3 7l2 12a2 2 0 002 2h10a2 2 0 002-2l2-12M3 7l2-3h14l2 3"
+                />
+              </svg>
+              <span>open doc</span>
+            </button>
           </div>
         </div>
       </div>
@@ -200,6 +179,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Button from "../common/Button.vue";
+import { apiClient } from "../../services/ApiClient";
 
 interface FileResult {
   id: string;
@@ -237,11 +217,83 @@ const performSearch = async () => {
   const startTime = Date.now();
 
   try {
-    // Simulate API call - replace with actual search endpoint
-    await new Promise((resolve) => setTimeout(resolve, 800));
+    // Call backend retrieve endpoint to search documents
+    const res = await apiClient.retrieve({
+      query: searchQuery.value,
+      top_k: 10,
+    });
 
-    // Mock search results - replace with actual API call
-    searchResults.value = generateMockResults(searchQuery.value);
+    // Map backend results to FileResult[] expected by the UI
+    const mapToFile = (
+      r: {
+        metadata: Record<string, any>;
+        score: number;
+      },
+      idx: number
+    ): FileResult => {
+      const md = r?.metadata || {};
+      const pathCandidates = [
+        md.path,
+        md.file_path,
+        md.filepath,
+        md.full_path,
+        md.source_path,
+        md.absolute_path,
+        md.source,
+        md.location,
+      ].filter(Boolean);
+      const path = String(pathCandidates[0] || "");
+      const nameFromPath = path ? path.split(/[/\\]/).pop() : undefined;
+      const title = md.title || md.name || md.filename || nameFromPath;
+
+      // Build a description/snippet from likely text fields
+      const textFields = [
+        md.description,
+        md.content,
+        md.text,
+        md.snippet,
+        md.page_content,
+        md.summary,
+      ];
+      const rawDesc = textFields.find((v) => typeof v === "string");
+      const description = (rawDesc || "").toString();
+
+      // Infer file type from explicit field or path extension
+      const explicitType = md.type || md.file_type || md.mimetype || md.mime;
+      const extMatch = (path || title || "")
+        .toString()
+        .match(/\.([a-zA-Z0-9]+)$/);
+      const type =
+        explicitType || (extMatch ? extMatch[1].toUpperCase() : "Document");
+
+      // Size if available
+      const size = Number(md.size || md.bytes || 0) || 0;
+
+      // Last modified if available
+      const lm = md.last_modified || md.lastModified || md.modified || md.mtime;
+      const lastModified = lm ? new Date(lm) : new Date();
+
+      // URL if available
+      const url = md.url || md.uri || undefined;
+
+      const id = String(
+        md.id || md.doc_id || md.document_id || path || title || idx
+      );
+
+      return {
+        id,
+        name: String(title || `Document ${idx + 1}`),
+        description,
+        score: Number(r.score || 0),
+        type: String(type),
+        size,
+        lastModified,
+        path,
+        url,
+      } as FileResult;
+    };
+
+    searchResults.value = (res.results || []).map(mapToFile);
     searchTime.value = Date.now() - startTime;
   } catch (error) {
     console.error("Search failed:", error);
@@ -263,21 +315,42 @@ const openFile = (file: FileResult) => {
   // Could also open file in new tab or preview modal
 };
 
-const downloadFile = async (file: FileResult) => {
-  try {
-    // Simulate file download - replace with actual download logic
-    console.log("Downloading file:", file.name);
-
-    // For now, create a mock download
-    const element = document.createElement("a");
-    element.href = file.url || "#";
-    element.download = file.name;
-    element.click();
-  } catch (error) {
-    console.error("Download failed:", error);
-    alert("Download failed. Please try again.");
+const openFileInManager = async (file: FileResult) => {
+  const filePath = file?.path || "";
+  if (!filePath) {
+    alert("No file path is available for this document.");
+    return;
   }
+  const anyWin: any = window as any;
+  const api = anyWin.electronAPI;
+  if (api?.showItemInFolder) {
+    try {
+      await api.showItemInFolder(filePath);
+      return;
+    } catch (e) {
+      console.error("Failed to reveal file via Electron showItemInFolder", e);
+    }
+  }
+  if (api?.openPath) {
+    try {
+      await api.openPath(filePath);
+      return;
+    } catch (e) {
+      console.error("Failed to open file via Electron openPath", e);
+    }
+  }
+  try {
+    await apiClient.openPath({ path: filePath, reveal: true });
+    return;
+  } catch (e) {
+    console.error("Backend open-path failed", e);
+  }
+  alert(
+    `Cannot open the file manager from the browser. File path: ${filePath}`
+  );
 };
+
+// Download button removed; showing rank instead
 
 const formatFileSize = (bytes: number): string => {
   const units = ["B", "KB", "MB", "GB"];
@@ -300,51 +373,7 @@ const formatDate = (date: Date): string => {
   }).format(date);
 };
 
-// Mock data generator - replace with actual API integration
-const generateMockResults = (query: string): FileResult[] => {
-  const mockFiles = [
-    {
-      id: "1",
-      name: "research_paper_nlp.pdf",
-      description:
-        "Natural Language Processing research paper discussing transformer architectures and their applications in modern AI systems.",
-      score: 0.95,
-      type: "PDF",
-      size: 2048576,
-      lastModified: new Date("2024-01-15"),
-      path: "/documents/research/research_paper_nlp.pdf",
-    },
-    {
-      id: "2",
-      name: "project_documentation.md",
-      description:
-        "Complete project documentation including setup instructions, API reference, and deployment guidelines.",
-      score: 0.87,
-      type: "Markdown",
-      size: 45632,
-      lastModified: new Date("2024-02-20"),
-      path: "/documents/projects/project_documentation.md",
-    },
-    {
-      id: "3",
-      name: "data_analysis_report.xlsx",
-      description:
-        "Comprehensive data analysis report with charts, tables, and statistical insights from the quarterly review.",
-      score: 0.78,
-      type: "Excel",
-      size: 1536000,
-      lastModified: new Date("2024-03-10"),
-      path: "/documents/reports/data_analysis_report.xlsx",
-    },
-  ];
-
-  // Filter based on query (simple contains check)
-  return mockFiles.filter(
-    (file) =>
-      file.name.toLowerCase().includes(query.toLowerCase()) ||
-      file.description.toLowerCase().includes(query.toLowerCase())
-  );
-};
+// Note: removed mock generator in favor of real API integration
 </script>
 
 <style scoped>
@@ -503,28 +532,19 @@ const generateMockResults = (query: string): FileResult[] => {
   color: var(--color-text-primary);
 }
 
-.file-score {
-  background: var(--color-primary);
-  color: white;
-  padding: 2px var(--spacing-xs);
-  border-radius: calc(var(--border-radius) / 2);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
+/* removed .file-score badge */
 
 .file-actions {
   flex-shrink: 0;
 }
 
-.download-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.download-icon {
-  width: 1rem;
-  height: 1rem;
+.file-rank {
+  background: var(--color-primary);
+  color: white;
+  padding: 2px var(--spacing-xs);
+  border-radius: calc(var(--border-radius) / 2);
+  font-size: 0.75rem;
+  font-weight: 600;
 }
 
 .file-description {
@@ -548,6 +568,35 @@ const generateMockResults = (query: string): FileResult[] => {
 }
 
 .metadata-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.file-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm);
+}
+
+.open-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
+  border-radius: var(--border-radius);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.open-button:hover {
+  background: var(--color-background);
+  color: var(--color-text-primary);
+}
+
+.open-button svg {
   width: 1rem;
   height: 1rem;
 }

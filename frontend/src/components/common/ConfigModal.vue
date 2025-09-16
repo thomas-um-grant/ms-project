@@ -22,77 +22,12 @@
 
       <div class="modal-body">
         <div class="config-editor">
-          <div class="editor-tabs">
-            <button
-              class="tab-button"
-              :class="{ active: activeTab === 'form' }"
-              @click="activeTab = 'form'"
-            >
-              <svg
-                class="tab-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              Form View
-            </button>
-            <button
-              class="tab-button"
-              :class="{ active: activeTab === 'json' }"
-              @click="activeTab = 'json'"
-            >
-              <svg
-                class="tab-icon"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-                />
-              </svg>
-              JSON View
-            </button>
-          </div>
-
           <!-- Form View -->
-          <div v-if="activeTab === 'form'" class="form-view">
+          <div class="form-view">
             <DynamicConfigForm
               v-model="formConfig"
               @update:modelValue="handleFormUpdate"
             />
-          </div>
-
-          <!-- JSON View -->
-          <div v-else class="json-view">
-            <label class="editor-label">Configuration JSON:</label>
-            <textarea
-              v-model="jsonText"
-              class="json-editor"
-              :class="{ error: hasError }"
-              rows="12"
-              spellcheck="false"
-              @input="validateJson"
-            />
-            <div v-if="hasError" class="error-message">
-              {{ errorMessage }}
-            </div>
-            <div
-              v-if="!hasError && jsonText !== initialJson"
-              class="info-message"
-            >
-              Configuration modified - click Save to apply changes
-            </div>
           </div>
         </div>
       </div>
@@ -110,7 +45,7 @@
           <Button
             variant="primary"
             @click="saveConfiguration"
-            :disabled="hasError || !hasChanges"
+            :disabled="!hasChanges"
           >
             Save
           </Button>
@@ -124,6 +59,7 @@
 import { ref, computed, watch } from "vue";
 import Button from "./Button.vue";
 import DynamicConfigForm from "./DynamicConfigForm.vue";
+import type { PipelineType } from "../../types/retriever";
 import {
   EMBEDDING_MODEL_OPTIONS,
   LLM_MODEL_OPTIONS,
@@ -148,6 +84,7 @@ export interface DetailedConfig {
 interface Props {
   isOpen: boolean;
   config: DetailedConfig;
+  pipelineType: PipelineType;
 }
 
 interface Emits {
@@ -158,26 +95,13 @@ interface Emits {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const jsonText = ref("");
-const hasError = ref(false);
-const errorMessage = ref("");
-const initialJson = ref("");
-
-// Tab management for form/json view
-const activeTab = ref<"form" | "json">("form");
 const formConfig = ref<Record<string, any>>({});
 
-// Convert configuration to a nicely formatted JSON with comments
+// Convert configuration to a JSON-like object used to drive the form.
+// This function also applies UI constraints based on the selected pipeline.
 const formatConfigJson = (config: DetailedConfig): string => {
-  const configWithOptions = {
-    embeddingModel: {
-      value: config.embeddingModel,
-      options: EMBEDDING_MODEL_OPTIONS.map((opt) => ({
-        value: opt.value,
-        label: opt.label,
-        description: opt.description,
-      })),
-    },
+  // LLM model remains configurable
+  const formShape: Record<string, any> = {
     llmModel: {
       value: config.llmModel,
       options: LLM_MODEL_OPTIONS.map((opt) => ({
@@ -186,133 +110,130 @@ const formatConfigJson = (config: DetailedConfig): string => {
         description: opt.description,
       })),
     },
-    chunkingStrategy: {
-      value: config.chunkingStrategy,
-      options: CHUNKING_OPTIONS.map((opt) => ({
-        value: opt.value,
-        label: opt.label,
-        description: opt.description,
-      })),
-    },
-    retrievalStrategy: {
+  };
+
+  // Hide Embedding model: induced from RAG type (do not expose in advanced UI)
+  // We intentionally omit embeddingModel from the form.
+
+  // Chunking strategy: only allow "Page" chunking
+  formShape.chunkingStrategy = {
+    value: "page",
+    options: [
+      {
+        value: "page",
+        label: "Page",
+        description: "Split by page boundaries",
+      },
+    ],
+  };
+
+  // Retrieval Strategy: show only if pipeline is NOT multimodal
+  if (props.pipelineType !== "multimodal") {
+    formShape.retrievalStrategy = {
       value: config.retrievalStrategy,
       options: RETRIEVAL_OPTIONS.map((opt) => ({
         value: opt.value,
         label: opt.label,
         description: opt.description,
       })),
+    };
+  }
+
+  // Reranking Strategy: hide LLM reranking; if MultiRAG, force Jina and make it the only option
+  const rerankOptions = RERANKING_OPTIONS.filter((opt) => opt.value !== "llm");
+  if (props.pipelineType === "multi") {
+    formShape.rerankingStrategy = {
+      value: "jina",
+      options: rerankOptions.filter((o) => o.value === "jina"),
+    };
+  } else {
+    formShape.rerankingStrategy = {
+      value:
+        config.rerankingStrategy === "llm" ? "none" : config.rerankingStrategy,
+      options: rerankOptions,
+    };
+  }
+
+  // Parameters: remove chunk size and overlap; keep topK and temperature only
+  formShape.parameters = {
+    topK: {
+      value: config.topK,
+      description: "Number of documents to retrieve (1-20)",
     },
-    rerankingStrategy: {
-      value: config.rerankingStrategy,
-      options: RERANKING_OPTIONS.map((opt) => ({
-        value: opt.value,
-        label: opt.label,
-        description: opt.description,
-      })),
-    },
-    parameters: {
-      chunkSize: {
-        value: config.chunkSize,
-        description: "Size of text chunks (100-2000)",
-      },
-      chunkOverlap: {
-        value: config.chunkOverlap,
-        description: "Overlap between chunks (0-500)",
-      },
-      topK: {
-        value: config.topK,
-        description: "Number of documents to retrieve (1-20)",
-      },
-      temperature: {
-        value: config.temperature,
-        description: "Generation temperature (0-2)",
-      },
+    temperature: {
+      value: config.temperature,
+      description: "Generation temperature (0-2)",
     },
   };
 
-  return JSON.stringify(configWithOptions, null, 2);
+  return JSON.stringify(formShape, null, 2);
 };
 
 // Parse JSON back to configuration
-const parseConfigJson = (jsonStr: string): DetailedConfig | null => {
-  try {
-    const parsed = JSON.parse(jsonStr);
-
-    return {
-      embeddingModel:
-        parsed.embeddingModel?.value || DEFAULT_CONFIG.selectedEmbeddingModel,
-      llmModel: parsed.llmModel?.value || DEFAULT_CONFIG.selectedLLMModel,
-      chunkingStrategy:
-        parsed.chunkingStrategy?.value || DEFAULT_CONFIG.chunkingStrategy,
-      retrievalStrategy:
-        parsed.retrievalStrategy?.value || DEFAULT_CONFIG.retrievalStrategy,
-      rerankingStrategy:
-        parsed.rerankingStrategy?.value || DEFAULT_CONFIG.rerankingStrategy,
-      chunkSize:
-        parsed.parameters?.chunkSize?.value || DEFAULT_CONFIG.chunkSize,
-      chunkOverlap:
-        parsed.parameters?.chunkOverlap?.value || DEFAULT_CONFIG.chunkOverlap,
-      topK: parsed.parameters?.topK?.value || DEFAULT_CONFIG.topK,
-      temperature:
-        parsed.parameters?.temperature?.value || DEFAULT_CONFIG.temperature,
-    };
-  } catch {
-    return null;
-  }
-};
-
-const validateJson = () => {
-  try {
-    const parsed = parseConfigJson(jsonText.value);
-    if (parsed === null) {
-      hasError.value = true;
-      errorMessage.value = "Invalid JSON format";
-    } else {
-      hasError.value = false;
-      errorMessage.value = "";
-    }
-  } catch (error) {
-    hasError.value = true;
-    errorMessage.value = "Invalid JSON format";
-  }
-};
-
 // Handle form updates
 const handleFormUpdate = (newFormData: Record<string, any>) => {
   formConfig.value = newFormData;
-  // Sync JSON text with form data
-  jsonText.value = JSON.stringify(newFormData, null, 2);
-  validateJson();
 };
 
 const hasChanges = computed(() => {
-  return jsonText.value !== initialJson.value && !hasError.value;
+  // Compare current form state to formatted initial config
+  try {
+    const initial = JSON.parse(formatConfigJson(props.config));
+    return JSON.stringify(formConfig.value) !== JSON.stringify(initial);
+  } catch {
+    return true;
+  }
 });
 
 const resetToDefaults = () => {
   const defaultConfig: DetailedConfig = {
     embeddingModel: DEFAULT_CONFIG.selectedEmbeddingModel,
     llmModel: DEFAULT_CONFIG.selectedLLMModel,
-    chunkingStrategy: "fixed",
-    retrievalStrategy: "dense",
-    rerankingStrategy: "cross_encoder",
+    chunkingStrategy: "page",
+    retrievalStrategy: "hybrid",
+    rerankingStrategy: "none",
     chunkSize: DEFAULT_CONFIG.chunkSize,
     chunkOverlap: DEFAULT_CONFIG.chunkOverlap,
     topK: DEFAULT_CONFIG.topK,
     temperature: DEFAULT_CONFIG.temperature,
   };
 
-  jsonText.value = formatConfigJson(defaultConfig);
-  validateJson();
+  formConfig.value = JSON.parse(formatConfigJson(defaultConfig));
 };
 
 const saveConfiguration = () => {
-  if (hasError.value) return;
+  // Convert the current formConfig back to DetailedConfig
+  try {
+    const parsed = formConfig.value;
+    const cfg: DetailedConfig = {
+      // embeddingModel hidden in form -> preserve incoming value
+      embeddingModel:
+        props.config.embeddingModel || DEFAULT_CONFIG.selectedEmbeddingModel,
+      llmModel: parsed.llmModel?.value || DEFAULT_CONFIG.selectedLLMModel,
+      chunkingStrategy: parsed.chunkingStrategy?.value || "page",
+      // retrievalStrategy may be omitted for multimodal -> preserve or default
+      retrievalStrategy:
+        parsed.retrievalStrategy?.value ||
+        props.config.retrievalStrategy ||
+        DEFAULT_CONFIG.retrievalStrategy,
+      rerankingStrategy:
+        parsed.rerankingStrategy?.value ||
+        (props.pipelineType === "multi"
+          ? "jina"
+          : props.config.rerankingStrategy || DEFAULT_CONFIG.rerankingStrategy),
+      // Removed from form; preserve original values when saving
+      chunkSize: props.config.chunkSize,
+      chunkOverlap: props.config.chunkOverlap,
+      topK: parsed.parameters?.topK?.value || DEFAULT_CONFIG.topK,
+      temperature:
+        parsed.parameters?.temperature?.value || DEFAULT_CONFIG.temperature,
+    };
 
-  const config = parseConfigJson(jsonText.value);
-  if (config) {
-    emit("save", config);
+    emit("save", cfg);
     closeModal();
+  } catch (e) {
+    // If parsing fails, do nothing
+    console.error("Failed to save configuration from form", e);
   }
 };
 
@@ -330,10 +251,7 @@ watch(
   (newConfig) => {
     if (newConfig && props.isOpen) {
       const formattedJson = formatConfigJson(newConfig);
-      jsonText.value = formattedJson;
-      initialJson.value = formattedJson;
       formConfig.value = JSON.parse(formattedJson);
-      validateJson();
     }
   },
   { deep: true, immediate: true }
@@ -345,10 +263,7 @@ watch(
   (isOpen) => {
     if (isOpen) {
       const formattedJson = formatConfigJson(props.config);
-      jsonText.value = formattedJson;
-      initialJson.value = formattedJson;
       formConfig.value = JSON.parse(formattedJson);
-      validateJson();
     }
   }
 );
@@ -434,50 +349,7 @@ watch(
   margin-bottom: var(--spacing-sm);
 }
 
-.json-editor {
-  flex: 1;
-  font-family: "Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New",
-    monospace;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  padding: var(--spacing-md);
-  border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  background-color: var(--color-surface);
-  color: var(--color-text-primary);
-  resize: none;
-  outline: none;
-  transition: border-color 0.2s ease;
-  min-height: 300px;
-  max-height: 400px;
-}
-
-.json-editor:focus {
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.json-editor.error {
-  border-color: var(--color-error);
-}
-
-.error-message {
-  color: var(--color-error);
-  font-size: 0.875rem;
-  margin-top: var(--spacing-sm);
-  padding: var(--spacing-sm);
-  background-color: rgba(239, 68, 68, 0.1);
-  border-radius: var(--border-radius);
-}
-
-.info-message {
-  color: var(--color-primary);
-  font-size: 0.875rem;
-  margin-top: var(--spacing-sm);
-  padding: var(--spacing-sm);
-  background-color: rgba(37, 99, 235, 0.1);
-  border-radius: var(--border-radius);
-}
+/* Removed JSON editor and related messages */
 
 .modal-footer {
   display: flex;
@@ -525,45 +397,7 @@ watch(
   }
 }
 
-/* Tab styles */
-.editor-tabs {
-  display: flex;
-  gap: var(--spacing-xs);
-  margin-bottom: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
-}
-
-.tab-button {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-  padding: var(--spacing-sm) var(--spacing-md);
-  border: none;
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-size: 0.875rem;
-  font-weight: 500;
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  border-bottom: 2px solid transparent;
-}
-
-.tab-button:hover {
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-}
-
-.tab-button.active {
-  background: var(--color-surface);
-  color: var(--color-primary);
-  border-bottom-color: var(--color-primary);
-}
-
-.tab-icon {
-  width: 1rem;
-  height: 1rem;
-}
+/* Removed editor tab styles */
 
 .form-view {
   max-height: 400px;
@@ -571,8 +405,5 @@ watch(
   padding: var(--spacing-sm) 0 var(--spacing-xl) 0;
 }
 
-.json-view {
-  display: flex;
-  flex-direction: column;
-}
+/* Removed JSON view styles */
 </style>

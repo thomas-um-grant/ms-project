@@ -3,7 +3,7 @@ from abc import abstractmethod
 import torch
 from PIL import Image
 
-from pipeline.models.base_model import BaseModel
+from src.pipeline.models.base_model import BaseModel
 
 
 class BaseEmbeddingModel(BaseModel):

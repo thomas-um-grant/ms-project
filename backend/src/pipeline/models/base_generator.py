@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Any
 
-from pipeline.models.base_model import BaseModel
+from src.pipeline.models.base_model import BaseModel
 
 
 class BaseGenerationModel(BaseModel):

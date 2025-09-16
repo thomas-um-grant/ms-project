@@ -1,0 +1,11 @@
+{
+  "type": "traditional",
+  "name": "traditional",
+  "configs": {
+    "embedding_model": "nomic_hf_embed",
+    "generation_model": "colqwen2_ollama_gen",
+    "preferred_device": "mps",
+    "knowledge_base": "vidore/infovqa_test_subsampled_beir",
+    "retrieval_method": "hybrid"
+  }
+}

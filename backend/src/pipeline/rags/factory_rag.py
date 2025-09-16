@@ -1,11 +1,11 @@
 from pathlib import Path
 from typing import ClassVar
 
-from pipeline.rags.base_rag import BaseRAG
-from pipeline.rags.graph import GraphRAG
-from pipeline.rags.multimodal import MultiModalRAG
-from pipeline.rags.multirag import MultiRAG
-from pipeline.rags.traditional import TraditionalRAG
+from src.pipeline.rags.base_rag import BaseRAG
+from src.pipeline.rags.graph import GraphRAG
+from src.pipeline.rags.multimodal import MultiModalRAG
+from src.pipeline.rags.multirag import MultiRAG
+from src.pipeline.rags.traditional import TraditionalRAG
 
 
 class RAGFactory:

@@ -2,39 +2,42 @@
   <div class="knowledge-source panel">
     <div class="source-header">
       <div class="source-title">
-        <span class="source-number">Doc {{ index + 1 }}</span>
-        <span class="source-score"
-          >{{ (document.score * 100).toFixed(1) }}% match</span
-        >
+        <span class="source-number">Rank {{ index + 1 }}</span>
       </div>
-      <button
-        @click="toggleExpanded"
-        class="expand-button"
-        :class="{ expanded: isExpanded }"
-      >
-        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M19 9l-7 7-7-7"
-          />
-        </svg>
-      </button>
     </div>
 
     <div class="source-content" :class="{ expanded: isExpanded }">
       <p class="source-text">{{ truncatedContent }}</p>
 
-      <div v-if="document.metadata" class="source-metadata">
+      <div v-if="displayMetadata.length" class="source-metadata">
         <div
-          v-for="(value, key) in document.metadata"
-          :key="key"
+          v-for="([key, value], idx) in displayMetadata"
+          :key="String(key) + idx"
           class="metadata-item"
         >
-          <span class="metadata-key">{{ formatMetadataKey(key) }}:</span>
-          <span class="metadata-value">{{ value }}</span>
+          <span class="metadata-key"
+            >{{ formatMetadataKey(key as string) }}:</span
+          >
+          <span class="metadata-value">{{ value as any }}</span>
         </div>
+      </div>
+
+      <div class="source-footer">
+        <button
+          class="open-button"
+          @click="openInFileManager"
+          :title="openButtonTitle"
+        >
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M3 7h18M3 7l2 12a2 2 0 002 2h10a2 2 0 002-2l2-12M3 7l2-3h14l2 3"
+            />
+          </svg>
+          <span>open doc</span>
+        </button>
       </div>
     </div>
   </div>
@@ -43,6 +46,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import type { RetrievedDocument } from "../../types/api";
+import { apiClient } from "../../services/ApiClient";
 
 interface Props {
   document: RetrievedDocument;
@@ -54,16 +58,126 @@ const props = defineProps<Props>();
 const isExpanded = ref(false);
 const maxLength = 200;
 
-const truncatedContent = computed(() => {
-  if (isExpanded.value || props.document.content.length <= maxLength) {
-    return props.document.content;
+const contentText = computed(() => {
+  const c: any = (props.document as any).content;
+  if (typeof c === "string") return c;
+  if (c && typeof c === "object") {
+    return c.content ?? c.text ?? c.snippet ?? c.page_content ?? "";
   }
-  return props.document.content.substring(0, maxLength) + "...";
+  return c != null ? String(c) : "";
 });
 
-const toggleExpanded = () => {
-  isExpanded.value = !isExpanded.value;
+const truncatedContent = computed(() => {
+  const text = contentText.value || "";
+  if (isExpanded.value || text.length <= maxLength) return text;
+  return text.substring(0, maxLength) + "...";
+});
+
+const displayMetadata = computed(() => {
+  const md = props.document.metadata || {};
+
+  const isPathLikeKey = (key: string) => {
+    const k = key.toLowerCase();
+    return (
+      k.includes("path") ||
+      k.includes("file") ||
+      k.includes("dir") ||
+      k.includes("folder") ||
+      k.includes("uri") ||
+      k.includes("url")
+    );
+  };
+
+  const isAbsolutePathString = (val: unknown) => {
+    if (typeof val !== "string") return false;
+    return (
+      val.startsWith("/") || // Unix-like absolute path
+      /^[A-Za-z]:[\\/]/.test(val) || // Windows absolute path
+      val.startsWith("file://")
+    );
+  };
+
+  const entries = Object.entries(md).filter(([k, v]) => {
+    // Only primitive displayable values
+    if (!["string", "number", "boolean"].includes(typeof v as string))
+      return false;
+    // Drop generic description
+    if (k === "description") return false;
+    // Hide any explicit path/file hints
+    if (isPathLikeKey(k)) return false;
+    // Hide source when it's actually a full path
+    if (k === "source" && isAbsolutePathString(v)) return false;
+    return true;
+  });
+
+  const priority = ["source", "page", "section", "title"];
+  entries.sort(([a], [b]) => {
+    const pa = priority.indexOf(a);
+    const pb = priority.indexOf(b);
+    const ra = pa === -1 ? 999 : pa;
+    const rb = pb === -1 ? 999 : pb;
+    return ra - rb || a.localeCompare(b);
+  });
+
+  return entries;
+});
+
+const openButtonTitle = computed(() => `Reveal this file in your file manager`);
+
+const getPossiblePath = (): string | null => {
+  const md = props.document.metadata || ({} as Record<string, any>);
+  const candidates = [
+    md.path,
+    md.file_path,
+    md.filepath,
+    md.full_path,
+    md.source_path,
+    md.absolute_path,
+  ].filter(Boolean);
+  if (candidates.length > 0 && typeof candidates[0] === "string")
+    return candidates[0] as string;
+  // If only a name is present, we cannot infer absolute path reliably in browser
+  return null;
 };
+
+const openInFileManager = async () => {
+  const filePath = getPossiblePath();
+  // Prefer Electron, if available
+  const anyWin: any = window as any;
+  const api = anyWin.electronAPI;
+  if (api?.showItemInFolder && filePath) {
+    try {
+      await api.showItemInFolder(filePath);
+      return;
+    } catch (e) {
+      console.error("Failed to reveal file via Electron showItemInFolder", e);
+    }
+  }
+  if (api?.openPath && filePath) {
+    try {
+      await api.openPath(filePath);
+      return;
+    } catch (e) {
+      console.error("Failed to open file via Electron openPath", e);
+    }
+  }
+  // Web fallback: ask backend to reveal/open on host OS
+  if (filePath) {
+    try {
+      await apiClient.openPath({ path: filePath, reveal: true });
+      return;
+    } catch (e) {
+      console.error("Backend open-path failed", e);
+    }
+  }
+  alert(
+    filePath
+      ? `Cannot open the file manager from the browser. File path: ${filePath}`
+      : "No file path is available in the document metadata."
+  );
+};
+
+// Expand/collapse control removed from UI; keep default collapsed behavior
 
 const formatMetadataKey = (key: string) => {
   return key
@@ -105,39 +219,32 @@ const formatMetadataKey = (key: string) => {
   font-size: 0.875rem;
 }
 
-.source-score {
-  background: var(--color-primary);
-  color: white;
-  padding: 2px var(--spacing-xs);
-  border-radius: calc(var(--border-radius) / 2);
-  font-size: 0.75rem;
-  font-weight: 500;
-}
+/* Removed score and expand button styles */
 
-.expand-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: var(--spacing-xs);
+.open-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  padding: 4px 8px;
   border-radius: var(--border-radius);
   color: var(--color-text-secondary);
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.expand-button:hover {
+.open-button:hover {
   background: var(--color-background);
   color: var(--color-text-primary);
 }
 
-.expand-button svg {
+.open-button svg {
   width: 1rem;
   height: 1rem;
-  transition: transform 0.2s ease;
 }
 
-.expand-button.expanded svg {
-  transform: rotate(180deg);
-}
+/* expand button removed */
 
 .source-content {
   overflow: hidden;
@@ -157,6 +264,12 @@ const formatMetadataKey = (key: string) => {
   margin-top: var(--spacing-sm);
   padding-top: var(--spacing-sm);
   border-top: 1px solid var(--color-border);
+}
+
+.source-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--spacing-sm);
 }
 
 .metadata-item {

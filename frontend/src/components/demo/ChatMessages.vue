@@ -45,7 +45,7 @@
 
       <div class="message-content">
         <div class="message-bubble">
-          <div class="message-text">{{ message.content }}</div>
+          <div class="message-text">{{ displayMessageText(message) }}</div>
           <div class="message-time">
             {{ formatTime(message.timestamp) }}
           </div>
@@ -104,6 +104,16 @@ interface Props {
 const props = defineProps<Props>();
 
 const messagesRef = ref<HTMLElement>();
+
+// Prefer showing the textual part of a response object rather than the whole object
+const displayMessageText = (msg: ChatMessage): string => {
+  const c: any = (msg as any).content;
+  if (typeof c === "string") return c;
+  if (c && typeof c === "object") {
+    return c.response ?? c.text ?? c.message ?? c.output ?? c.content ?? "";
+  }
+  return c != null ? String(c) : "";
+};
 
 const formatTime = (timestamp: Date) => {
   return new Intl.DateTimeFormat("en-US", {

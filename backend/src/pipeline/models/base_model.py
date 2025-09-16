@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import torch
 
-from utils.device import DeviceConfig
+from src.utils.device import DeviceConfig
 
 
 class BaseModel(ABC):

@@ -1,0 +1,394 @@
+{
+  "0": {
+    "query": "In 2010 , what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "1": {
+    "query": "In 2010 , what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      }
+    ]
+  },
+  "2": {
+    "query": "In 2010 , what percentage of     recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "3": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "4": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "5": {
+    "query": "In 2010 , what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "6": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "7": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "8": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "9": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "10": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "11": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "12": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "13": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "337.txt",
+        "score": 0.03279569892473118
+      },
+      {
+        "file": "33.txt",
+        "score": 0.03149801587301587
+      },
+      {
+        "file": "227.txt",
+        "score": 0.031009615384615385
+      },
+      {
+        "file": "267.txt",
+        "score": 0.030834914611005692
+      },
+      {
+        "file": "2.txt",
+        "score": 0.030679156908665108
+      }
+    ]
+  },
+  "14": {
+    "query": "How to make lemon juice?",
+    "retrieval": [
+      {
+        "file": "214.txt",
+        "score": 0.031544957774465976
+      },
+      {
+        "file": "475.txt",
+        "score": 0.03
+      },
+      {
+        "file": "81.txt",
+        "score": 0.027799227799227798
+      },
+      {
+        "file": "113.txt",
+        "score": 0.027242401779095628
+      },
+      {
+        "file": "443.txt",
+        "score": 0.025448143405889884
+      }
+    ]
+  },
+  "15": {
+    "query": "How to make lemon juice?",
+    "retrieval": [
+      {
+        "file": "214.txt",
+        "score": 0.031544957774465976
+      },
+      {
+        "file": "475.txt",
+        "score": 0.03
+      },
+      {
+        "file": "81.txt",
+        "score": 0.027799227799227798
+      },
+      {
+        "file": "113.txt",
+        "score": 0.027242401779095628
+      },
+      {
+        "file": "443.txt",
+        "score": 0.025448143405889884
+      }
+    ]
+  }
+}

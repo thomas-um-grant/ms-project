@@ -1,0 +1,102 @@
+{
+  "0": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "2.txt",
+        "score": 0.5998073816299438
+      },
+      {
+        "file": "337.txt",
+        "score": 0.5897122025489807
+      },
+      {
+        "file": "227.txt",
+        "score": 0.5096656680107117
+      },
+      {
+        "file": "8.png",
+        "score": 0.5070962905883789
+      },
+      {
+        "file": "267.txt",
+        "score": 0.482623815536499
+      }
+    ]
+  },
+  "1": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "2.txt",
+        "score": 0.5998073816299438
+      },
+      {
+        "file": "337.txt",
+        "score": 0.5897122025489807
+      },
+      {
+        "file": "227.txt",
+        "score": 0.5096656680107117
+      },
+      {
+        "file": "371.png",
+        "score": 0.501603901386261
+      },
+      {
+        "file": "124.png",
+        "score": 0.49151039123535156
+      }
+    ]
+  },
+  "2": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "2.txt",
+        "score": 0.5998073816299438
+      },
+      {
+        "file": "337.txt",
+        "score": 0.5897122025489807
+      },
+      {
+        "file": "255.txt",
+        "score": 0.5098947286605835
+      },
+      {
+        "file": "227.txt",
+        "score": 0.5096656680107117
+      },
+      {
+        "file": "267.txt",
+        "score": 0.482623815536499
+      }
+    ]
+  },
+  "3": {
+    "query": "In 2010, what percentage of recruitments used linkedin?",
+    "retrieval": [
+      {
+        "file": "2.txt",
+        "score": 0.5998073816299438
+      },
+      {
+        "file": "337.txt",
+        "score": 0.5897122025489807
+      },
+      {
+        "file": "255.txt",
+        "score": 0.5098947286605835
+      },
+      {
+        "file": "227.txt",
+        "score": 0.5096656680107117
+      },
+      {
+        "file": "267.txt",
+        "score": 0.482623815536499
+      }
+    ]
+  }
+}

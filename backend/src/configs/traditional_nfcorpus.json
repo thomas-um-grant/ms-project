@@ -3,9 +3,9 @@
   "name": "traditional",
   "configs": {
     "embedding_model": "nomic_hf_embed",
-    "generation_model": "llama_text_gen",
+    "generation_model": "colqwen2_ollama_gen",
     "preferred_device": "mps",
-    "knowledge_base": "beir/msmarco/dataset_texts",
+    "knowledge_base": "beir/nfcorpus/dataset_texts",
     "retrieval_method": "hybrid"
   }
 }

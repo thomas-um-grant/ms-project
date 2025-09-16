@@ -7,8 +7,8 @@ from typing import Any
 
 import torch
 
-from pipeline.models.embedding_models import JinaV4Model
-from utils.device import DeviceConfig
+from src.pipeline.models.embedding_models import JinaV4Model
+from src.utils.device import DeviceConfig
 
 logger = logging.getLogger(__name__)
 

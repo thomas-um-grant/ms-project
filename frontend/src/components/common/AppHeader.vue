@@ -5,8 +5,7 @@
         <div class="logo">
           <h1>RAG Optimization & Evaluation - MSc Project</h1>
           <h4>
-            A Hybrid Retrieval Framework for RAG: Combining Textual, and
-            Multimodal Information via Reranking
+            MultiRAG: A Framework to Fuse Expert Retrievers via Hybrid Reranking
           </h4>
         </div>
         <div class="nav-links">

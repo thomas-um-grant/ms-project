@@ -13,8 +13,8 @@ from colpali_engine.models import ColPali, ColPaliProcessor, ColQwen2, ColQwen2P
 from PIL import Image
 from transformers import AutoModel, AutoTokenizer
 
-from pipeline.models.base_embedder import BaseEmbeddingModel
-from utils.device import DeviceConfig
+from src.pipeline.models.base_embedder import BaseEmbeddingModel
+from src.utils.device import DeviceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -780,7 +780,7 @@ class ColPaliModel(BaseEmbeddingModel):
     _model_cache: ClassVar[dict[str, tuple[ColPali, ColPaliProcessor]]] = {}
 
     def __init__(self, device_config: DeviceConfig):
-        self.model_name = "vidore/colpali-v1.3"
+        self.model_name = "vidore/colpali-v1.2"
         self.device_config = device_config
         self.model: ColPali | None = None
         self.processor: ColPaliProcessor | None = None

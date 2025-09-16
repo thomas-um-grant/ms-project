@@ -10,10 +10,10 @@ import torch
 from PIL import Image
 from tqdm import tqdm
 
-from pipeline.rags.base_rag import BaseRAG
-from pipeline.rags.helpers import EmbeddingIndexer, ImageProcessor, MetadataManager
-from utils.device import cleanup_memory, log_memory_usage
-from utils.general import pdf_to_images, resize_image
+from src.pipeline.rags.base_rag import BaseRAG
+from src.pipeline.rags.helpers import EmbeddingIndexer, ImageProcessor, MetadataManager
+from src.utils.device import cleanup_memory, log_memory_usage
+from src.utils.general import pdf_to_images, resize_image
 
 logger = logging.getLogger(__name__)
 
@@ -325,10 +325,15 @@ class MultiModalRAG(BaseRAG):
         q_emb_tensors = await self.embedding_model.embed_texts(query_texts)
 
         # Convert embeddings to correct device/dtype
+        # On MPS, perform scoring in CPU float32 for better numerical stability
+        is_mps = self.device_config.device_str == "mps"
+        target_device = "cpu" if is_mps else self.device_config.device_str
+        target_dtype = torch.float32 if is_mps else self.device_config.dtype
+
         query_vectors = [
             q_tensor.to(
-                dtype=self.device_config.dtype,
-                device=self.device_config.device_str,
+                dtype=target_dtype,
+                device=target_device,
                 non_blocking=True,
             )
             for q_tensor in q_emb_tensors
@@ -336,8 +341,8 @@ class MultiModalRAG(BaseRAG):
 
         doc_vectors = [
             emb_tensor.to(
-                dtype=self.device_config.dtype,
-                device=self.device_config.device_str,
+                dtype=target_dtype,
+                device=target_device,
                 non_blocking=True,
             )
             for emb_tensor in embeddings

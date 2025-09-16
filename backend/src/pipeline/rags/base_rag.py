@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from pipeline.strategy import (
+    from src.pipeline.strategy import (
         ChunkingStrategy,
         QueryEnhancement,
         RetrievalStrategy,
@@ -13,9 +13,9 @@ if TYPE_CHECKING:
         SimilarityMetric,
     )
 
-from pipeline.models.embedding_models import setup_embedding_model
-from pipeline.models.generation_models import setup_generation_model
-from utils.device import DeviceConfig
+from src.pipeline.models.embedding_models import setup_embedding_model
+from src.pipeline.models.generation_models import setup_generation_model
+from src.utils.device import DeviceConfig
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +168,7 @@ class BaseRAG(ABC):
                 )
 
             try:  # pragma: no cover
-                from pipeline.models.embedding_models import (
+                from src.pipeline.models.embedding_models import (
                     JinaV4Model,  # type: ignore[attr-defined]
                 )
 
@@ -245,8 +245,8 @@ class BaseRAG(ABC):
     ) -> list[list[tuple[dict, float]]]:
         """Rerank using Jina embeddings."""
         try:
-            from pipeline.models.embedding_models import JinaV4Model
-            from pipeline.rerankers import JinaRerankerFactory
+            from src.pipeline.models.embedding_models import JinaV4Model
+            from src.pipeline.rerankers import JinaRerankerFactory
         except ImportError:  # pragma: no cover
             logger.warning("Jina reranker not available; skipping rerank")
             return retrieved_corpuses
@@ -298,7 +298,7 @@ class BaseRAG(ABC):
         to original ordering on any error.
         """
         try:
-            from pipeline.rerankers import LLMReranker, LLMRerankerFactory
+            from src.pipeline.rerankers import LLMReranker, LLMRerankerFactory
         except ImportError:  # pragma: no cover
             logger.warning("LLM reranker package not available")
             return retrieved_corpuses
@@ -337,10 +337,10 @@ class BaseRAG(ABC):
         if self.reranker_method != "jina":
             return
         try:  # pragma: no cover
-            from pipeline.models.embedding_models import (
+            from src.pipeline.models.embedding_models import (
                 JinaV4Model,  # type: ignore[attr-defined]
             )
-            from pipeline.rerankers import (
+            from src.pipeline.rerankers import (
                 JinaRerankerFactory,  # type: ignore[attr-defined]
             )
         except ImportError:  # pragma: no cover

@@ -204,6 +204,7 @@
     <ConfigModal
       :is-open="showConfigModal"
       :config="detailedConfig"
+      :pipeline-type="config.selectedPipeline"
       @close="closeConfigModal"
       @save="saveConfiguration"
     />
@@ -211,7 +212,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, watch } from "vue";
 import ChatMessages from "../components/demo/ChatMessages.vue";
 import ChatInput from "../components/demo/ChatInput.vue";
 import KnowledgeSource from "../components/demo/KnowledgeSource.vue";
@@ -221,7 +222,6 @@ import Dropdown from "../components/common/Dropdown.vue";
 import ConfigModal from "../components/common/ConfigModal.vue";
 import type { DetailedConfig } from "../components/common/ConfigModal.vue";
 import { apiClient } from "../services/ApiClient";
-import { generateMockChatResponse, simulateDelay } from "../utils/mockData";
 import {
   PIPELINE_OPTIONS,
   EMBEDDING_MODEL_OPTIONS,
@@ -231,6 +231,10 @@ import {
   RERANKING_OPTIONS,
   DEFAULT_CONFIG,
 } from "../constants/configuration";
+import {
+  resolveConfigFile,
+  getDefaultConfigForPipeline,
+} from "../constants/ragConfigs";
 import type {
   ChatMessage,
   RetrievedDocument,
@@ -275,9 +279,14 @@ const detailedConfig = ref<DetailedConfig>({
 
 // Knowledge base options (fake folder names for demo)
 const knowledgeBaseOptions = [
-  { value: "arxivqa", label: "Academic Papers Collection (Arxiv)" },
-  { value: "docvqa", label: "UCSF Industry Documents Library (DocVQA)" },
-  { value: "esg-reports", label: "Fast Food ESG reports (ESGReportV2)" },
+  {
+    value: "vidore/infovqa_test_subsampled_beir",
+    label: "InfoVQA",
+  },
+  {
+    value: "beir/nfcorpus",
+    label: "NF Corpus",
+  },
 ];
 
 const config = reactive<ConfigurationState>({
@@ -301,6 +310,50 @@ const updatePipeline = (value: string | number | (string | number)[]) => {
   const singleValue = Array.isArray(value) ? value[0] : value;
   config.selectedPipeline = singleValue as any;
 };
+
+// Helper: activate a KB on backend
+const selectActiveRag = async (kb: string) => {
+  if (!kb) return;
+  // Resolve backend config file based on current pipeline and knowledge base
+  const configFile =
+    resolveConfigFile(config.selectedPipeline, kb) ||
+    getDefaultConfigForPipeline(config.selectedPipeline);
+  if (!configFile) {
+    console.warn("No config mapping available for current selection.");
+    return;
+  }
+  try {
+    await apiClient.selectRag({ config: configFile, knowledge_base: kb });
+    console.log("Active RAG set:", { configFile, kb });
+  } catch (e) {
+    console.error("Failed to select RAG", e);
+  }
+};
+
+// Auto-activate RAG when knowledge base changes (only for non-path values)
+watch(selectedKnowledgeBase, (kb) => {
+  // Only treat absolute filesystem paths as paths; otherwise, auto-select on backend
+  const looksLikeAbsoluteUnix = kb.startsWith("/");
+  const looksLikeAbsoluteWin = /^[A-Za-z]:\\\\/.test(kb);
+  const looksLikePath = looksLikeAbsoluteUnix || looksLikeAbsoluteWin;
+  if (!looksLikePath) {
+    selectActiveRag(kb);
+  }
+});
+
+// Auto-activate RAG when pipeline (system) changes as well
+watch(
+  () => config.selectedPipeline,
+  () => {
+    const kb = selectedKnowledgeBase.value || "";
+    const looksLikeAbsoluteUnix = kb.startsWith("/");
+    const looksLikeAbsoluteWin = /^[A-Za-z]:\\\\/.test(kb);
+    const looksLikePath = looksLikeAbsoluteUnix || looksLikeAbsoluteWin;
+    if (!looksLikePath && kb) {
+      selectActiveRag(kb);
+    }
+  }
+);
 
 /**
  * Opens the advanced configuration modal
@@ -379,6 +432,27 @@ const addKnowledgeBase = async () => {
 
         selectedKnowledgeBase.value = folderPath;
         console.log("Added knowledge base:", folderPath);
+
+        // Kick off indexing on backend and set active
+        try {
+          const resolved =
+            resolveConfigFile(
+              config.selectedPipeline,
+              folderName || "custom_kb"
+            ) || getDefaultConfigForPipeline(config.selectedPipeline);
+          if (!resolved) throw new Error("No backend config mapping available");
+          await apiClient.index({
+            config: resolved,
+            knowledge_base: folderName || "custom_kb",
+            folder_path: folderPath,
+            set_current: true,
+          });
+          // After indexing, switch selection to the KB name (not the path)
+          selectedKnowledgeBase.value = folderName || "custom_kb";
+        } catch (e) {
+          console.error("Indexing failed:", e);
+          alert("Indexing failed. Please check backend logs.");
+        }
       }
     } else {
       // Fallback for web browsers - use HTML5 file input with webkitdirectory
@@ -406,6 +480,9 @@ const addKnowledgeBase = async () => {
 
           selectedKnowledgeBase.value = folderName;
           console.log("Added knowledge base:", folderName);
+
+          // Browser fallback cannot provide absolute path; we'll just attempt selectRag
+          void selectActiveRag(folderName);
         }
       };
 
@@ -435,66 +512,41 @@ const handleSendMessage = async (message: string) => {
   isLoading.value = true;
 
   try {
-    // For development, use mock data. In production, use real API.
-    const useMockData = import.meta.env.DEV;
-
-    if (useMockData) {
-      // Simulate network delay
-      await simulateDelay(800, 1500);
-
-      // Generate mock response
-      const mockResponse = generateMockChatResponse(message);
-
-      // Update current sources
-      currentSources.value = mockResponse.retrieved_documents;
-
-      // Add assistant message
-      const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: "assistant",
-        content: mockResponse.answer,
-        timestamp: new Date(),
-        retrieved_documents: mockResponse.retrieved_documents,
-      };
-
-      messages.value.push(assistantMessage);
-    } else {
-      // Production API call
-      const queryRequest: QueryRequest = {
-        query: message,
-        pipeline_config: {
-          pipeline_type: config.selectedPipeline,
-          embedding_model: detailedConfig.value.embeddingModel,
-          llm_model: detailedConfig.value.llmModel,
-          chunk_size: detailedConfig.value.chunkSize,
-          chunk_overlap: detailedConfig.value.chunkOverlap,
-          top_k: detailedConfig.value.topK,
-          temperature: detailedConfig.value.temperature,
-          additional_params: {
-            chunking_strategy: detailedConfig.value.chunkingStrategy,
-            retrieval_strategy: detailedConfig.value.retrievalStrategy,
-            reranking_strategy: detailedConfig.value.rerankingStrategy,
-          },
-        } as PipelineConfig,
+    // Always call backend
+    const queryRequest: QueryRequest = {
+      query: message,
+      pipeline_config: {
+        pipeline_type: config.selectedPipeline,
+        embedding_model: detailedConfig.value.embeddingModel,
+        llm_model: detailedConfig.value.llmModel,
+        chunk_size: detailedConfig.value.chunkSize,
+        chunk_overlap: detailedConfig.value.chunkOverlap,
         top_k: detailedConfig.value.topK,
-      };
+        temperature: detailedConfig.value.temperature,
+        additional_params: {
+          chunking_strategy: detailedConfig.value.chunkingStrategy,
+          retrieval_strategy: detailedConfig.value.retrievalStrategy,
+          reranking_strategy: detailedConfig.value.rerankingStrategy,
+        },
+      } as PipelineConfig,
+      top_k: detailedConfig.value.topK,
+    };
 
-      const response = await apiClient.query(queryRequest);
+    const response = await apiClient.query(queryRequest);
 
-      // Update current sources
-      currentSources.value = response.retrieved_documents;
+    // Update current sources
+    currentSources.value = response.retrieved_documents;
 
-      // Add assistant message
-      const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: "assistant",
-        content: response.answer,
-        timestamp: new Date(),
-        retrieved_documents: response.retrieved_documents,
-      };
+    // Add assistant message
+    const assistantMessage: ChatMessage = {
+      id: (Date.now() + 1).toString(),
+      type: "assistant",
+      content: response.answer,
+      timestamp: new Date(),
+      retrieved_documents: response.retrieved_documents,
+    };
 
-      messages.value.push(assistantMessage);
-    }
+    messages.value.push(assistantMessage);
   } catch (error) {
     console.error("Query failed:", error);
 
